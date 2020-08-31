@@ -1,20 +1,51 @@
 import React from 'react'; // 负责逻辑控制，数据--> VDOM
 import ReactDOM from 'react-dom'; // React Dom 渲染实际 Dom，VDOM-->DOM
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import style from './index.module.css';
+import logo from './logo.svg';
 
-// React 使用 jsx 来描述 ui，
-// jsx ==> React.createElement(...)
-// ReactDOM.render 生成真实的 Dom
-ReactDOM.render(
-  <React.StrictMode>
-    <App /> {/* 这个是虚拟 Dom*/}
-  </React.StrictMode>,
-  document.getElementById('root') // 将真实的 Dom 插入到根节点（root）下面
+const name = 'world';
+const params = {
+  first: 'mark',
+  last: 'pretter'
+};
+
+function formatName(args) {
+  return `${args.first} ${args.last}`;
+}
+
+const good = <div>goods</div>;
+
+const show = true;
+const loginBtn = '登陆';
+
+const arr = ['arr1', 'arr2', 'arr3'];
+const eles = [
+  <div key='1'>数组1</div>,
+  <div key='2'>数组2</div>
+];
+
+const jsx = (
+  <div>
+    <div>hello, {name}!</div>
+    <div>{formatName(params)}</div>
+    {good}
+    <div>{show ? loginBtn : '注册'}</div>
+    <div>{show && loginBtn}</div>
+    {eles}
+    <ul>
+      {arr.map(item => {
+        return (
+          <li key={item}>{item}</li>
+        )
+      })}
+    </ul>
+    <img 
+      src={logo}
+      // className="logo"
+      className={style.logo}
+      // style={{width: '100px', height: '100px'}}
+    />
+  </div>
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(jsx, document.getElementById('root'));

@@ -11,11 +11,11 @@
 #### 1-2、入口 src/index.js
 
 ```javascript
-import React from 'react'; // 负责逻辑控制，数据--> VDOM；使用了 jsx 就必须要引入 React
-import ReactDOM from 'react-dom'; // React Dom 渲染实际 Dom，VDOM-->DOM
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from 'react' // 负责逻辑控制，数据--> VDOM；使用了 jsx 就必须要引入 React
+import ReactDOM from 'react-dom' // React Dom 渲染实际 Dom，VDOM-->DOM
+import './index.css'
+import App from './App'
+import * as serviceWorker from './serviceWorker'
 
 // React 使用 jsx 来描述 ui，
 // jsx ==> React.createElement(...)
@@ -25,12 +25,149 @@ ReactDOM.render(
     <App /> {/* 这个是虚拟 Dom，这种是 jsx 写法*/}
   </React.StrictMode>,
   document.getElementById('root') // 将真实的 Dom 插入到根节点（root）下面
-);
+)
 
-serviceWorker.unregister(); // pwa 相关
+serviceWorker.unregister() // pwa 相关
 ```
 
 > babel-loader 将 jsx 编译为相应 js 对象，React.createElement 再将这个 js 对象构造成虚拟 Dom
 
 ### 2、jsx 语法
 
+#### 2-1、基本使用，插值用 {}
+
+```
+const name = 'word';
+const jsx = <div>hello, {name}!</div>;
+
+ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+#### 2-2、函数的使用
+
+```
+const params = {
+  first: 'mark',
+  last: 'pretter'
+};
+
+function formatName(args) {
+  return `${args.first} ${args.last}`;
+}
+
+const jsx = (
+  <div>
+    <div>{formatName(params)}</div>
+  </div>
+);
+
+ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+#### 2-3、jsx 对象
+
+```
+const good = <div>goods</div>;
+const jsx = (
+  <div>
+    {good}
+  </div>
+);
+
+ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+#### 2-4、条件语句
+
+```
+const show = true;
+const loginBtn = '登陆';
+
+const jsx = (
+  <div>
+    <div>{show ? loginBtn : '注册'}</div>
+    <div>{show && loginBtn}</div>
+  </div>
+);
+
+ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+#### 2-5、数组
+
+1. 数组直接使用 jsx，记得要唯一 key
+
+```
+const eles = [
+  <div key='1'>数组1</div>,
+  <div key='2'>数组2</div>
+];
+
+const jsx = (
+  <div>
+    {eles}
+  </div>
+);
+
+ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+2. 使用 map
+
+```
+const arr = ['arr1', 'arr2', 'arr3'];
+
+const jsx = (
+  <div>
+    <ul>
+      {arr.map(item => {
+        return (
+          <li key={item}>{item}</li>
+        )
+      })}
+    </ul>
+  </div>
+);
+
+ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+> map 和 forEach 区别：forEach 没有返回值
+
+#### 2-6、属性使用
+
+```
+import logo from './logo.svg';
+
+const jsx = (
+  <div>
+    <img src={logo} className="logo" style={{width: '100px', height: '100px'}}/>
+  </div>
+);
+
+ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+> 使用 className 是为了避免与 class 组件里面的 class 冲突  
+> style 使用 {} 插值， 里面那层的 {} 代表的是一个对象
+
+#### 2-7、模块化
+
+```
+import style from './index.module.css';
+
+const jsx = (
+  <div>
+    <img 
+      src={logo}
+      // className="logo"
+      className={style.logo}
+      // style={{width: '100px', height: '100px'}}
+    />
+  </div>
+);
+
+ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+> css 模块化可以避免组件之间类名冲突
