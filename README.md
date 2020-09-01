@@ -127,6 +127,8 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 #### 2-4、条件语句
 
+1. 使用三元表达式或者 &&
+
 ```
 const show = true;
 const loginBtn = '登陆';
@@ -139,6 +141,24 @@ const jsx = (
 );
 
 ReactDOM.render(jsx, document.getElementById('root'));
+```
+
+2. 使用 if...else
+
+```
+import React, { Component } from 'react';
+
+class Login extends Component {
+    render() { 
+        if (this.props.login) {
+            return <div>已登录</div>
+        } else {
+            return <div>未登录</div>
+        }
+    }
+}
+ 
+export default Login;
 ```
 
 #### 2-5、数组
@@ -299,6 +319,8 @@ export default FunComponent
 }
 ```
 
+> 常见的类型：array、bool、func、number、object、string
+
 例子：
 
 ```
@@ -321,8 +343,6 @@ ClassComponent.propTypes = {
     title: PropTypes.string
 };
 ```
-
-> 常见的类型：array、bool、func、number、object、string
 
 #### 4-2、props 默认值
 
@@ -354,3 +374,7 @@ ClassComponent.defaultProps = {
     title: 'XXX Component'
 };
 ```
+
+### 5、state
+
+### 6、事件绑定

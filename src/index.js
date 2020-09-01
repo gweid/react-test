@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom'; // React Dom 渲染实际 Dom，VDOM-->DOM
 import style from './index.module.css';
 import logo from './logo.svg';
 import ClassComponent from './components/ClassComponent/ClassComponent.js';
-import FunComponent from './components/FunComponent/FunComponent.js'
+import FunComponent from './components/FunComponent/FunComponent.js';
+import Login from './components/Login/Login.js';
 
 const name = 'world';
 const params = {
@@ -19,6 +20,7 @@ const good = <div>goods</div>;
 
 const show = true;
 const loginBtn = '登陆';
+const isLogin = true
 
 const arr = ['arr1', 'arr2', 'arr3'];
 const eles = [
@@ -33,6 +35,7 @@ const jsx = (
     {good}
     <div>{show ? loginBtn : '注册'}</div>
     <div>{show && loginBtn}</div>
+    <Login login={isLogin}></Login>
     {eles}
     <ul>
       {arr.map(item => {
@@ -42,7 +45,7 @@ const jsx = (
       })}
     </ul>
     <img
-      alt="React logo"
+      alt="React-logo"
       src={logo}
       // className="logo"
       className={style.logo}
