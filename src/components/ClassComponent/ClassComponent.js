@@ -11,24 +11,32 @@ class ClassComponent extends Component {
             count: 1
         };
     }
-    render() {
-        return (
-            <div>
-                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-                <div>{this.state.date.toLocaleTimeString()}</div>
-            </div>
-        );
-    }
 
-    handleLog(arg1, arg2) {
+    handleLog = (arg1, arg2) => {
         // this.setState({
         //     count: 2
         // })
+
+        // 在 setTimeout 中是同步的
         this.setState((state, props) => {
             return { count:state.count + 1 }
         })
         console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
-        console.log(this.state.date, arg1, arg2);
+    }
+
+    componentDidMount() {
+        // setState 在原生事件是同步的
+        document.querySelector(".class-component-event").addEventListener('click', this.handleLog, false)
+    }
+
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+                <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
     }
 }
 

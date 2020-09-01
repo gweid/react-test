@@ -391,6 +391,11 @@ class ClassComponent extends Component {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
         this.state = { date: new Date() };
     }
+
+    handleLog() {
+        console.log(this.state.date);
+    }
+
     render() {
         return (
             <div>
@@ -398,10 +403,6 @@ class ClassComponent extends Component {
                 <div>{this.state.date.toLocaleTimeString()}</div>
             </div>
         );
-    }
-
-    handleLog() {
-        console.log(this.state.date);
     }
 }
 ```
@@ -414,6 +415,11 @@ class ClassComponent extends Component {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
         this.state = { date: new Date() };
     }
+
+    handleLog() {
+        console.log(this.state.date);
+    }
+
     render() {
         return (
             <div>
@@ -421,10 +427,6 @@ class ClassComponent extends Component {
                 <div>{this.state.date.toLocaleTimeString()}</div>
             </div>
         );
-    }
-
-    handleLog() {
-        console.log(this.state.date);
     }
 }
 ```
@@ -439,6 +441,11 @@ class ClassComponent extends Component {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
         this.state = { date: new Date() };
     }
+
+    handleLog(arg1, arg2) {
+        console.log(this.state.date, arg1, arg2);
+    }
+
     render() {
         return (
             <div>
@@ -446,10 +453,6 @@ class ClassComponent extends Component {
                 <div>{this.state.date.toLocaleTimeString()}</div>
             </div>
         );
-    }
-
-    handleLog(arg1, arg2) {
-        console.log(this.state.date, arg1, arg2);
     }
 }
 ```
@@ -462,6 +465,11 @@ class ClassComponent extends Component {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
         this.state = { date: new Date() };
     }
+
+    handleLog(arg1, arg2) {
+        console.log(this.state.date, arg1, arg2);
+    }
+
     render() {
         return (
             <div>
@@ -470,10 +478,6 @@ class ClassComponent extends Component {
             </div>
         );
     }
-
-    handleLog(arg1, arg2) {
-        console.log(this.state.date, arg1, arg2);
-    }
 }
 ```
 
@@ -481,6 +485,7 @@ class ClassComponent extends Component {
 
 1. state 是当前组件的自定义属性，通过在 constructor() 中初始化 state
 2. 不能直接修改 state，而是需要通过 setState() 去修改，直接修改如：this.state.xxx = 'xxx' 不会重新渲染
+3. setState 是会更改组件的，会造成组件的重新渲染，如果短时间有很多 setState 去操作 state，那么就会造成组件不断地更行，影响性能；setState 的异步更新主要就是一个合并批量更新的操作，减少组件的更新次数，达到优化性能的目的
 
 #### 6-1、初始化一个 state
 
@@ -498,7 +503,7 @@ class ClassComponent extends Component {
 
 #### 6-2、通过 setState() 修改 state
 
-> 注意：setState 是异步的
+> 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新
 
 1、setState(partialState, callback)
 1. partialState: object | function(stete, props)
@@ -517,19 +522,20 @@ class ClassComponent extends Component {
             count: 1
         };
     }
-    render() {
-        return (
-            <div>
-                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-            </div>
-        );
-    }
 
     handleLog(arg1, arg2) {
         this.setState({
             count: 2
         })
         console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+    }
+
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+            </div>
+        );
     }
 }
 ```
@@ -544,6 +550,14 @@ class ClassComponent extends Component {
             count: 1
         };
     }
+
+    handleLog(arg1, arg2) {
+        this.setState((state, props) => {
+            return { count:state.count + 1 }
+        })
+        console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+    }
+
     render() {
         return (
             <div>
@@ -551,12 +565,104 @@ class ClassComponent extends Component {
             </div>
         );
     }
+}
+```
+
+4、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        this.state = { 
+            date: new Date(),
+            count: 1
+        };
+    }
 
     handleLog(arg1, arg2) {
         this.setState((state, props) => {
             return { count:state.count + 1 }
+        }, () => {
+          console.log('state的值已经变更');
         })
         console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+    }
+
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+            </div>
+        );
+    }
+}
+```
+
+5、setState 在原生事件和 setTimeout 中都是同步的
+
+1. 在 setTimeout 中
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        this.state = { 
+            date: new Date(),
+            count: 1
+        };
+    }
+
+    handleLog(arg1, arg2) {
+        setTimeout(() => {
+          this.setState((state, props) => {
+            return { count:state.count + 1 }
+          });
+
+          console.log(this.state);
+        }, 0)
+    }
+
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+            </div>
+        );
+    }
+}
+```
+
+2. 在原生事件中是同步的
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { 
+            date: new Date(),
+            count: 1
+        };
+    }
+
+    handleLog = (arg1, arg2) => {
+        this.setState((state, props) => {
+            return { count:state.count + 1 }
+        })
+        console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+    }
+
+    componentDidMount() {
+        // setState 在原生事件是同步的
+        document.querySelector(".class-component-event").addEventListener('click', this.handleLog, false)
+    }
+
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+                <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
     }
 }
 ```
