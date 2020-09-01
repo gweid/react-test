@@ -78,7 +78,7 @@ ReactDOM.render(<Test />, document.getElementById('root'))
 
 > React.createElement会构建一个JavaScript对象来描述HTML结构的信息，包括标签名、属性、还有子元素等。这样的代码就是合法的JavaScript代码了
 
-**jsx 到页面流程：**
+**jsx 到页面的流程：**
 
 ![jsx 到页面流程](/imgs/img1.jpg)
 
