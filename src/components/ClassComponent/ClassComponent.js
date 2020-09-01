@@ -11,10 +11,14 @@ class ClassComponent extends Component {
     render() {
         return (
             <div>
-                <h1>{this.props.title}</h1>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
                 <div>{this.state.date.toLocaleTimeString()}</div>
             </div>
         );
+    }
+
+    handleLog(arg1, arg2) {
+        console.log(this.state.date, arg1, arg2);
     }
 }
 

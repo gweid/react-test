@@ -375,6 +375,108 @@ ClassComponent.defaultProps = {
 };
 ```
 
-### 5、state
+### 5、事件绑定
 
-### 6、事件绑定
+1. 直接在 jsx 渲染的标签对象上进行绑定，需要写成驼峰式；onclick ==> onClick  
+2. 事件处理函数内部如果需要访问 this，需要通过 bind 进行绑定（推荐），或者使用箭头函数
+3. 传参：1、（推荐）通过 bind(this, arg1, arg2, ...) 2、通过包一层箭头函数 onClick={() => {this.handleLog(arg1,arg2)}}
+
+#### 5-1、绑定事件
+
+1. 需要通过 bind 进行绑定（推荐）
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { date: new Date() };
+    }
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this)}>{this.props.title}</h1>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
+    }
+
+    handleLog() {
+        console.log(this.state.date);
+    }
+}
+```
+
+2. 通过包一层箭头函数
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { date: new Date() };
+    }
+    render() {
+        return (
+            <div>
+                <h1 onClick={() => {this.handleLog()}}>{this.props.title}</h1>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
+    }
+
+    handleLog() {
+        console.log(this.state.date);
+    }
+}
+```
+
+#### 5-2、传参
+
+1. 通过 bind(this, arg1, arg2, ...)
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { date: new Date() };
+    }
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
+    }
+
+    handleLog(arg1, arg2) {
+        console.log(this.state.date, arg1, arg2);
+    }
+}
+```
+
+2. 通过包一层箭头函数
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { date: new Date() };
+    }
+    render() {
+        return (
+            <div>
+                <h1 onClick={() => {this.handleLog('arg1', 'arg2')}}>{this.props.title}</h1>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
+    }
+
+    handleLog(arg1, arg2) {
+        console.log(this.state.date, arg1, arg2);
+    }
+}
+```
+
+### 6、state
+
+state 是当前组件的自定义属性，通过在 constructor() 中初始化 state
