@@ -219,3 +219,56 @@ ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
 > css 模块化可以避免组件之间类名冲突
+
+### 3、组件
+
+#### 3-1、类组件（class component）
+
+```
+import React, { Component } from 'react';
+
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { date: new Date() };
+    }
+    render() {
+        return (
+            <div>
+                <h1>{this.props.title}</h1>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
+    }
+}
+ 
+export default ClassComponent;
+```
+
+1. 如果通过类的方式去定义组件，那么组件必须继承于 React.Component 这个类
+2. 必须定义一个 render 方法，render 里面返回一个 jsx
+
+#### 3-2、函数式组件（function component）
+
+函数组件通常无状态，仅关注内容展示，返回渲染结果即可。
+
+> React16.8 引入了 hooks，函数组件也可以有状态
+
+```
+import React from 'react';
+
+const FunComponent = props => {
+    return (
+        <div>
+            <h1>{props.title}</h1>
+            <p>这是一个函数组件</p>
+        </div>
+    );
+}
+
+export default FunComponent
+```
+
+1. 函数组件必须返回 jsx 对象
+
+> 声明了组件，直接导入，然后使用；不需要像 Vue 一样还要去注册

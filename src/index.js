@@ -2,6 +2,8 @@ import React from 'react'; // 负责逻辑控制，数据--> VDOM
 import ReactDOM from 'react-dom'; // React Dom 渲染实际 Dom，VDOM-->DOM
 import style from './index.module.css';
 import logo from './logo.svg';
+import ClassComponent from './components/ClassComponent/ClassComponent.js';
+import FunComponent from './components/FunComponent/FunComponent.js'
 
 const name = 'world';
 const params = {
@@ -39,12 +41,15 @@ const jsx = (
         )
       })}
     </ul>
-    <img 
+    <img
+      alt="React logo"
       src={logo}
       // className="logo"
       className={style.logo}
       // style={{width: '100px', height: '100px'}}
     />
+    <ClassComponent title="Class Component"></ClassComponent>
+    <FunComponent title="Function Component"></FunComponent>
   </div>
 );
 
