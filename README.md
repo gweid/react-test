@@ -34,6 +34,54 @@ serviceWorker.unregister() // pwa 相关
 
 ### 2、jsx 语法
 
+jsx 是 js 语法的扩展，表面上像 HTML，本质上还是通过 babel 转换为 js 去执行
+
+> jsx 主要就是通过 React.createElement 在 React 内部构建虚拟 Dom，最终渲染出页面
+
+```
+// jsx 代码
+class Test extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    return (
+      <div>
+        <h1 className='title'>Hello,React</h1>
+      </div>
+    )
+  }
+}
+ReactDOM.render(<Test />, document.getElementById('root'))
+
+// 经过编译后会变成
+class Test extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    return (
+      React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'h1',
+          { className: 'title' },
+          'Hello,React'
+        )
+      )
+    )
+  }
+}
+ReactDOM.render(<Test />, document.getElementById('root'))
+```
+
+> React.createElement会构建一个JavaScript对象来描述HTML结构的信息，包括标签名、属性、还有子元素等。这样的代码就是合法的JavaScript代码了
+
+**jsx 到页面流程：**
+
+![jsx 到页面流程](/imgs/img1.jpg)
+
 #### 2-1、基本使用，插值用 {}
 
 ```
