@@ -272,3 +272,85 @@ export default FunComponent
 1. 函数组件必须返回 jsx 对象
 
 > 声明了组件，直接导入，然后使用；不需要像 Vue 一样还要去注册
+
+### 4、props
+
+#### 4-1、props 校验
+
+```
+// 单类型校验
+[组件名].propTypes = {
+  [键名]: PropTypes.[类型]
+}
+
+// 组合类型校验（其中一个类型；注意与 oneOf 的区别）
+[组件名].propTypes = {
+  [键名]: PropTypes.oneOfType([PropTypes.[类型], ...])
+}
+
+// 其中一个值
+[组件名].propTypes = {
+  [键名]: PropTypes.oneOf(['male', 'female'])
+}
+
+// 必须要传过来的
+[组件名].propTypes = {
+  [键名]: PropTypes.[类型].isRequired
+}
+```
+
+例子：
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { date: new Date() };
+    }
+    render() {
+        return (
+            <div>
+                <h1>{this.props.title}</h1>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
+    }
+}
+
+ClassComponent.propTypes = {
+    title: PropTypes.string
+};
+```
+
+> 常见的类型：array、bool、func、number、object、string
+
+#### 4-2、props 默认值
+
+```
+[组件名].defaultProps= {
+  [键名]: [默认值]
+}
+```
+
+例子：
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { date: new Date() };
+    }
+    render() {
+        return (
+            <div>
+                <h1>{this.props.title}</h1>
+                <div>{this.state.date.toLocaleTimeString()}</div>
+            </div>
+        );
+    }
+}
+
+ClassComponent.defaultProps = {
+    title: 'XXX Component'
+};
+```
