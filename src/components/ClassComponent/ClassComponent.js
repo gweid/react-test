@@ -6,7 +6,10 @@ import PropTypes from 'prop-types';
 class ClassComponent extends Component {
     constructor(props) {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
-        this.state = { date: new Date() };
+        this.state = { 
+            date: new Date(),
+            count: 1
+        };
     }
     render() {
         return (
@@ -18,6 +21,13 @@ class ClassComponent extends Component {
     }
 
     handleLog(arg1, arg2) {
+        // this.setState({
+        //     count: 2
+        // })
+        this.setState((state, props) => {
+            return { count:state.count + 1 }
+        })
+        console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
         console.log(this.state.date, arg1, arg2);
     }
 }

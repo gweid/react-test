@@ -479,4 +479,84 @@ class ClassComponent extends Component {
 
 ### 6、state
 
-state 是当前组件的自定义属性，通过在 constructor() 中初始化 state
+1. state 是当前组件的自定义属性，通过在 constructor() 中初始化 state
+2. 不能直接修改 state，而是需要通过 setState() 去修改，直接修改如：this.state.xxx = 'xxx' 不会重新渲染
+
+#### 6-1、初始化一个 state
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        // 初始化一个 state
+        this.state = { 
+            date: new Date(),
+            count: 1
+        };
+    }
+}
+```
+
+#### 6-2、通过 setState() 修改 state
+
+> 注意：setState 是异步的
+
+1、setState(partialState, callback)
+1. partialState: object | function(stete, props)
+   - 用于产生与当前 state 合并的子集
+
+2. callback: function
+   - state 更新后被调用
+
+2、setState 第一个参数是对象时：
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        this.state = { 
+            date: new Date(),
+            count: 1
+        };
+    }
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+            </div>
+        );
+    }
+
+    handleLog(arg1, arg2) {
+        this.setState({
+            count: 2
+        })
+        console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+    }
+}
+```
+
+3、setState 第一个参数是函数时：
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        this.state = { 
+            date: new Date(),
+            count: 1
+        };
+    }
+    render() {
+        return (
+            <div>
+                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+            </div>
+        );
+    }
+
+    handleLog(arg1, arg2) {
+        this.setState((state, props) => {
+            return { count:state.count + 1 }
+        })
+        console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+    }
+}
+```
