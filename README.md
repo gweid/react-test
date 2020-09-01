@@ -666,3 +666,7 @@ class ClassComponent extends Component {
     }
 }
 ```
+
+### 7、生命周期
+
+![官方生命周期图](/imgs/img2.jpg)
