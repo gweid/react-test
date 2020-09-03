@@ -270,7 +270,7 @@ export default ClassComponent;
 
 #### 3-2、函数式组件（function component）
 
-函数组件通常无状态，仅关注内容展示，返回渲染结果即可。
+函数组件中，你无法使用State，也无法使用组件的生命周期方法，这就决定了函数组件都是展示性组件（Presentational Components），接收Props，渲染DOM，而不关注其他逻辑
 
 > React16.8 引入了 hooks，函数组件也可以有状态
 
@@ -880,3 +880,34 @@ class ScrollingList extends Component {
    }
 }
 ```
+
+### 8、React 中的 Dom 操作
+
+通过 ref 获取 Dom，然后通过 this.refs.xxx操作
+
+```
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+        this.state = { 
+            date: new Date(),
+            count: 1
+        };
+    }
+
+    componentDidMount() {
+        // 操作 Dom
+        this.refs.textIpt.focus();
+    }
+
+    render() {
+        return (
+            <div>
+                <input ref="textIpt"/>
+            </div>
+        );
+    }
+}
+```
+
+> 不要再 render 或者 render 之前访问 refs

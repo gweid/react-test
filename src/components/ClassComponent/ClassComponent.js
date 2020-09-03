@@ -26,7 +26,10 @@ class ClassComponent extends Component {
 
     componentDidMount() {
         // setState 在原生事件是同步的
-        document.querySelector(".class-component-event").addEventListener('click', this.handleLog, false)
+        document.querySelector(".class-component-event").addEventListener('click', this.handleLog, false);
+
+        // 操作 Dom
+        this.refs.textIpt.focus();
     }
 
     render() {
@@ -35,6 +38,7 @@ class ClassComponent extends Component {
                 <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
                 <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
                 <div>{this.state.date.toLocaleTimeString()}</div>
+                <input ref="textIpt"/>
             </div>
         );
     }
