@@ -6,6 +6,7 @@ import ClassComponent from './components/ClassComponent/ClassComponent.js';
 import FunComponent from './components/FunComponent/FunComponent.js';
 import Login from './components/Login/Login.js';
 import LifeCyclePage from './components/LifeCyclePage/LifeCyclePage.js';
+import HookComponent from './components/HookComponent/HookComponent.js';
 
 const name = 'world';
 const params = {
@@ -55,6 +56,7 @@ const jsx = (
     <ClassComponent title="Class Component"></ClassComponent>
     <FunComponent title="Function Component"></FunComponent>
     <LifeCyclePage></LifeCyclePage>
+    <HookComponent></HookComponent>
   </div>
 );
 

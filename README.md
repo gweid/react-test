@@ -689,7 +689,7 @@ class Xxxx extends Component {
 }
 ```
 
-类继承于 React.Component，所以有了 有 render(),生命周期等方法可以使用，这也说明为什么函数组件不能使用这些方法的原因
+类继承于 React.Component，所以才有 render()，生命周期等方法可以使用，这也说明为什么函数组件不能使用这些方法的原因。但 react hook 出来后，函数也支持
 
 super(props) 用来调用基类的构造方法 constructor(), 也将父组件的 props 注入给子组件，供子组件读取 (组件
 中 props 属性只读不可写，state 可写) 。 而 constructor() 用来做一些组件的初始化工作，比如定义 this.state 的初始内容
@@ -910,4 +910,38 @@ class ClassComponent extends Component {
 }
 ```
 
-> 不要再 render 或者 render 之前访问 refs
+> 不要在 render 或者 render 之前访问 refs
+
+### React 中的 Hook
+
+Hook 使得在使用 function 定义组件的时候，可以使用 state 等其他 react 的特性。Hook 不可以在 class 组件中使用
+
+#### useState
+
+这就是一个 hook，可以在 function 组件定义 State
+
+```
+import React, { useState } from 'react';
+
+function HookComponent() {
+    // count 是一个 state，setCount 是用来设置 count 值的
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+          <p>点击了 {count} 下</p>
+          <button onClick={() => setCount(count + 1)}>
+            点击
+          </button>
+        </div>
+    );
+}
+
+export default HookComponent
+```
+
+使用 hook 的 setCoun t和 React 自带的 setState 区别：setState 是合并 state，而setCount 是替换值，毕竟setCount 只为一个 state 服务
+
+这个设置 state 初始值，和调用方法修改 state 并不难
+
+当然如果有多个 state，那么你只需调用多次 useState 即可
