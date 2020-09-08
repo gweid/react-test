@@ -912,13 +912,15 @@ class ClassComponent extends Component {
 
 > 不要在 render 或者 render 之前访问 refs
 
-### React 中的 Hook
+### React Hook
 
-Hook 使得在使用 function 定义组件的时候，可以使用 state 等其他 react 的特性。Hook 不可以在 class 组件中使用
+Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性（生命周期等）。Hook 不可以在 class 组件中使用。
 
 #### useState
 
-这就是一个 hook，可以在 function 组件定义 State
+这就是一个 hook，可以在 function 组件定义 State。
+
+在 React Hook 没出来之前，Function Component 也叫做 Functional Stateless Component（FSC），这是因为Function Component 每次执行的时候都会生成新的函数作用域所以同一个组件的不同渲染（render）之间是不能够共用状态的，因此开发者一旦需要在组件中引入状态就需要将原来的 Function Component 改成 Class Component，这使得开发者的体验十分不好。useState 就是用来解决这个问题的，它允许 Function Component 将自己的状态持久化到 React 运行时（runtime）的某个地方（memory cell），这样在组件每次重新渲染的时候都可以从这个地方拿到该状态，而且当该状态被更新的时候，组件也会重渲染。
 
 ```
 import React, { useState } from 'react';
