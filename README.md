@@ -927,6 +927,7 @@ import React, { useState } from 'react';
 
 function HookComponent() {
     // count 是一个 state，setCount 是用来设置 count 值的
+    // 这里最好使用 const 来做声明关键字，防止我们意外直接修改 state 而没有通过 set 方法去设置。
     const [count, setCount] = useState(0);
 
     return (
@@ -942,8 +943,94 @@ function HookComponent() {
 export default HookComponent
 ```
 
-使用 hook 的 setCoun t和 React 自带的 setState 区别：setState 是合并 state，而setCount 是替换值，毕竟setCount 只为一个 state 服务
+使用 hook 的 setCount和 React 自带的 setState 区别：setState 是合并 state，而setCount 是替换值，毕竟setCount 只为一个 state 服务
 
 这个设置 state 初始值，和调用方法修改 state 并不难
 
 当然如果有多个 state，那么你只需调用多次 useState 即可
+
+> useState 的 setState 是全量替代，而 this.setState 是将当前设置的 state 浅归并（shallowly merge）到旧 state 的操作。所以在使用 useState 的 setState 时，应该避免将没有关系的状态放在一起管理
+
+#### useEffect
+
+useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
+
+**useEffect(effect, dependencies)**
+
+  - effect: function   
+    要执行的副作用函数，它可以是任意的用户自定义函数，用户可以在这个函数里面操作一些浏览器的 API 或者和外部环境进行交互（例如：请求），这个函数会在**每次组件渲染完成之后**被调用
+
+  - dependencies?: [prop, ...]
+    只有在 dependencies 数组里面的元素的值发生变化时才会执行 effect 副作用函数，优化性能，避免死循环
+
+```
+import React, { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
+
+const UserDetail = ({ userId }) => {
+  const [userDetail, setUserDetail] = useState({})
+
+  useEffect(() => {
+    fetch(`https://myapi/users/${userId}`)
+      .then(response => response.json())
+      .then(user => setUserDetail(userDetail))
+  })
+
+  return (
+    <div>
+      <div>User Name: {userDetail.name}</div>
+    </div>
+  )
+}
+```
+
+上面定义的获取用户详情信息的副作用会在 UserDetail 组件每次完成渲染后执行，所以当该组件第一次挂载的时候就会向服务器发起获取用户详情信息的请求然后更新 userDetail 的值，这里的第一次挂载我们可以类比成 Class Component 的componentDidMount。可是如果试着运行一下上面的代码的话，你会发现代码进入了死循环：组件会不断向服务端发起请求。出现这个死循环的原因是 useEffect 里面调用了setUserDetail，这个函数会更新 userDetail 的值，从而使组件重渲染，而重渲染后 useEffect 的 effect 继续被执行，进而组件再次重渲染。。。为了避免重复的副作用执行，useEffect 允许我们通过第二个参数 dependencies 来限制该副作用什么时候被执行：指明了 dependencies 的副作用，只有在 dependencies 数组里面的元素的值发生变化时才会被执行，因此如果要避免上面的代码进入死循环我们就要将 userId 指定为我们定义的副作用的dependencies
+
+如果指定一个空数组作为这个副作用的 dependencies，那么这个副作用只会在组件首次渲染的时候被执行一次
+
+```
+import React, { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
+
+const UserDetail = ({ userId }) => {
+  const [userDetail, setUserDetail] = useState({})
+
+  useEffect(() => {
+    fetch(`https://myapi/users/${userId}`)
+      .then(response => response.json())
+      .then(user => setUserDetail(userDetail))
+  }, [userId])
+
+  return (
+    <div>
+      <div>User Name: ${userDetail.name}</div>
+    </div>
+  )
+}
+```
+
+除了发起服务端的请求外，往往还需要在 useEffect 里面调用浏览器的 API，例如使用 addEventListener 来添加浏览器事件的监听函数等。我们一旦使用了 addEventListener 就必须在合适的时候调用 removeEventListener 来移除对事件的监听，否则会有性能问题，useEffect 允许我们在副作用函数里面返回一个 cleanup 函数，这个函数会在组件重新渲染之前被执行，我们可以在这个返回的函数里面移除对事件的监听（即移除副作用）
+
+```
+import React, { useEffect } from 'react'
+import ReactDOM from 'react-dom'
+
+const WindowScrollListener = () => {
+  useEffect(() => {
+    const handleWindowScroll = () => console.log('yean, window is scrolling!')
+    window.addEventListener('scroll', handleWindowScroll)
+
+    return () => {
+      window.removeEventListener(handleWindowScroll)
+    }
+  }, [])
+
+  return (
+    <div>
+      I can listen to the window scroll event!
+    </div>
+  )
+}
+```
+
+上面的代码中我们会在 WindowScrollListener 组件首次渲染完成后注册一个监听页面滚动事件的函数，并在组件下一次渲染前移除该监听函数。由于我们指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次，而它的 cleanup 函数只会在组件 unmount 时才被执行（**就是 dependencies 为空数组相当于实现了componentWillUnmount**），这就避免了频繁注册页面监听函数从而影响页面的性能

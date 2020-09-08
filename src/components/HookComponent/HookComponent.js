@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-function HookComponent() {
-    // count 是一个 state，setCount 是用来设置 count 值的
-    const [count, setCount] = useState(0);
+const HookComponent = (id) => {
+    const [params, setParams] = useState({})
+
+    useEffect(() => {
+        setParams({id: '001', name: 'mark'})
+    }, []) // 指定了一个空数组作为这个副作用的dependencies，所以这个副作用只会在组件首次渲染时被执行一次
 
     return (
         <div>
-          <p>点击了 {count} 下</p>
-          <button onClick={() => setCount(count + 1)}>
-            点击
-          </button>
+            <div>params name: {params.name}</div>
         </div>
     );
 }
