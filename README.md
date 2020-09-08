@@ -916,7 +916,7 @@ class ClassComponent extends Component {
 
 Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性（生命周期等）。Hook 不可以在 class 组件中使用。
 
-#### useState
+#### -1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
 
@@ -951,7 +951,7 @@ export default HookComponent
 
 > useState 的 setState 是全量替代，而 this.setState 是将当前设置的 state 浅归并（shallowly merge）到旧 state 的操作。所以在使用 useState 的 setState 时，应该避免将没有关系的状态放在一起管理
 
-#### useEffect
+#### -2、useEffect
 
 useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
 
@@ -1034,3 +1034,27 @@ const WindowScrollListener = () => {
 ```
 
 上面的代码中我们会在 WindowScrollListener 组件首次渲染完成后注册一个监听页面滚动事件的函数，并在组件下一次渲染前移除该监听函数。由于我们指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次，而它的 cleanup 函数只会在组件 unmount 时才被执行（**就是 dependencies 为空数组相当于实现了componentWillUnmount**），这就避免了频繁注册页面监听函数从而影响页面的性能
+
+#### -3、useRef
+
+useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
+- 获取子组件或者 dom 节点
+- 渲染周期之间共享数据的存储（不常用）
+
+```
+const HookComponent = (id) => {
+    const iptRef = useRef();
+
+    useEffect(() => {
+        iptRef.current.focus();
+    }, []); // 指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次
+
+    return (
+        <div>
+            <input ref={iptRef} type="text"/>
+        </div>
+    );
+}
+```
+
+> 注意：更新ref对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
