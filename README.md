@@ -129,76 +129,76 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 1. 使用三元表达式或者 &&
 
-```
-const show = true;
-const loginBtn = '登陆';
-
-const jsx = (
-  <div>
-    <div>{show ? loginBtn : '注册'}</div>
-    <div>{show && loginBtn}</div>
-  </div>
-);
-
-ReactDOM.render(jsx, document.getElementById('root'));
-```
+   ```
+   const show = true;
+   const loginBtn = '登陆';
+   
+   const jsx = (
+     <div>
+       <div>{show ? loginBtn : '注册'}</div>
+       <div>{show && loginBtn}</div>
+     </div>
+   );
+   
+   ReactDOM.render(jsx, document.getElementById('root'));
+   ```
 
 2. 使用 if...else
 
-```
-import React, { Component } from 'react';
-
-class Login extends Component {
-    render() { 
-        if (this.props.login) {
-            return <div>已登录</div>
-        } else {
-            return <div>未登录</div>
-        }
-    }
-}
- 
-export default Login;
-```
+   ```
+   import React, { Component } from 'react';
+   
+   class Login extends Component {
+       render() { 
+           if (this.props.login) {
+               return <div>已登录</div>
+           } else {
+               return <div>未登录</div>
+           }
+       }
+   }
+    
+   export default Login;
+   ```
 
 #### 2-5、数组
 
 1. 数组直接使用 jsx，记得要唯一 key
 
-```
-const eles = [
-  <div key='1'>数组1</div>,
-  <div key='2'>数组2</div>
-];
-
-const jsx = (
-  <div>
-    {eles}
-  </div>
-);
-
-ReactDOM.render(jsx, document.getElementById('root'));
-```
+   ```
+   const eles = [
+     <div key='1'>数组1</div>,
+     <div key='2'>数组2</div>
+   ];
+   
+   const jsx = (
+     <div>
+       {eles}
+     </div>
+   );
+   
+   ReactDOM.render(jsx, document.getElementById('root'));
+   ```
 
 2. 使用 map
 
-```
-const arr = ['arr1', 'arr2', 'arr3'];
-
-const jsx = (
-  <div>
-    <ul>
-      {arr.map(item => {
-        return (
-          <li key={item}>{item}</li>
-        )
-      })}
-    </ul>
-  </div>
-);
-
-ReactDOM.render(jsx, document.getElementById('root'));
-```
+   ```
+   const arr = ['arr1', 'arr2', 'arr3'];
+   
+   const jsx = (
+     <div>
+       <ul>
+         {arr.map(item => {
+           return (
+             <li key={item}>{item}</li>
+           )
+         })}
+       </ul>
+     </div>
+   );
+   
+   ReactDOM.render(jsx, document.getElementById('root'));
+   ```
 
 > map 和 forEach 区别：forEach 没有返回值
 
@@ -385,101 +385,101 @@ ClassComponent.defaultProps = {
 
 1. 需要通过 bind 进行绑定（推荐）
 
-```
-class ClassComponent extends Component {
-    constructor(props) {
-        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
-        this.state = { date: new Date() };
-    }
-
-    handleLog() {
-        console.log(this.state.date);
-    }
-
-    render() {
-        return (
-            <div>
-                <h1 onClick={this.handleLog.bind(this)}>{this.props.title}</h1>
-                <div>{this.state.date.toLocaleTimeString()}</div>
-            </div>
-        );
-    }
-}
-```
+   ```
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可   访问
+           this.state = { date: new Date() };
+       }
+   
+       handleLog() {
+           console.log(this.state.date);
+       }
+   
+       render() {
+           return (
+               <div>
+                   <h1 onClick={this.handleLog.bind(this)}>{this.props.title}</h1>
+                   <div>{this.state.date.toLocaleTimeString()}</div>
+               </div>
+           );
+       }
+   }
+   ```
 
 2. 通过包一层箭头函数
 
-```
-class ClassComponent extends Component {
-    constructor(props) {
-        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
-        this.state = { date: new Date() };
-    }
-
-    handleLog() {
-        console.log(this.state.date);
-    }
-
-    render() {
-        return (
-            <div>
-                <h1 onClick={() => {this.handleLog()}}>{this.props.title}</h1>
-                <div>{this.state.date.toLocaleTimeString()}</div>
-            </div>
-        );
-    }
-}
-```
+   ```
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可   访问
+           this.state = { date: new Date() };
+       }
+   
+       handleLog() {
+           console.log(this.state.date);
+       }
+   
+       render() {
+           return (
+               <div>
+                   <h1 onClick={() => {this.handleLog()}}>{this.props.title}</h1>
+                   <div>{this.state.date.toLocaleTimeString()}</div>
+               </div>
+           );
+       }
+   }
+   ```
 
 #### 5-2、传参
 
 1. 通过 bind(this, arg1, arg2, ...)
 
-```
-class ClassComponent extends Component {
-    constructor(props) {
-        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
-        this.state = { date: new Date() };
-    }
-
-    handleLog(arg1, arg2) {
-        console.log(this.state.date, arg1, arg2);
-    }
-
-    render() {
-        return (
-            <div>
-                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-                <div>{this.state.date.toLocaleTimeString()}</div>
-            </div>
-        );
-    }
-}
-```
+   ```
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+           this.state = { date: new Date() };
+       }
+   
+       handleLog(arg1, arg2) {
+           console.log(this.state.date, arg1, arg2);
+       }
+   
+       render() {
+           return (
+               <div>
+                   <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+                   <div>{this.state.date.toLocaleTimeString()}</div>
+               </div>
+           );
+       }
+   }
+   ```
 
 2. 通过包一层箭头函数
 
-```
-class ClassComponent extends Component {
-    constructor(props) {
-        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
-        this.state = { date: new Date() };
-    }
-
-    handleLog(arg1, arg2) {
-        console.log(this.state.date, arg1, arg2);
-    }
-
-    render() {
-        return (
-            <div>
-                <h1 onClick={() => {this.handleLog('arg1', 'arg2')}}>{this.props.title}</h1>
-                <div>{this.state.date.toLocaleTimeString()}</div>
-            </div>
-        );
-    }
-}
-```
+   ```
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+           this.state = { date: new Date() };
+       }
+   
+       handleLog(arg1, arg2) {
+           console.log(this.state.date, arg1, arg2);
+       }
+   
+       render() {
+           return (
+               <div>
+                   <h1 onClick={() => {this.handleLog('arg1', 'arg2')}}>{this.props.title}</h1>
+                   <div>{this.state.date.toLocaleTimeString()}</div>
+               </div>
+           );
+       }
+   }
+   ```
 
 ### 6、state
 
@@ -603,70 +603,70 @@ class ClassComponent extends Component {
 
 1. 在 setTimeout 中
 
-```
-class ClassComponent extends Component {
-    constructor(props) {
-        this.state = { 
-            date: new Date(),
-            count: 1
-        };
-    }
-
-    handleLog(arg1, arg2) {
-        setTimeout(() => {
-          this.setState((state, props) => {
-            return { count:state.count + 1 }
-          });
-
-          console.log(this.state);
-        }, 0)
-    }
-
-    render() {
-        return (
-            <div>
-                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-            </div>
-        );
-    }
-}
-```
+   ```
+   class ClassComponent extends Component {
+       constructor(props) {
+           this.state = { 
+               date: new Date(),
+               count: 1
+           };
+       }
+   
+       handleLog(arg1, arg2) {
+           setTimeout(() => {
+             this.setState((state, props) => {
+               return { count:state.count + 1 }
+             });
+   
+             console.log(this.state);
+           }, 0)
+       }
+   
+       render() {
+           return (
+               <div>
+                   <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+               </div>
+           );
+       }
+   }
+   ```
 
 2. 在原生事件中是同步的
 
-```
-class ClassComponent extends Component {
-    constructor(props) {
-        super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
-        this.state = { 
-            date: new Date(),
-            count: 1
-        };
-    }
-
-    handleLog = (arg1, arg2) => {
-        this.setState((state, props) => {
-            return { count:state.count + 1 }
-        })
-        console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
-    }
-
-    componentDidMount() {
-        // setState 在原生事件是同步的
-        document.querySelector(".class-component-event").addEventListener('click', this.handleLog, false)
-    }
-
-    render() {
-        return (
-            <div>
-                <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-                <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
-                <div>{this.state.date.toLocaleTimeString()}</div>
-            </div>
-        );
-    }
-}
-```
+   ```
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+           this.state = { 
+               date: new Date(),
+               count: 1
+           };
+       }
+   
+       handleLog = (arg1, arg2) => {
+           this.setState((state, props) => {
+               return { count:state.count + 1 }
+           })
+           console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+       }
+   
+       componentDidMount() {
+           // setState 在原生事件是同步的
+           document.querySelector(".class-component-event").addEventListener('click', this.handleLog, false)
+       }
+   
+       render() {
+           return (
+               <div>
+                   <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+                   <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
+                   <div>{this.state.date.toLocaleTimeString()}</div>
+               </div>
+           );
+       }
+   }
+   ```
 
 ### 7、生命周期
 
@@ -722,60 +722,61 @@ react 组件的更新机制：setState 引起的 state 更新，或父组件重�
 
 1. 父组件重新 render 父组件重新 render 引起子组件重新 render 的情况有两种
 
-```
-直接使用，每当父组件重新 render 导致的重传 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通
-过 shouldComponentUpdate 方法控制优化
-
-class Child extends Component {
-   // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
-   shouldComponentUpdate(nextProps){ 
-       if(nextProps.someThings === this.props.someThings){
-           return false
-       }
+   ```
+   直接使用，每当父组件重新 render 导致的重传 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通
+   过 shouldComponentUpdate 方法控制优化
+   
+   class Child extends Component {
+      // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
+      shouldComponentUpdate(nextProps){ 
+          if(nextProps.someThings === this.props.someThings){
+              return false
+          }
+      }
+      render() {
+          return <div>{this.props.someThings}</div>
+      }
    }
-   render() {
-       return <div>{this.props.someThings}</div>
-   }
-}
-```
+   ```
 
 2. 在 componentWillReceiveProps 方法中，将 props 转换成自己的 state
 
-```
-class Child extends Component {
-   constructor(props) {
-       super(props);
-       this.state = {
-           someThings: props.someThings
-       };
+   ```
+   class Child extends Component {
+      constructor(props) {
+          super(props);
+          this.state = {
+              someThings: props.someThings
+          };
+      }
+      componentWillReceiveProps(nextProps) { 
+          // 父组件重传 props 时就会调用这个方法
+          this.setState({someThings: nextProps.   someThings});
+      }
+      render() {
+          return <>{this.state.someThings}</   div>
+      }
    }
-   componentWillReceiveProps(nextProps) { // 父组件重传 props 时就会调用这个方法
-       this.setState({someThings: nextProps.someThings});
-   }
-   render() {
-       return <div>{this.state.someThings}</div>
-   }
-}
-
-根据官网的描述: 在 componentWillReceiveProps 方法中，将 props 转换成自己的 state
-是因为 componentWillReceiveProps 中判断 props 是否变化了，若变化了，this.setState 将引起 state 变化，从而引起render，此时就没必要再做第二次因重传 props 来引起 render了，不然就重复做一样的渲染了
-```
+   
+   根据官网的描述: 在 componentWillReceiveProps    方法中，将 props 转换成自己的 state
+   是因为 componentWillReceiveProps 中判断 props    是否变化了，若变化了，this.setState 将引起    state 变化，从而引起render，此时就没必要再做第二   次因重传 props 来引起 render了，不然就重复做一样   的渲染了
+   ```
 
 3. 组件本身调用 setState，无论 state 有没有变化。可以通过 shouldComponentUpdate 方法控制优化
 
-```
-class Child extends Component {
-   // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
-   shouldComponentUpdate(nextProps, nextState){ 
-       if(nextState.someThings === this.state.someThings){
-           return false
-       }
+   ```
+   class Child extends Component {
+      // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
+      shouldComponentUpdate(nextProps, nextState){ 
+          if(nextState.someThings === this.state.someThings){
+              return false
+          }
+      }
+      render() {
+          return <div>{this.props.someThings}</div>
+      }
    }
-   render() {
-       return <div>{this.props.someThings}</div>
-   }
-}
-```
+   ```
 
 **4、组件卸载阶段（Unmount）**
 
@@ -1039,53 +1040,53 @@ const WindowScrollListener = () => {
 
 1. 替代 componentDidMount，使用 useEffect，第二个参数传入空数组
 
-```
-function Example() {
-  const [dataSource, setdataSource] = useState([]);
+   ```
+   function Example() {
+     const [dataSource, setdataSource] = useState([]);
 
-  useEffect(() => { 
-    const dataSource = await getSceneList();
-    setDataSource(dataSource);
-  }, []);
+     useEffect(() => { 
+       const dataSource = await getSceneList();
+       setDataSource(dataSource);
+     }, []);
 
-  return <div></div>;
-}
-```
+     return <div></div>;
+   }
+   ```
 
 2. 替代 componentDidUpdate，使用 useEffect，第二个参数为更新依赖
 
-```
-function Example() {
-  const [query, setQuery] = useState({});
-  const [dataSource, setDataSource] = useState([]);
-
-  useEffect(() => { 
-    const dataSource = await getSceneList();
-    setDataSource(setDataSource);
-  }, [query]);
-
-  return <div></div>;
-}
-```
+   ```
+   function Example() {
+     const [query, setQuery] = useState({});
+     const [dataSource, setDataSource] =    useState([]);
+   
+     useEffect(() => { 
+       const dataSource = await getSceneList();
+       setDataSource(setDataSource);
+     }, [query]);
+   
+     return <div></div>;
+   }
+   ```
 
 3. 替代 componentWillUnmount 方案，使用 useEffect，第一个参数返回函数会在组件卸载前执行，第二个参数为空数组
 
-```
-function Example() {
-  useEffect(() => {
-    const listener = e => {
-        console.log(e);
-    };
-    document.addEventListener('onClick', listener, false);
-
-    return () => {
-        document.removeEventListener('onClick', listener, false);
-    };
-  }, []);
-
-  return <div></div>;
-}
-```
+   ```
+   function Example() {
+     useEffect(() => {
+       const listener = e => {
+           console.log(e);
+       };
+       document.addEventListener('onClick',    listener, false);
+   
+       return () => {
+           document.removeEventListener   ('onClick', listener, false);
+       };
+     }, []);
+   
+     return <div></div>;
+   }
+   ```
 
 #### -3、useRef
 
