@@ -1033,7 +1033,59 @@ const WindowScrollListener = () => {
 }
 ```
 
-上面的代码中我们会在 WindowScrollListener 组件首次渲染完成后注册一个监听页面滚动事件的函数，并在组件下一次渲染前移除该监听函数。由于我们指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次，而它的 cleanup 函数只会在组件 unmount 时才被执行（**就是 dependencies 为空数组相当于实现了componentWillUnmount**），这就避免了频繁注册页面监听函数从而影响页面的性能
+上面的代码中我们会在 WindowScrollListener 组件首次渲染完成后注册一个监听页面滚动事件的函数，并在组件下一次渲染前移除该监听函数。由于我们指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次，而它的 cleanup 函数只会在组件 unmount 时才被执行，这就避免了频繁注册页面监听函数从而影响页面的性能
+
+**useEffect 比较常见的三种场景**
+
+1. 替代 componentDidMount，使用 useEffect，第二个参数传入空数组
+
+```
+function Example() {
+  const [dataSource, setdataSource] = useState([]);
+
+  useEffect(() => { 
+    const dataSource = await getSceneList();
+    setDataSource(dataSource);
+  }, []);
+
+  return <div></div>;
+}
+```
+
+2. 替代 componentDidUpdate，使用 useEffect，第二个参数为更新依赖
+
+```
+function Example() {
+  const [query, setQuery] = useState({});
+  const [dataSource, setDataSource] = useState([]);
+
+  useEffect(() => { 
+    const dataSource = await getSceneList();
+    setDataSource(setDataSource);
+  }, [query]);
+
+  return <div></div>;
+}
+```
+
+3. 替代 componentWillUnmount 方案，使用 useEffect，第一个参数返回函数会在组件卸载前执行，第二个参数为空数组
+
+```
+function Example() {
+  useEffect(() => {
+    const listener = e => {
+        console.log(e);
+    };
+    document.addEventListener('onClick', listener, false);
+
+    return () => {
+        document.removeEventListener('onClick', listener, false);
+    };
+  }, []);
+
+  return <div></div>;
+}
+```
 
 #### -3、useRef
 
