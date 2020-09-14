@@ -145,7 +145,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
    ReactDOM.render(jsx, document.getElementById('root'));
    ```
 
-2. 使用 if...else
+2. 使用 if...else（适合逻辑非常多）
 
    ```js
    import React, { Component } from 'react';
@@ -573,7 +573,7 @@ fn() // 此时的 this 指向 undefind
        render() {
            return (
                <div>
-                   <h1 onClick={e => {this.handleLog(e, 'arg1', 'arg2')}}>{this.props.title}</h1>
+                   <h1 onClick={e => this.handleLog(e, 'arg1', 'arg2')}>{this.props.title}</h1>
                    <div>{this.state.date.toLocaleTimeString()}</div>
                </div>
            );

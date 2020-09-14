@@ -60,7 +60,7 @@ class ClassComponent extends Component {
                 <div className={`first two ${this.state.active ? 'active' : ''}`}>动态绑定class</div>
                 <button onClick={this.btnClick}>在构造器绑定this</button>
                 {/* 既能传参，又能传事件对象 e */}
-                <button onClick={e => {this.btnClick2(e, 'jack')}}>包一层箭头函数</button>
+                <button onClick={e => this.btnClick2(e, 'jack')}>包一层箭头函数</button>
                 <button onClick={this.btnClick3}>方法名为箭头函数绑定事件</button>
             </div>
         );
