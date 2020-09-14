@@ -11,6 +11,7 @@ class ClassComponent extends Component {
             count: 1,
             active: true,
             isShow: true,
+            nums: [1, 50 ,40, 20, 60, 100, 55, 24, 33, 66]
         };
 
         this.btnClick = this.btnClick.bind(this);
@@ -73,6 +74,20 @@ class ClassComponent extends Component {
                     <button onClick={() => this.isShowClick()}>v-show</button>
                     <h4 style={{display: this.state.isShow ? 'block' : 'none'}}>模拟Vue的v-show</h4>
                 </div>
+                <h4>列表过滤</h4>
+                {/* 循环语句配合 filter 做筛选 */}
+                <ul>
+                    {
+                        this.state.nums.filter(item => item >= 50).map(item => <li key={item}>{item}</li>)
+                    }
+                </ul>
+                <h4>列表截取</h4>
+                {/* 循环语句配合 slice 做列表截取 */}
+                <ul>
+                    {
+                        this.state.nums.slice(0, 4).map(item => <li key={item}>{item}</li>)
+                    }
+                </ul>
             </div>
         );
     }

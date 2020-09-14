@@ -40,11 +40,7 @@ const jsx = (
     <Login login={isLogin}></Login>
     {eles}
     <ul>
-      {arr.map(item => {
-        return (
-          <li key={item}>{item}</li>
-        )
-      })}
+      {arr.map(item => <li key={item}>{item}</li>)}
     </ul>
     <img
       alt="React-logo"

@@ -201,9 +201,43 @@ ReactDOM.render(jsx, document.getElementById('root'))
    const jsx = (
      <div>
        <ul>
-         {arr.map((item) => {
-           return <li key={item}>{item}</li>
-         })}
+         {arr.map(item => <li key={item}>{item}</li>)}
+       </ul>
+     </div>
+   )
+
+   ReactDOM.render(jsx, document.getElementById('root'))
+   ```
+
+3. 结合 filter 进行数据筛选
+
+   ```js
+   const arr = [22, 33, 4, 55, 66, 77]
+
+   const jsx = (
+     <div>
+       <ul>
+         {
+            arr.filter(item => item >= 50).map(item => <li key={item}>{item}</li>)
+         }
+       </ul>
+     </div>
+   )
+
+   ReactDOM.render(jsx, document.getElementById('root'))
+   ```
+
+4. 结合 slice 进行列表截取
+   
+   ```js
+   const arr = [22, 33, 4, 55, 66, 77]
+
+   const jsx = (
+     <div>
+       <ul>
+         {
+            arr.slice(0, 4).map(item => <li key={item}>{item}</li>)
+         }
        </ul>
      </div>
    )
