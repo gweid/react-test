@@ -401,8 +401,8 @@ ClassComponent.defaultProps = {
 ### 5、事件绑定
 
 1. 直接在 jsx 渲染的标签对象上进行绑定，需要写成驼峰式；onclick ==> onClick  
-2. 事件处理函数内部如果需要访问 this，需要通过 bind 进行绑定（推荐），或者使用箭头函数
-3. 传参：1、（推荐）通过 bind(this, arg1, arg2, ...) 2、通过包一层箭头函数 onClick={() => {this.handleLog(arg1,arg2)}}
+2. 事件处理函数内部如果需要访问 this，需要通过 bind 进行绑定，或者使用箭头函数
+3. 传参：1、通过 bind(this, arg1, arg2, ...) 2、通过包一层箭头函数 onClick={() => {this.handleLog(arg1,arg2)}}
 
 **为什么获取不到 this 问题：**
 
@@ -426,7 +426,7 @@ fn() // 此时的 this 指向 undefind
 
 #### 5-1、绑定事件
 
-1. 需要通过 bind 进行绑定（推荐）
+1. 需要通过 bind 进行绑定
 
    ```js
    class ClassComponent extends Component {
@@ -450,7 +450,35 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-2. 通过包一层箭头函数
+   但是上面那种在 jsx 中绑定可能存在多次绑定 this，例如多个点击事件都需要使用**同一个事件处理函数**，这样会造成一定的性能损耗
+
+   改版：在 class 类执行 constructor 构造器的时候绑定，这样只需要绑定一次，因为构造器只会执行一次
+
+   ```js
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props); 
+           this.state = { date: new Date() };
+
+           this.handleLog = this.handleLog.bind(this);
+       }
+   
+       handleLog() {
+           console.log(this.state.date);
+       }
+   
+       render() {
+           return (
+               <div>
+                   <h1 onClick={this.handleLog}>{this.props.title}</h1>
+                   <div>{this.state.date.toLocaleTimeString()}</div>
+               </div>
+           );
+       }
+   }
+   ```
+
+2. 通过包一层箭头函数（如果需要传参数，推荐这种，既能传参，又能获取事件对象）
 
    ```js
    class ClassComponent extends Component {
@@ -466,6 +494,7 @@ fn() // 此时的 this 指向 undefind
        render() {
            return (
                <div>
+                   {/* 这里面为 this.handleLog() 区别于 bind 的 this.handleLog */}
                    <h1 onClick={() => {this.handleLog()}}>{this.props.title}</h1>
                    <div>{this.state.date.toLocaleTimeString()}</div>
                </div>
@@ -473,6 +502,31 @@ fn() // 此时的 this 指向 undefind
        }
    }
    ```
+
+3. 方法名为箭头函数（不需要传参数，推荐这种）
+
+   ```js
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props);
+           this.state = { date: new Date() };
+       }
+   
+       handleLog = () => {
+           console.log(this.state.date);
+       }
+   
+       render() {
+           return (
+               <div>
+                   <button onClick={this.handleLog}>方法名为箭头函数绑定事件</button>
+               </div>
+           );
+       }
+   }
+   ```
+
+   > 因为箭头函数永远不会绑定 this，所以箭头函数内部没有 this；但是会去外层去找 this
 
 #### 5-2、传参
 
@@ -500,7 +554,10 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-2. 通过包一层箭头函数
+   > 注意，此时通过构造器 constructor 绑定 this 传参不能用，因为在 constructor 绑定 this，使用 
+   this.xxx(arg1) 会直接执行
+
+2. 通过包一层箭头函数（推荐，既能传参，又能获取事件对象）
 
    ```js
    class ClassComponent extends Component {
@@ -516,7 +573,7 @@ fn() // 此时的 this 指向 undefind
        render() {
            return (
                <div>
-                   <h1 onClick={() => {this.handleLog('arg1', 'arg2')}}>{this.props.title}</h1>
+                   <h1 onClick={e => {this.handleLog(e, 'arg1', 'arg2')}}>{this.props.title}</h1>
                    <div>{this.state.date.toLocaleTimeString()}</div>
                </div>
            );

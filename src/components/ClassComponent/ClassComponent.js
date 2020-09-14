@@ -11,7 +11,9 @@ class ClassComponent extends Component {
             count: 1,
             active: true
         };
-    }
+
+        this.btnClick = this.btnClick.bind(this);
+    };
 
     handleLog = (arg1, arg2) => {
         // this.setState({
@@ -23,7 +25,22 @@ class ClassComponent extends Component {
             return { count:state.count + 1 }
         })
         console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
-    }
+    };
+
+    btnClick() {
+        console.log(this.state);
+    };
+
+    btnClick2(e, name) {
+       console.log(e);
+       console.log(name);
+       console.log(this.state); 
+    };
+
+    btnClick3 = (e) => {
+        console.log(e);
+        console.log(this.state);
+    };
 
     componentDidMount() {
         // setState 在原生事件是同步的
@@ -41,6 +58,10 @@ class ClassComponent extends Component {
                 <div>{this.state.date.toLocaleTimeString()}</div>
                 <input ref="textIpt"/>
                 <div className={`first two ${this.state.active ? 'active' : ''}`}>动态绑定class</div>
+                <button onClick={this.btnClick}>在构造器绑定this</button>
+                {/* 既能传参，又能传事件对象 e */}
+                <button onClick={e => {this.btnClick2(e, 'jack')}}>包一层箭头函数</button>
+                <button onClick={this.btnClick3}>方法名为箭头函数绑定事件</button>
             </div>
         );
     }
