@@ -10,7 +10,7 @@
 
 #### 1-2、入口 src/index.js
 
-```javascript
+```js
 import React from 'react' // 负责逻辑控制，数据--> VDOM；使用了 jsx 就必须要引入 React
 import ReactDOM from 'react-dom' // React Dom 渲染实际 Dom，VDOM-->DOM
 import './index.css'
@@ -38,7 +38,7 @@ jsx 是 js 语法的扩展，表面上像 HTML，本质上还是通过 babel 转
 
 > jsx 主要就是通过 React.createElement 在 React 内部构建虚拟 Dom，最终渲染出页面
 
-```
+```js
 // jsx 代码
 class Test extends React.Component {
   constructor(props) {
@@ -84,7 +84,9 @@ ReactDOM.render(<Test />, document.getElementById('root'))
 
 #### 2-1、基本使用，插值用 {}
 
-```
+> jsx 的类不能使用 class，而要使用 className，因为 jsx 是 js 上运行的，不能使用 js 的关键字
+
+```js
 const name = 'word';
 const jsx = <div>hello, {name}!</div>;
 
@@ -93,7 +95,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 #### 2-2、函数的使用
 
-```
+```js
 const params = {
   first: 'mark',
   last: 'pretter'
@@ -114,7 +116,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 #### 2-3、jsx 对象
 
-```
+```js
 const good = <div>goods</div>;
 const jsx = (
   <div>
@@ -129,7 +131,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 1. 使用三元表达式或者 &&
 
-   ```
+   ```js
    const show = true;
    const loginBtn = '登陆';
    
@@ -145,7 +147,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 2. 使用 if...else
 
-   ```
+   ```js
    import React, { Component } from 'react';
    
    class Login extends Component {
@@ -165,7 +167,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 1. 数组直接使用 jsx，记得要唯一 key
 
-   ```
+   ```js
    const eles = [
      <div key='1'>数组1</div>,
      <div key='2'>数组2</div>
@@ -182,7 +184,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 2. 使用 map
 
-   ```
+   ```js
    const arr = ['arr1', 'arr2', 'arr3'];
    
    const jsx = (
@@ -204,7 +206,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 #### 2-6、属性使用
 
-```
+```js
 import logo from './logo.svg';
 
 const jsx = (
@@ -221,7 +223,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 #### 2-7、模块化
 
-```
+```js
 import style from './index.module.css';
 
 const jsx = (
@@ -244,7 +246,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 #### 3-1、类组件（class component）
 
-```
+```js
 import React, { Component } from 'react';
 
 class ClassComponent extends Component {
@@ -274,7 +276,7 @@ export default ClassComponent;
 
 > React16.8 引入了 hooks，函数组件也可以有状态
 
-```
+```js
 import React from 'react';
 
 const FunComponent = props => {
@@ -297,7 +299,7 @@ export default FunComponent
 
 #### 4-1、props 校验
 
-```
+```js
 // 单类型校验
 [组件名].propTypes = {
   [键名]: PropTypes.[类型]
@@ -323,7 +325,7 @@ export default FunComponent
 
 例子：
 
-```
+```js
 class ClassComponent extends Component {
     constructor(props) {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
@@ -346,7 +348,7 @@ ClassComponent.propTypes = {
 
 #### 4-2、props 默认值
 
-```
+```js
 [组件名].defaultProps= {
   [键名]: [默认值]
 }
@@ -354,7 +356,7 @@ ClassComponent.propTypes = {
 
 例子：
 
-```
+```js
 class ClassComponent extends Component {
     constructor(props) {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
@@ -383,7 +385,7 @@ ClassComponent.defaultProps = {
 
 **为什么获取不到 this 问题：**
 
-```
+```js
 const obj = {
     name: 'jack',
     fn: function() {
@@ -405,7 +407,7 @@ fn() // 此时的 this 指向 undefind
 
 1. 需要通过 bind 进行绑定（推荐）
 
-   ```
+   ```js
    class ClassComponent extends Component {
        constructor(props) {
            super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可   访问
@@ -429,7 +431,7 @@ fn() // 此时的 this 指向 undefind
 
 2. 通过包一层箭头函数
 
-   ```
+   ```js
    class ClassComponent extends Component {
        constructor(props) {
            super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可   访问
@@ -455,7 +457,7 @@ fn() // 此时的 this 指向 undefind
 
 1. 通过 bind(this, arg1, arg2, ...)
 
-   ```
+   ```js
    class ClassComponent extends Component {
        constructor(props) {
            super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
@@ -479,7 +481,7 @@ fn() // 此时的 this 指向 undefind
 
 2. 通过包一层箭头函数
 
-   ```
+   ```js
    class ClassComponent extends Component {
        constructor(props) {
            super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
@@ -510,7 +512,7 @@ fn() // 此时的 this 指向 undefind
 
 #### 6-1、初始化一个 state
 
-```
+```js
 class ClassComponent extends Component {
     constructor(props) {
         // 初始化一个 state
@@ -535,7 +537,7 @@ class ClassComponent extends Component {
 
 **2、setState 第一个参数是对象时：**
 
-```
+```js
 class ClassComponent extends Component {
     constructor(props) {
         this.state = { 
@@ -563,7 +565,7 @@ class ClassComponent extends Component {
 
 **3、setState 第一个参数是函数时：**
 
-```
+```js
 class ClassComponent extends Component {
     constructor(props) {
         this.state = { 
@@ -591,7 +593,7 @@ class ClassComponent extends Component {
 
 **4、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state**
 
-```
+```js
 class ClassComponent extends Component {
     constructor(props) {
         this.state = { 
@@ -623,7 +625,7 @@ class ClassComponent extends Component {
 
 1. 在 setTimeout 中
 
-   ```
+   ```js
    class ClassComponent extends Component {
        constructor(props) {
            this.state = { 
@@ -654,7 +656,7 @@ class ClassComponent extends Component {
 
 2. 在原生事件中是同步的
 
-   ```
+   ```js
    class ClassComponent extends Component {
        constructor(props) {
            super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
@@ -698,7 +700,7 @@ class ClassComponent extends Component {
 
 **1、组件初始化阶段（Initialization）**
 
-```
+```js
 import React, { Component } from 'react';
 
 class Xxxx extends Component {
@@ -742,7 +744,7 @@ react 组件的更新机制：setState 引起的 state 更新，或父组件重�
 
 1. 父组件重新 render 父组件重新 render 引起子组件重新 render 的情况有两种
 
-   ```
+   ```js
    直接使用，每当父组件重新 render 导致的重传 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通
    过 shouldComponentUpdate 方法控制优化
    
@@ -761,7 +763,7 @@ react 组件的更新机制：setState 引起的 state 更新，或父组件重�
 
 2. 在 componentWillReceiveProps 方法中，将 props 转换成自己的 state
 
-   ```
+   ```js
    class Child extends Component {
       constructor(props) {
           super(props);
@@ -784,7 +786,7 @@ react 组件的更新机制：setState 引起的 state 更新，或父组件重�
 
 3. 组件本身调用 setState，无论 state 有没有变化。可以通过 shouldComponentUpdate 方法控制优化
 
-   ```
+   ```js
    class Child extends Component {
       // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
       shouldComponentUpdate(nextProps, nextState){ 
@@ -831,13 +833,13 @@ react 组件的更新机制：setState 引起的 state 更新，或父组件重�
 
 **1、getDerivedStateFromProps**
 
-```
+```js
 static getDerivedStateFromProps(props, state)
 ```
 
 > static getDerivedStateFromProps(props, state) 在组件初始化和更新时的 render 方法之前调用，父组件传入的newProps 和当前组件的 prevState 进行比较，判断时候需要更新 state，返回值对象用作更新 state，如果不需要则返回 null。不管什么原因，都会在每次 render 之前触发这个方法。与 componentWillReceiveProps 形成对比，componentWillReceiveProps 仅仅在父组件重新渲染时触发，而在调用 setState 时不触发
 
-```
+```js
 class App extends Component{
 	constructor(props){
 		super(props);
@@ -864,13 +866,13 @@ class App extends Component{
 
 **2、getSnapshotBeforeUpdate**
 
-```
+```js
 getSnapshotBeforeUpdate(prevProps, prevState)
 ```
 
 > getSnapshotBeforeUpdate() 被调用于 render 之后，在 componentDidUpdate 之前。适用场景是可以读取但无法使用 DOM 的时候。它使组件可以在更改之前从 DOM 捕获一些信息（例如滚动位置）。此生命周期返回的任何值都将作为参数传递给 componentDidUpdate() (基本用处不大)
 
-```
+```js
 class ScrollingList extends Component {
    constructor(props) {
        super(props);
@@ -906,7 +908,7 @@ class ScrollingList extends Component {
 
 通过 ref 获取 Dom，然后通过 this.refs.xxx操作
 
-```
+```js
 class ClassComponent extends Component {
     constructor(props) {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
@@ -943,7 +945,7 @@ Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情�
 
 在 React Hook 没出来之前，Function Component 也叫做 Functional Stateless Component（FSC），这是因为Function Component 每次执行的时候都会生成新的函数作用域所以同一个组件的不同渲染（render）之间是不能够共用状态的，因此开发者一旦需要在组件中引入状态就需要将原来的 Function Component 改成 Class Component，这使得开发者的体验十分不好。useState 就是用来解决这个问题的，它允许 Function Component 将自己的状态持久化到 React 运行时（runtime）的某个地方（memory cell），这样在组件每次重新渲染的时候都可以从这个地方拿到该状态，而且当该状态被更新的时候，组件也会重渲染。
 
-```
+```js
 import React, { useState } from 'react';
 
 function HookComponent() {
@@ -984,7 +986,7 @@ useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可
   - dependencies?: [prop, ...]
     只有在 dependencies 数组里面的元素的值发生变化时才会执行 effect 副作用函数，优化性能，避免死循环
 
-```
+```js
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 
@@ -1009,7 +1011,7 @@ const UserDetail = ({ userId }) => {
 
 如果指定一个空数组作为这个副作用的 dependencies，那么这个副作用只会在组件首次渲染的时候被执行一次
 
-```
+```js
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 
@@ -1032,7 +1034,7 @@ const UserDetail = ({ userId }) => {
 
 除了发起服务端的请求外，往往还需要在 useEffect 里面调用浏览器的 API，例如使用 addEventListener 来添加浏览器事件的监听函数等。我们一旦使用了 addEventListener 就必须在合适的时候调用 removeEventListener 来移除对事件的监听，否则会有性能问题，useEffect 允许我们在副作用函数里面返回一个 cleanup 函数，这个函数会在组件重新渲染之前被执行，我们可以在这个返回的函数里面移除对事件的监听（即移除副作用）
 
-```
+```js
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom'
 
@@ -1060,7 +1062,7 @@ const WindowScrollListener = () => {
 
 1. 替代 componentDidMount，使用 useEffect，第二个参数传入空数组
 
-   ```
+   ```js
    function Example() {
      const [dataSource, setdataSource] = useState([]);
 
@@ -1075,7 +1077,7 @@ const WindowScrollListener = () => {
 
 2. 替代 componentDidUpdate，使用 useEffect，第二个参数为更新依赖
 
-   ```
+   ```js
    function Example() {
      const [query, setQuery] = useState({});
      const [dataSource, setDataSource] =    useState([]);
@@ -1091,7 +1093,7 @@ const WindowScrollListener = () => {
 
 3. 替代 componentWillUnmount 方案，使用 useEffect，第一个参数返回函数会在组件卸载前执行，第二个参数为空数组
 
-   ```
+   ```js
    function Example() {
      useEffect(() => {
        const listener = e => {
@@ -1114,7 +1116,7 @@ useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传�
 - 获取子组件或者 dom 节点
 - 渲染周期之间共享数据的存储（不常用）
 
-```
+```js
 const HookComponent = (id) => {
     const iptRef = useRef();
 
