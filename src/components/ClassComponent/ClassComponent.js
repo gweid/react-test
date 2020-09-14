@@ -9,7 +9,8 @@ class ClassComponent extends Component {
         this.state = { 
             date: new Date(),
             count: 1,
-            active: true
+            active: true,
+            isShow: true,
         };
 
         this.btnClick = this.btnClick.bind(this);
@@ -42,6 +43,12 @@ class ClassComponent extends Component {
         console.log(this.state);
     };
 
+    isShowClick() {
+        this.setState({
+            isShow: !this.state.isShow
+        })
+    };
+
     componentDidMount() {
         // setState 在原生事件是同步的
         document.querySelector(".class-component-event").addEventListener('click', this.handleLog, false);
@@ -62,6 +69,10 @@ class ClassComponent extends Component {
                 {/* 既能传参，又能传事件对象 e */}
                 <button onClick={e => this.btnClick2(e, 'jack')}>包一层箭头函数</button>
                 <button onClick={this.btnClick3}>方法名为箭头函数绑定事件</button>
+                <div style={{marginTop: '20px'}}>
+                    <button onClick={() => this.isShowClick()}>v-show</button>
+                    <h4 style={{display: this.state.isShow ? 'block' : 'none'}}>模拟Vue的v-show</h4>
+                </div>
             </div>
         );
     }
