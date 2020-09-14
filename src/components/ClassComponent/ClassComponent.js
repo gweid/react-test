@@ -8,7 +8,8 @@ class ClassComponent extends Component {
         super(props); // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
         this.state = { 
             date: new Date(),
-            count: 1
+            count: 1,
+            active: true
         };
     }
 
@@ -39,6 +40,7 @@ class ClassComponent extends Component {
                 <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
                 <div>{this.state.date.toLocaleTimeString()}</div>
                 <input ref="textIpt"/>
+                <div className={`first two ${this.state.active ? 'active' : ''}`}>动态绑定class</div>
             </div>
         );
     }

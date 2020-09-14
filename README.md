@@ -218,6 +218,27 @@ const jsx = (
 ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
+动态添加 class，就像操作 js 字符串一样
+
+```js
+class ClassComponent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { 
+            active: true
+        };
+    }
+
+    render() {
+        return (
+            <div>
+                <div className={`first two ${this.state.active ? 'active' : ''}`}>动态绑定class</div>
+            </div>
+        );
+    }
+}
+```
+
 > 使用 className 是为了避免与 class 组件里面的 class 冲突  
 > style 使用 {} 插值， 里面那层的 {} 代表的是一个对象
 
