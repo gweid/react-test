@@ -381,6 +381,26 @@ ClassComponent.defaultProps = {
 2. 事件处理函数内部如果需要访问 this，需要通过 bind 进行绑定（推荐），或者使用箭头函数
 3. 传参：1、（推荐）通过 bind(this, arg1, arg2, ...) 2、通过包一层箭头函数 onClick={() => {this.handleLog(arg1,arg2)}}
 
+**为什么获取不到 this 问题：**
+
+```
+const obj = {
+    name: 'jack',
+    fn: function() {
+        console.log(this)
+    }
+}
+
+obj.fn() // 此时的 this 指向 obj
+
+const fn = obj.fn
+fn() // 此时的 this 指向 undefind
+
+// 在 react 的事件中同理
+
+<div onClick={this.xxx}></div>
+```
+
 #### 5-1、绑定事件
 
 1. 需要通过 bind 进行绑定（推荐）
@@ -1111,3 +1131,5 @@ const HookComponent = (id) => {
 ```
 
 > 注意：更新ref对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
+
+#### -3、useCallback
