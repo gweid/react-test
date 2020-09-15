@@ -36,7 +36,7 @@ serviceWorker.unregister() // pwa 相关
 
 jsx 是 js 语法的扩展，表面上像 HTML，本质上还是通过 babel 转换为 js 去执行
 
-> jsx 主要就是通过 React.createElement 在 React 内部构建虚拟 Dom，最终渲染出页面
+> jsx 主要就是通过 React.createElement 在 React 内部构建虚拟 Dom，最终渲染出页面，也可以说 jsx 是 React.createElement 的语法糖
 
 ```js
 // jsx 代码
@@ -66,9 +66,11 @@ class Test extends React.Component {
 ReactDOM.render(<Test />, document.getElementById('root'))
 ```
 
-> React.createElement 会构建一个 JavaScript 对象来描述 HTML 结构的信息，包括标签名、属性、还有子元素等。这样的代码就是合法的 JavaScript 代码了
+> React.createElement 会通过 ReactElement 函数构建一个 JavaScript 对象（虚拟DOM）来描述 HTML 结构的信息，包括标签名、属性、还有子元素等。这样的代码就是合法的 JavaScript 代码了
 
 **jsx 到页面的流程：**
+
+jsx-->Babel转换成React.createElement-->ReactElement生成虚拟DOM-->ReactDOM.render生成真实DOM
 
 ![jsx 到页面流程](/imgs/img1.jpg)
 
