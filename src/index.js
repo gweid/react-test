@@ -7,11 +7,12 @@ import FunComponent from './components/FunComponent/FunComponent.js';
 import Login from './components/Login/Login.js';
 import LifeCyclePage from './components/LifeCyclePage/LifeCyclePage.js';
 import HookComponent from './components/HookComponent/HookComponent.js';
+import Parent from './components/ParentChild/Parent';
 
 const name = 'world';
 const params = {
   first: 'mark',
-  last: 'pretter'
+  last: 'pretter',
 };
 
 function formatName(args) {
@@ -22,13 +23,10 @@ const good = <div>goods</div>;
 
 const show = true;
 const loginBtn = '登陆';
-const isLogin = true
+const isLogin = true;
 
 const arr = ['arr1', 'arr2', 'arr3'];
-const eles = [
-  <div key='1'>数组1</div>,
-  <div key='2'>数组2</div>
-];
+const eles = [<div key="1">数组1</div>, <div key="2">数组2</div>];
 
 const jsx = (
   <div>
@@ -37,10 +35,12 @@ const jsx = (
     {good}
     <div>{show ? loginBtn : '注册'}</div>
     <div>{show && loginBtn}</div>
-    <Login login={isLogin}></Login>
+    <Login login={isLogin} />
     {eles}
     <ul>
-      {arr.map(item => <li key={item}>{item}</li>)}
+      {arr.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
     </ul>
     <img
       alt="React-logo"
@@ -49,10 +49,11 @@ const jsx = (
       className={style.logo}
       // style={{width: '100px', height: '100px'}}
     />
-    <ClassComponent title="Class Component"></ClassComponent>
-    <FunComponent title="Function Component"></FunComponent>
-    <LifeCyclePage></LifeCyclePage>
-    <HookComponent></HookComponent>
+    <ClassComponent title="Class Component" />
+    <FunComponent title="Function Component" />
+    <LifeCyclePage />
+    <HookComponent />
+    <Parent />
   </div>
 );
 

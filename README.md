@@ -319,7 +319,7 @@ import React, { Component } from 'react'
 
 class ClassComponent extends Component {
   constructor(props) {
-    super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+    super(props)
     this.state = { date: new Date() }
   }
   render() {
@@ -364,9 +364,118 @@ export default FunComponent
 
 > 声明了组件，直接导入，然后使用；不需要像 Vue 一样还要去 component 注册
 
-### 4、props
+### 4、父子组件通讯
 
-#### 4-1、props 校验
+#### 4-1、父传子
+
+通过 props 进行传值
+
+```js
+// 子组件
+import React, { Component } from 'react';
+
+class Child extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    const { txt } = this.props;
+    
+    return (
+      <div>
+        <h2>子组件</h2>
+        <p>{txt}</p>
+      </div>
+    );
+  }
+}
+
+// 父组件
+import React, { Component } from 'react';
+import Child from './Child';
+
+class Parent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    return (
+      <div>
+        <h2>父子组件传值</h2>
+        <Child txt='传过来的值' />
+      </div>
+    );
+  }
+}
+```
+
+#### 4-2、子传父
+
+也是通过 props，只是让父组件给子组件传递一个回调函数，子组件调用回调函数即可。区别于 vue 使用自定义事件
+
+```js
+// 子组件
+import React, { Component } from 'react';
+
+class Child extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    const { txt, addCount } = this.props;
+    
+    return (
+      <div>
+        <h2>子组件</h2>
+        <p>{txt}</p>
+        {/*传递一个值，也可以不传，e 是事件*/}
+        <button onClick={e => addCount(e, 'jack')}>加+</button>
+      </div>
+    );
+  }
+}
+
+// 父组件
+import React, { Component } from 'react';
+import Child from './Child';
+
+class Parent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 1,
+    };
+  }
+
+  addCount(name) {
+    console.log(name);
+    this.setState({
+      count: this.state.count + 1,
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>父子组件传值</h2>
+        {/* 这里也要对 this 做处理*/}
+        <Child txt="传过来的值" addCount={(e, name) => this.addCount(name)} />
+        <div>当前计数值：{this.state.count}</div>
+      </div>
+    );
+  }
+}
+
+export default Parent;
+```
+
+### 5、props 检验和默认值
+
+#### 5-1、props 校验
 
 ```js
 // 单类型校验
@@ -397,7 +506,7 @@ export default FunComponent
 ```js
 class ClassComponent extends Component {
   constructor(props) {
-    super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+    super(props)
     this.state = { date: new Date() }
   }
   render() {
@@ -415,7 +524,29 @@ ClassComponent.propTypes = {
 }
 ```
 
-#### 4-2、props 默认值
+类组件也可以将 ClassComponent.propTypes 这种形式改为 static propTypes，因为在类中 [类名].propTypes 就相当于一个静态属性
+
+```js
+class ClassComponent extends Component {
+  static propTypes = {
+    title: PropTypes.string,
+  } 
+  constructor(props) {
+    super(props)
+    this.state = { date: new Date() }
+  }
+  render() {
+    return (
+      <div>
+        <h1>{this.props.title}</h1>
+        <div>{this.state.date.toLocaleTimeString()}</div>
+      </div>
+    )
+  }
+}
+```
+
+#### 5-2、props 默认值
 
 ```js
 ;[组件名].defaultProps = {
@@ -428,7 +559,7 @@ ClassComponent.propTypes = {
 ```js
 class ClassComponent extends Component {
   constructor(props) {
-    super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+    super(props)
     this.state = { date: new Date() }
   }
   render() {
@@ -446,7 +577,29 @@ ClassComponent.defaultProps = {
 }
 ```
 
-### 5、事件绑定
+ClassComponent.defaultProps 也可以写成 static defaultProps
+
+```js
+class ClassComponent extends Component {
+  static defaultProps = {
+    title: 'XXX Component',
+  }
+  constructor(props) {
+    super(props)
+    this.state = { date: new Date() }
+  }
+  render() {
+    return (
+      <div>
+        <h1>{this.props.title}</h1>
+        <div>{this.state.date.toLocaleTimeString()}</div>
+      </div>
+    )
+  }
+}
+```
+
+### 6、事件绑定
 
 1. 直接在 jsx 渲染的标签对象上进行绑定，需要写成驼峰式；onclick ==> onClick
 2. 事件处理函数内部如果需要访问 this，需要通过 bind 进行绑定，或者使用箭头函数
@@ -472,14 +625,14 @@ fn() // 此时的 this 指向 undefind
 <div onClick={this.xxx}></div>
 ```
 
-#### 5-1、绑定事件
+#### 6-1、绑定事件
 
 1. 需要通过 bind 进行绑定
 
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可   访问
+       super(props)
        this.state = { date: new Date() }
      }
 
@@ -531,7 +684,7 @@ fn() // 此时的 this 指向 undefind
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可   访问
+       super(props)
        this.state = { date: new Date() }
      }
 
@@ -582,14 +735,14 @@ fn() // 此时的 this 指向 undefind
 
    > 因为箭头函数永远不会绑定 this，所以箭头函数内部没有 this；但是会去外层去找 this
 
-#### 5-2、传参
+#### 6-2、传参
 
 1. 通过 bind(this, arg1, arg2, ...)
 
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+       super(props)
        this.state = { date: new Date() }
      }
 
@@ -616,7 +769,7 @@ fn() // 此时的 this 指向 undefind
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+       super(props)
        this.state = { date: new Date() }
      }
 
@@ -635,14 +788,14 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-### 6、state
+### 7、state
 
 1. state 是当前组件的自定义属性，通过在 constructor() 中初始化 state
 2. 不能直接修改 state，而是需要通过 setState() 去修改，直接修改如：this.state.xxx = 'xxx' 不会重新渲染
 3. setState 是会更改组件的，会造成组件的重新渲染，如果短时间有很多 setState 去操作 state，那么就会造成组件不断地更行，影响性能；setState 的异步更新主要就是一个合并批量更新的操作，减少组件的更新次数，达到优化性能的目的
 4. state 的更新会被合并，当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state
 
-#### 6-1、初始化一个 state
+#### 7-1、初始化一个 state
 
 ```js
 class ClassComponent extends Component {
@@ -656,7 +809,7 @@ class ClassComponent extends Component {
 }
 ```
 
-#### 6-2、通过 setState() 修改 state
+#### 7-2、通过 setState() 修改 state
 
 > 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新
 
@@ -796,7 +949,7 @@ class ClassComponent extends Component {
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+       super(props)
        this.state = {
          date: new Date(),
          count: 1,
@@ -827,9 +980,9 @@ class ClassComponent extends Component {
    }
    ```
 
-### 7、生命周期
+### 8、生命周期
 
-#### 7-1、react16.3 之前的生命周期
+#### 8-1、react16.3 之前的生命周期
 
 ![react16.3 之前的生命周期](/imgs/img3.jpg)
 
@@ -943,7 +1096,7 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 > 对于类组件来说，最重要的几个生命周期是：constructor、render、componentDidMount、componentDidUpdate、componentWillUnmount。其他的是一些不常用或者用来优化的或者即将废弃的。
 
-#### 7-2、react16.4 之后的生命周期
+#### 8-2、react16.4 之后的生命周期
 
 ![react16.4 之后的生命周期](/imgs/img2.jpg)
 
@@ -968,7 +1121,7 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 > - componentWillReceiveProps
 > - componentWillUpdate
 
-#### 7-3、新引入的两个生命周期
+#### 8-3、新引入的两个生命周期
 
 - static getDerivedStateFromProps
 - getSnapshotBeforeUpdate
@@ -1042,14 +1195,14 @@ class ScrollingList extends Component {
 }
 ```
 
-### 8、React 中的 Dom 操作
+### 9、React 中的 Dom 操作
 
 通过 ref 获取 Dom，然后通过 this.refs.xxx 操作
 
 ```js
 class ClassComponent extends Component {
   constructor(props) {
-    super(props) // 也可以不写这个，因为 props 是继承 React.Component 来的，只需要 this.props 即可访问
+    super(props)
     this.state = {
       date: new Date(),
       count: 1,
