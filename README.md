@@ -11,11 +11,11 @@
 #### 1-2、入口 src/index.js
 
 ```js
-import React from 'react' // 负责逻辑控制，数据--> VDOM；使用了 jsx 就必须要引入 React
-import ReactDOM from 'react-dom' // React Dom 渲染实际 Dom，VDOM-->DOM
-import './index.css'
-import App from './App'
-import * as serviceWorker from './serviceWorker'
+import React from 'react'; // 负责逻辑控制，数据--> VDOM；使用了 jsx 就必须要引入 React
+import ReactDOM from 'react-dom'; // React Dom 渲染实际 Dom，VDOM-->DOM
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
 
 // React 使用 jsx 来描述 ui，
 // jsx ==> React.createElement(...)
@@ -25,9 +25,9 @@ ReactDOM.render(
     <App /> {/* 这个是虚拟 Dom，这种是 jsx 写法*/}
   </React.StrictMode>,
   document.getElementById('root') // 将真实的 Dom 插入到根节点（root）下面
-)
+);
 
-serviceWorker.unregister() // pwa 相关
+serviceWorker.unregister(); // pwa 相关
 ```
 
 > babel-loader 将 jsx 编译为相应 js 对象，React.createElement 再将这个 js 对象构造成虚拟 Dom
@@ -42,35 +42,35 @@ jsx 是 js 语法的扩展，表面上像 HTML，本质上还是通过 babel 转
 // jsx 代码
 class Test extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
   render() {
     return (
       <div>
         <h1 className="title">Hello,React</h1>
       </div>
-    )
+    );
   }
 }
-ReactDOM.render(<Test />, document.getElementById('root'))
+ReactDOM.render(<Test />, document.getElementById('root'));
 
 // 经过编译后会变成
 class Test extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
   render() {
-    return React.createElement('div', null, React.createElement('h1', { className: 'title' }, 'Hello,React'))
+    return React.createElement('div', null, React.createElement('h1', { className: 'title' }, 'Hello,React'));
   }
 }
-ReactDOM.render(<Test />, document.getElementById('root'))
+ReactDOM.render(<Test />, document.getElementById('root'));
 ```
 
-> React.createElement 会通过 ReactElement 函数构建一个 JavaScript 对象（虚拟DOM）来描述 HTML 结构的信息，包括标签名、属性、还有子元素等。这样的代码就是合法的 JavaScript 代码了
+> React.createElement 会通过 ReactElement 函数构建一个 JavaScript 对象（虚拟 DOM）来描述 HTML 结构的信息，包括标签名、属性、还有子元素等。这样的代码就是合法的 JavaScript 代码了
 
 **jsx 到页面的流程：**
 
-jsx-->Babel转换成React.createElement-->ReactElement生成虚拟DOM-->ReactDOM.render生成真实DOM
+jsx-->Babel 转换成 React.createElement-->ReactElement 生成虚拟 DOM-->ReactDOM.render 生成真实 DOM
 
 ![jsx 到页面流程](/imgs/img1.jpg)
 
@@ -79,10 +79,10 @@ jsx-->Babel转换成React.createElement-->ReactElement生成虚拟DOM-->ReactDOM
 > jsx 的类不能使用 class，而要使用 className，因为 jsx 是 js 上运行的，不能使用 js 的关键字
 
 ```js
-const name = 'word'
-const jsx = <div>hello, {name}!</div>
+const name = 'word';
+const jsx = <div>hello, {name}!</div>;
 
-ReactDOM.render(jsx, document.getElementById('root'))
+ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
 #### 2-2、函数的使用
@@ -91,28 +91,28 @@ ReactDOM.render(jsx, document.getElementById('root'))
 const params = {
   first: 'mark',
   last: 'pretter',
-}
+};
 
 function formatName(args) {
-  return `${args.first} ${args.last}`
+  return `${args.first} ${args.last}`;
 }
 
 const jsx = (
   <div>
     <div>{formatName(params)}</div>
   </div>
-)
+);
 
-ReactDOM.render(jsx, document.getElementById('root'))
+ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
 #### 2-3、jsx 对象
 
 ```js
-const good = <div>goods</div>
-const jsx = <div>{good}</div>
+const good = <div>goods</div>;
+const jsx = <div>{good}</div>;
 
-ReactDOM.render(jsx, document.getElementById('root'))
+ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
 #### 2-4、条件语句
@@ -120,54 +120,54 @@ ReactDOM.render(jsx, document.getElementById('root'))
 1. 使用三元表达式或者 &&
 
    ```js
-   const show = true
-   const loginBtn = '登陆'
+   const show = true;
+   const loginBtn = '登陆';
 
    const jsx = (
      <div>
        <div>{show ? loginBtn : '注册'}</div>
        <div>{show && loginBtn}</div>
      </div>
-   )
+   );
 
-   ReactDOM.render(jsx, document.getElementById('root'))
+   ReactDOM.render(jsx, document.getElementById('root'));
    ```
 
 2. 使用 if...else（适合逻辑非常多）
 
    ```js
-   import React, { Component } from 'react'
+   import React, { Component } from 'react';
 
    class Login extends Component {
      render() {
        if (this.props.login) {
-         return <div>已登录</div>
+         return <div>已登录</div>;
        } else {
-         return <div>未登录</div>
+         return <div>未登录</div>;
        }
      }
    }
 
-   export default Login
+   export default Login;
    ```
 
 3. 模拟 Vue 的 v-show（主要就是 display 属性 block 和 none 切换）
 
    ```js
-   import React, { Component } from 'react'
+   import React, { Component } from 'react';
 
    class Login extends Component {
      constructor(props) {
-       super(props)
+       super(props);
        this.state = {
          isShow: true,
-       }
+       };
      }
 
      isShowClick() {
        this.setState({
          isShow: !this.state.isShow,
-       })
+       });
      }
 
      render() {
@@ -176,11 +176,11 @@ ReactDOM.render(jsx, document.getElementById('root'))
            <button onClick={() => this.isShowClick()}>v-show</button>
            <h4 style={{ display: this.state.isShow ? 'block' : 'none' }}>模拟Vue的v-show</h4>
          </div>
-       )
+       );
      }
    }
 
-   export default Login
+   export default Login;
    ```
 
 #### 2-5、数组
@@ -188,63 +188,67 @@ ReactDOM.render(jsx, document.getElementById('root'))
 1. 数组直接使用 jsx，记得要唯一 key
 
    ```js
-   const eles = [<div key="1">数组1</div>, <div key="2">数组2</div>]
+   const eles = [<div key="1">数组1</div>, <div key="2">数组2</div>];
 
-   const jsx = <div>{eles}</div>
+   const jsx = <div>{eles}</div>;
 
-   ReactDOM.render(jsx, document.getElementById('root'))
+   ReactDOM.render(jsx, document.getElementById('root'));
    ```
 
 2. 使用 map
 
    ```js
-   const arr = ['arr1', 'arr2', 'arr3']
+   const arr = ['arr1', 'arr2', 'arr3'];
 
    const jsx = (
      <div>
        <ul>
-         {arr.map(item => <li key={item}>{item}</li>)}
+         {arr.map((item) => (
+           <li key={item}>{item}</li>
+         ))}
        </ul>
      </div>
-   )
+   );
 
-   ReactDOM.render(jsx, document.getElementById('root'))
+   ReactDOM.render(jsx, document.getElementById('root'));
    ```
 
 3. 结合 filter 进行数据筛选
 
    ```js
-   const arr = [22, 33, 4, 55, 66, 77]
+   const arr = [22, 33, 4, 55, 66, 77];
 
    const jsx = (
      <div>
        <ul>
-         {
-            arr.filter(item => item >= 50).map(item => <li key={item}>{item}</li>)
-         }
+         {arr
+           .filter((item) => item >= 50)
+           .map((item) => (
+             <li key={item}>{item}</li>
+           ))}
        </ul>
      </div>
-   )
+   );
 
-   ReactDOM.render(jsx, document.getElementById('root'))
+   ReactDOM.render(jsx, document.getElementById('root'));
    ```
 
 4. 结合 slice 进行列表截取
-   
+
    ```js
-   const arr = [22, 33, 4, 55, 66, 77]
+   const arr = [22, 33, 4, 55, 66, 77];
 
    const jsx = (
      <div>
        <ul>
-         {
-            arr.slice(0, 4).map(item => <li key={item}>{item}</li>)
-         }
+         {arr.slice(0, 4).map((item) => (
+           <li key={item}>{item}</li>
+         ))}
        </ul>
      </div>
-   )
+   );
 
-   ReactDOM.render(jsx, document.getElementById('root'))
+   ReactDOM.render(jsx, document.getElementById('root'));
    ```
 
 > map 和 forEach 区别：forEach 没有返回值
@@ -252,15 +256,15 @@ ReactDOM.render(jsx, document.getElementById('root'))
 #### 2-6、属性使用
 
 ```js
-import logo from './logo.svg'
+import logo from './logo.svg';
 
 const jsx = (
   <div>
     <img src={logo} className="logo" style={{ width: '100px', height: '100px' }} />
   </div>
-)
+);
 
-ReactDOM.render(jsx, document.getElementById('root'))
+ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
 动态添加 class，就像操作 js 字符串一样
@@ -268,10 +272,10 @@ ReactDOM.render(jsx, document.getElementById('root'))
 ```js
 class ClassComponent extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       active: true,
-    }
+    };
   }
 
   render() {
@@ -279,7 +283,7 @@ class ClassComponent extends Component {
       <div>
         <div className={`first two ${this.state.active ? 'active' : ''}`}>动态绑定class</div>
       </div>
-    )
+    );
   }
 }
 ```
@@ -290,7 +294,7 @@ class ClassComponent extends Component {
 #### 2-7、模块化
 
 ```js
-import style from './index.module.css'
+import style from './index.module.css';
 
 const jsx = (
   <div>
@@ -301,9 +305,9 @@ const jsx = (
       // style={{width: '100px', height: '100px'}}
     />
   </div>
-)
+);
 
-ReactDOM.render(jsx, document.getElementById('root'))
+ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
 > css 模块化可以避免组件之间类名冲突
@@ -315,12 +319,12 @@ ReactDOM.render(jsx, document.getElementById('root'))
 #### 3-1、类组件（class component）
 
 ```js
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 class ClassComponent extends Component {
   constructor(props) {
-    super(props)
-    this.state = { date: new Date() }
+    super(props);
+    this.state = { date: new Date() };
   }
   render() {
     return (
@@ -328,11 +332,11 @@ class ClassComponent extends Component {
         <h1>{this.props.title}</h1>
         <div>{this.state.date.toLocaleTimeString()}</div>
       </div>
-    )
+    );
   }
 }
 
-export default ClassComponent
+export default ClassComponent;
 ```
 
 1. 如果通过类的方式去定义组件，那么组件必须继承于 React.Component 这个类
@@ -341,12 +345,13 @@ export default ClassComponent
 #### 3-2、函数式组件（function component）
 
 **函数式组件特点：**
+
 1. 没有 this
 2. 函数组件中，你无法使用 State，也无法使用组件的生命周期方法，这就决定了函数组件都是展示性组件（Presentational Components），接收 Props，渲染 DOM，而不关注其他逻辑。
 3. 但是，React16.8 引入了 hooks，函数组件也可以有状态
 
 ```js
-import React from 'react'
+import React from 'react';
 
 const FunComponent = (props) => {
   return (
@@ -354,15 +359,23 @@ const FunComponent = (props) => {
       <h1>{props.title}</h1>
       <p>这是一个函数组件</p>
     </div>
-  )
-}
+  );
+};
 
-export default FunComponent
+export default FunComponent;
 ```
 
 1. 函数组件必须返回 jsx 对象
 
 > 声明了组件，直接导入，然后使用；不需要像 Vue 一样还要去 component 注册
+
+**对比：**
+
+在 Hook 没有出来之前，类组件相对于函数组件的优势：
+
+- class 组件可以定义自己的 state 用来保存组件内部自己的状态
+- 有自己的生命周期，在生命周期内完成特定的操作
+- class 组件更新时只会执行 render 函数或者 componentDidUpdate 这些；函数式组件在更新时，整个函数都会被重新执行
 
 ### 4、父子组件通讯
 
@@ -381,7 +394,7 @@ class Child extends Component {
   }
   render() {
     const { txt } = this.props;
-    
+
     return (
       <div>
         <h2>子组件</h2>
@@ -404,7 +417,7 @@ class Parent extends Component {
     return (
       <div>
         <h2>父子组件传值</h2>
-        <Child txt='传过来的值' />
+        <Child txt="传过来的值" />
       </div>
     );
   }
@@ -427,13 +440,13 @@ class Child extends Component {
 
   render() {
     const { txt, addCount } = this.props;
-    
+
     return (
       <div>
         <h2>子组件</h2>
         <p>{txt}</p>
         {/*传递一个值，也可以不传，e 是事件*/}
-        <button onClick={e => addCount(e, 'jack')}>加+</button>
+        <button onClick={(e) => addCount(e, 'jack')}>加+</button>
       </div>
     );
   }
@@ -506,8 +519,8 @@ export default Parent;
 ```js
 class ClassComponent extends Component {
   constructor(props) {
-    super(props)
-    this.state = { date: new Date() }
+    super(props);
+    this.state = { date: new Date() };
   }
   render() {
     return (
@@ -515,13 +528,13 @@ class ClassComponent extends Component {
         <h1>{this.props.title}</h1>
         <div>{this.state.date.toLocaleTimeString()}</div>
       </div>
-    )
+    );
   }
 }
 
 ClassComponent.propTypes = {
   title: PropTypes.string,
-}
+};
 ```
 
 类组件也可以将 ClassComponent.propTypes 这种形式改为 static propTypes，因为在类中 [类名].propTypes 就相当于一个静态属性
@@ -530,10 +543,10 @@ ClassComponent.propTypes = {
 class ClassComponent extends Component {
   static propTypes = {
     title: PropTypes.string,
-  } 
+  };
   constructor(props) {
-    super(props)
-    this.state = { date: new Date() }
+    super(props);
+    this.state = { date: new Date() };
   }
   render() {
     return (
@@ -541,7 +554,7 @@ class ClassComponent extends Component {
         <h1>{this.props.title}</h1>
         <div>{this.state.date.toLocaleTimeString()}</div>
       </div>
-    )
+    );
   }
 }
 ```
@@ -549,9 +562,9 @@ class ClassComponent extends Component {
 #### 5-2、props 默认值
 
 ```js
-;[组件名].defaultProps = {
+[组件名].defaultProps = {
   [键名]: [默认值],
-}
+};
 ```
 
 例子：
@@ -559,8 +572,8 @@ class ClassComponent extends Component {
 ```js
 class ClassComponent extends Component {
   constructor(props) {
-    super(props)
-    this.state = { date: new Date() }
+    super(props);
+    this.state = { date: new Date() };
   }
   render() {
     return (
@@ -568,13 +581,13 @@ class ClassComponent extends Component {
         <h1>{this.props.title}</h1>
         <div>{this.state.date.toLocaleTimeString()}</div>
       </div>
-    )
+    );
   }
 }
 
 ClassComponent.defaultProps = {
   title: 'XXX Component',
-}
+};
 ```
 
 ClassComponent.defaultProps 也可以写成 static defaultProps
@@ -583,10 +596,10 @@ ClassComponent.defaultProps 也可以写成 static defaultProps
 class ClassComponent extends Component {
   static defaultProps = {
     title: 'XXX Component',
-  }
+  };
   constructor(props) {
-    super(props)
-    this.state = { date: new Date() }
+    super(props);
+    this.state = { date: new Date() };
   }
   render() {
     return (
@@ -594,7 +607,7 @@ class ClassComponent extends Component {
         <h1>{this.props.title}</h1>
         <div>{this.state.date.toLocaleTimeString()}</div>
       </div>
-    )
+    );
   }
 }
 ```
@@ -632,12 +645,12 @@ fn() // 此时的 this 指向 undefind
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props)
-       this.state = { date: new Date() }
+       super(props);
+       this.state = { date: new Date() };
      }
 
      handleLog() {
-       console.log(this.state.date)
+       console.log(this.state.date);
      }
 
      render() {
@@ -646,7 +659,7 @@ fn() // 此时的 this 指向 undefind
            <h1 onClick={this.handleLog.bind(this)}>{this.props.title}</h1>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
-       )
+       );
      }
    }
    ```
@@ -658,14 +671,14 @@ fn() // 此时的 this 指向 undefind
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props)
-       this.state = { date: new Date() }
+       super(props);
+       this.state = { date: new Date() };
 
-       this.handleLog = this.handleLog.bind(this)
+       this.handleLog = this.handleLog.bind(this);
      }
 
      handleLog() {
-       console.log(this.state.date)
+       console.log(this.state.date);
      }
 
      render() {
@@ -674,7 +687,7 @@ fn() // 此时的 this 指向 undefind
            <h1 onClick={this.handleLog}>{this.props.title}</h1>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
-       )
+       );
      }
    }
    ```
@@ -684,12 +697,12 @@ fn() // 此时的 this 指向 undefind
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props)
-       this.state = { date: new Date() }
+       super(props);
+       this.state = { date: new Date() };
      }
 
      handleLog() {
-       console.log(this.state.date)
+       console.log(this.state.date);
      }
 
      render() {
@@ -698,14 +711,14 @@ fn() // 此时的 this 指向 undefind
            {/* 这里面为 this.handleLog() 区别于 bind 的 this.handleLog */}
            <h1
              onClick={() => {
-               this.handleLog()
+               this.handleLog();
              }}
            >
              {this.props.title}
            </h1>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
-       )
+       );
      }
    }
    ```
@@ -715,20 +728,20 @@ fn() // 此时的 this 指向 undefind
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props)
-       this.state = { date: new Date() }
+       super(props);
+       this.state = { date: new Date() };
      }
 
      handleLog = () => {
-       console.log(this.state.date)
-     }
+       console.log(this.state.date);
+     };
 
      render() {
        return (
          <div>
            <button onClick={this.handleLog}>方法名为箭头函数绑定事件</button>
          </div>
-       )
+       );
      }
    }
    ```
@@ -742,12 +755,12 @@ fn() // 此时的 this 指向 undefind
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props)
-       this.state = { date: new Date() }
+       super(props);
+       this.state = { date: new Date() };
      }
 
      handleLog(arg1, arg2) {
-       console.log(this.state.date, arg1, arg2)
+       console.log(this.state.date, arg1, arg2);
      }
 
      render() {
@@ -756,7 +769,7 @@ fn() // 此时的 this 指向 undefind
            <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
-       )
+       );
      }
    }
    ```
@@ -769,12 +782,12 @@ fn() // 此时的 this 指向 undefind
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props)
-       this.state = { date: new Date() }
+       super(props);
+       this.state = { date: new Date() };
      }
 
      handleLog(arg1, arg2) {
-       console.log(this.state.date, arg1, arg2)
+       console.log(this.state.date, arg1, arg2);
      }
 
      render() {
@@ -783,7 +796,7 @@ fn() // 此时的 this 指向 undefind
            <h1 onClick={(e) => this.handleLog(e, 'arg1', 'arg2')}>{this.props.title}</h1>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
-       )
+       );
      }
    }
    ```
@@ -804,7 +817,7 @@ class ClassComponent extends Component {
     this.state = {
       date: new Date(),
       count: 1,
-    }
+    };
   }
 }
 ```
@@ -830,14 +843,14 @@ class ClassComponent extends Component {
     this.state = {
       date: new Date(),
       count: 1,
-    }
+    };
   }
 
   handleLog(arg1, arg2) {
     this.setState({
       count: 2,
-    })
-    console.log(this.state) // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+    });
+    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
   }
 
   render() {
@@ -845,7 +858,7 @@ class ClassComponent extends Component {
       <div>
         <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
       </div>
-    )
+    );
   }
 }
 ```
@@ -858,14 +871,14 @@ class ClassComponent extends Component {
     this.state = {
       date: new Date(),
       count: 1,
-    }
+    };
   }
 
   handleLog(arg1, arg2) {
     this.setState((state, props) => {
-      return { count: state.count + 1 }
-    })
-    console.log(this.state) // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+      return { count: state.count + 1 };
+    });
+    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
   }
 
   render() {
@@ -873,7 +886,7 @@ class ClassComponent extends Component {
       <div>
         <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
       </div>
-    )
+    );
   }
 }
 ```
@@ -886,19 +899,19 @@ class ClassComponent extends Component {
     this.state = {
       date: new Date(),
       count: 1,
-    }
+    };
   }
 
   handleLog(arg1, arg2) {
     this.setState(
       (state, props) => {
-        return { count: state.count + 1 }
+        return { count: state.count + 1 };
       },
       () => {
-        console.log('state的值已经变更')
+        console.log('state的值已经变更');
       }
-    )
-    console.log(this.state) // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+    );
+    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
   }
 
   render() {
@@ -906,7 +919,7 @@ class ClassComponent extends Component {
       <div>
         <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
       </div>
-    )
+    );
   }
 }
 ```
@@ -921,17 +934,17 @@ class ClassComponent extends Component {
        this.state = {
          date: new Date(),
          count: 1,
-       }
+       };
      }
 
      handleLog(arg1, arg2) {
        setTimeout(() => {
          this.setState((state, props) => {
-           return { count: state.count + 1 }
-         })
+           return { count: state.count + 1 };
+         });
 
-         console.log(this.state)
-       }, 0)
+         console.log(this.state);
+       }, 0);
      }
 
      render() {
@@ -939,7 +952,7 @@ class ClassComponent extends Component {
          <div>
            <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
          </div>
-       )
+       );
      }
    }
    ```
@@ -949,23 +962,23 @@ class ClassComponent extends Component {
    ```js
    class ClassComponent extends Component {
      constructor(props) {
-       super(props)
+       super(props);
        this.state = {
          date: new Date(),
          count: 1,
-       }
+       };
      }
 
      handleLog = (arg1, arg2) => {
        this.setState((state, props) => {
-         return { count: state.count + 1 }
-       })
-       console.log(this.state) // 第一次点击的结果 count 还是 1，因为 setState 是异步的
-     }
+         return { count: state.count + 1 };
+       });
+       console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+     };
 
      componentDidMount() {
        // setState 在原生事件是同步的
-       document.querySelector('.class-component-event').addEventListener('click', this.handleLog, false)
+       document.querySelector('.class-component-event').addEventListener('click', this.handleLog, false);
      }
 
      render() {
@@ -975,7 +988,7 @@ class ClassComponent extends Component {
            <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
-       )
+       );
      }
    }
    ```
@@ -991,12 +1004,12 @@ class ClassComponent extends Component {
 **1、组件初始化阶段（Initialization）**
 
 ```js
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 class Xxxx extends Component {
   constructor(props) {
-    super(props)
-    this.state = { name: 'mark' }
+    super(props);
+    this.state = { name: 'mark' };
   }
 }
 ```
@@ -1081,11 +1094,11 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
      // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
      shouldComponentUpdate(nextProps, nextState) {
        if (nextState.someThings === this.state.someThings) {
-         return false
+         return false;
        }
      }
      render() {
-       return <div>{this.props.someThings}</div>
+       return <div>{this.props.someThings}</div>;
      }
    }
    ```
@@ -1137,22 +1150,22 @@ static getDerivedStateFromProps(props, state)
 ```js
 class App extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       childDown: 1,
       num: 0,
-    }
+    };
   }
   static getDerivedStateFromProps(props, state) {
     if (props.isDown === state.childDown) {
       return {
         num: state.childDown,
-      }
+      };
     }
-    return null
+    return null;
   }
   render() {
-    return <div>22</div>
+    return <div>22</div>;
   }
 }
 ```
@@ -1160,7 +1173,7 @@ class App extends Component {
 **2、getSnapshotBeforeUpdate**
 
 ```js
-getSnapshotBeforeUpdate(prevProps, prevState)
+getSnapshotBeforeUpdate(prevProps, prevState);
 ```
 
 > getSnapshotBeforeUpdate() 被调用于 render 之后，在 componentDidUpdate 之前。适用场景是可以读取但无法使用 DOM 的时候。它使组件可以在更改之前从 DOM 捕获一些信息（例如滚动位置）。此生命周期返回的任何值都将作为参数传递给 componentDidUpdate() (基本用处不大)
@@ -1168,29 +1181,29 @@ getSnapshotBeforeUpdate(prevProps, prevState)
 ```js
 class ScrollingList extends Component {
   constructor(props) {
-    super(props)
-    this.listRef = React.createRef()
+    super(props);
+    this.listRef = React.createRef();
   }
   getSnapshotBeforeUpdate(prevProps, prevState) {
     //我们是否要添加新的 items 到列表?
     // 捕捉滚动位置，以便我们可以稍后调整滚动.
     if (prevProps.list.length < this.props.list.length) {
-      const list = this.listRef.current
-      return list.scrollHeight - list.scrollTop
+      const list = this.listRef.current;
+      return list.scrollHeight - list.scrollTop;
     }
-    return null
+    return null;
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
     //如果我们有snapshot值, 我们已经添加了 新的items.
     // 调整滚动以至于这些新的items 不会将旧items推出视图。
     // (这边的snapshot是 getSnapshotBeforeUpdate方法的返回值)
     if (snapshot !== null) {
-      const list = this.listRef.current
-      list.scrollTop = list.scrollHeight - snapshot
+      const list = this.listRef.current;
+      list.scrollTop = list.scrollHeight - snapshot;
     }
   }
   render() {
-    return <div ref={this.listRef}>{/* ...contents... */}</div>
+    return <div ref={this.listRef}>{/* ...contents... */}</div>;
   }
 }
 ```
@@ -1202,16 +1215,16 @@ class ScrollingList extends Component {
 ```js
 class ClassComponent extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       date: new Date(),
       count: 1,
-    }
+    };
   }
 
   componentDidMount() {
     // 操作 Dom
-    this.refs.textIpt.focus()
+    this.refs.textIpt.focus();
   }
 
   render() {
@@ -1219,7 +1232,7 @@ class ClassComponent extends Component {
       <div>
         <input ref="textIpt" />
       </div>
-    )
+    );
   }
 }
 ```
@@ -1228,7 +1241,45 @@ class ClassComponent extends Component {
 
 ### React Hook
 
-Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性（生命周期等）。Hook 不可以在 class 组件中使用。
+**为什么需要 Hook：**
+
+1. Hook 是 React 16.8 的新增特性，它可以让我们在不编写 class 的情况下使用 state 以及其他的 React 特性（比如生命周期）。
+2. 我们先来思考一下 class 组件相对于函数式组件有什么优势？比较常见的是下面的优势：
+3. class 组件可以定义自己的 state，用来保存组件自己内部的状态；
+   - 函数式组件不可以，因为函数每次调用都会产生新的临时变量；
+4. class 组件有自己的生命周期，我们可以在对应的生命周期中完成自己的逻辑；
+   - 比如在 componentDidMount 中发送网络请求，并且该生命周期函数只会执行一次；
+   - 函数式组件在学习 hooks 之前，如果在函数中发送网络请求，意味着每次重新渲染都会重新发送一次网络请求；
+5. class 组件可以在状态改变时只会重新执行 render 函数以及我们希望重新调用的生命周期函数 componentDidUpdate 等；
+   - 函数式组件在重新渲染时，整个函数都会被执行，似乎没有什么地方可以只让它们调用一次；
+6. 所以，在 Hook 出现之前，对于上面这些情况我们通常都会编写 class 组件。
+
+**class 组件存在的问题：**
+
+1. 复杂组件变得难以理解：
+   - 我们在最初编写一个 class 组件时，往往逻辑比较简单，并不会非常复杂。但是随着业务的增多，我们的 class 组件会变得越来越复杂；
+   - 比如 componentDidMount 中，可能就会包含大量的逻辑代码：包括网络请求、一些事件的监听（还需要在
+     componentWillUnmount 中移除）；
+   - 而对于这样的 class 实际上非常难以拆分：因为它们的逻辑往往混在一起，强行拆分反而会造成过度设计，增加代码的复杂度；
+2. 难以理解的 class：
+   - 很多人发现学习 ES6 的 class 是学习 React 的一个障碍。
+   - 比如在 class 中，我们必须搞清楚 this 的指向到底是谁，所以需要花很多的精力去学习 this；
+   - 虽然我认为前端开发人员必须掌握 this，但是依然处理起来非常麻烦；
+3. 组件复用状态很难：
+   - 在前面为了一些状态的复用我们需要通过高阶组件或 render props；
+   - 像 redux 中 connect 或者 react-router 中的 withRouter，这些高阶组件设计的目的就是为了状态的复用；
+   - 或者类似于 Provider、Consumer 来共享一些状态，但是多次使用 Consumer 时，我们的代码就会存在很多嵌套；
+   - 这些代码让我们不管是编写和设计上来说，都变得非常困难；
+
+**Hook 的出现，可以解决上面提到的这些问题：**
+
+1. 简单总结一下 hooks：
+   - 它可以让我们在不编写 class 的情况下使用 state 以及其他的 React 特性；
+   - 但是我们可以由此延伸出非常多的用法，来让我们前面所提到的问题得到解决；
+2. Hook 的使用场景：
+   - Hook 的出现基本可以代替我们之前所有使用 class 组件的地方（除了一些非常不常用的场景）；
+   - 但是如果是一个旧的项目，你并不需要直接将所有的代码重构为 Hooks，因为它完全向下兼容，你可以渐进式的来使用它；
+   - Hook 只能在函数组件中使用，不能在类组件，或者函数组件之外的地方使用；
 
 #### -1、useState
 
@@ -1237,22 +1288,22 @@ Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情�
 在 React Hook 没出来之前，Function Component 也叫做 Functional Stateless Component（FSC），这是因为 Function Component 每次执行的时候都会生成新的函数作用域所以同一个组件的不同渲染（render）之间是不能够共用状态的，因此开发者一旦需要在组件中引入状态就需要将原来的 Function Component 改成 Class Component，这使得开发者的体验十分不好。useState 就是用来解决这个问题的，它允许 Function Component 将自己的状态持久化到 React 运行时（runtime）的某个地方（memory cell），这样在组件每次重新渲染的时候都可以从这个地方拿到该状态，而且当该状态被更新的时候，组件也会重渲染。
 
 ```js
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 function HookComponent() {
   // count 是一个 state，setCount 是用来设置 count 值的
   // 这里最好使用 const 来做声明关键字，防止我们意外直接修改 state 而没有通过 set 方法去设置。
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <div>
       <p>点击了 {count} 下</p>
       <button onClick={() => setCount(count + 1)}>点击</button>
     </div>
-  )
+  );
 }
 
-export default HookComponent
+export default HookComponent;
 ```
 
 使用 hook 的 setCount 和 React 自带的 setState 区别：setState 是合并 state，而 setCount 是替换值，毕竟 setCount 只为一个 state 服务
@@ -1276,24 +1327,24 @@ useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可
   只有在 dependencies 数组里面的元素的值发生变化时才会执行 effect 副作用函数，优化性能，避免死循环
 
 ```js
-import React, { useState, useEffect } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 const UserDetail = ({ userId }) => {
-  const [userDetail, setUserDetail] = useState({})
+  const [userDetail, setUserDetail] = useState({});
 
   useEffect(() => {
     fetch(`https://myapi/users/${userId}`)
       .then((response) => response.json())
-      .then((user) => setUserDetail(userDetail))
-  })
+      .then((user) => setUserDetail(userDetail));
+  });
 
   return (
     <div>
       <div>User Name: {userDetail.name}</div>
     </div>
-  )
-}
+  );
+};
 ```
 
 上面定义的获取用户详情信息的副作用会在 UserDetail 组件每次完成渲染后执行，所以当该组件第一次挂载的时候就会向服务器发起获取用户详情信息的请求然后更新 userDetail 的值，这里的第一次挂载我们可以类比成 Class Component 的 componentDidMount。可是如果试着运行一下上面的代码的话，你会发现代码进入了死循环：组件会不断向服务端发起请求。出现这个死循环的原因是 useEffect 里面调用了 setUserDetail，这个函数会更新 userDetail 的值，从而使组件重渲染，而重渲染后 useEffect 的 effect 继续被执行，进而组件再次重渲染。。。为了避免重复的副作用执行，useEffect 允许我们通过第二个参数 dependencies 来限制该副作用什么时候被执行：指明了 dependencies 的副作用，只有在 dependencies 数组里面的元素的值发生变化时才会被执行，因此如果要避免上面的代码进入死循环我们就要将 userId 指定为我们定义的副作用的 dependencies
@@ -1301,44 +1352,44 @@ const UserDetail = ({ userId }) => {
 如果指定一个空数组作为这个副作用的 dependencies，那么这个副作用只会在组件首次渲染的时候被执行一次
 
 ```js
-import React, { useState, useEffect } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 const UserDetail = ({ userId }) => {
-  const [userDetail, setUserDetail] = useState({})
+  const [userDetail, setUserDetail] = useState({});
 
   useEffect(() => {
     fetch(`https://myapi/users/${userId}`)
       .then((response) => response.json())
-      .then((user) => setUserDetail(userDetail))
-  }, [userId])
+      .then((user) => setUserDetail(userDetail));
+  }, [userId]);
 
   return (
     <div>
       <div>User Name: ${userDetail.name}</div>
     </div>
-  )
-}
+  );
+};
 ```
 
 除了发起服务端的请求外，往往还需要在 useEffect 里面调用浏览器的 API，例如使用 addEventListener 来添加浏览器事件的监听函数等。我们一旦使用了 addEventListener 就必须在合适的时候调用 removeEventListener 来移除对事件的监听，否则会有性能问题，useEffect 允许我们在副作用函数里面返回一个 cleanup 函数，这个函数会在组件重新渲染之前被执行，我们可以在这个返回的函数里面移除对事件的监听（即移除副作用）
 
 ```js
-import React, { useEffect } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 const WindowScrollListener = () => {
   useEffect(() => {
-    const handleWindowScroll = () => console.log('yean, window is scrolling!')
-    window.addEventListener('scroll', handleWindowScroll)
+    const handleWindowScroll = () => console.log('yean, window is scrolling!');
+    window.addEventListener('scroll', handleWindowScroll);
 
     return () => {
-      window.removeEventListener(handleWindowScroll)
-    }
-  }, [])
+      window.removeEventListener(handleWindowScroll);
+    };
+  }, []);
 
-  return <div>I can listen to the window scroll event!</div>
-}
+  return <div>I can listen to the window scroll event!</div>;
+};
 ```
 
 上面的代码中我们会在 WindowScrollListener 组件首次渲染完成后注册一个监听页面滚动事件的函数，并在组件下一次渲染前移除该监听函数。由于我们指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次，而它的 cleanup 函数只会在组件 unmount 时才被执行，这就避免了频繁注册页面监听函数从而影响页面的性能
@@ -1382,16 +1433,16 @@ const WindowScrollListener = () => {
    function Example() {
      useEffect(() => {
        const listener = (e) => {
-         console.log(e)
-       }
-       document.addEventListener('onClick', listener, false)
+         console.log(e);
+       };
+       document.addEventListener('onClick', listener, false);
 
        return () => {
-         document.removeEventListener('onClick', listener, false)
-       }
-     }, [])
+         document.removeEventListener('onClick', listener, false);
+       };
+     }, []);
 
-     return <div></div>
+     return <div></div>;
    }
    ```
 
@@ -1404,18 +1455,18 @@ useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传�
 
 ```js
 const HookComponent = (id) => {
-  const iptRef = useRef()
+  const iptRef = useRef();
 
   useEffect(() => {
-    iptRef.current.focus()
-  }, []) // 指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次
+    iptRef.current.focus();
+  }, []); // 指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次
 
   return (
     <div>
       <input ref={iptRef} type="text" />
     </div>
-  )
-}
+  );
+};
 ```
 
 > 注意：更新 ref 对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
