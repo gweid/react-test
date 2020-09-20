@@ -310,6 +310,8 @@ ReactDOM.render(jsx, document.getElementById('root'))
 
 ### 3、组件
 
+> 无论是类组件还是函数式组件，都需要首字母大写
+
 #### 3-1、类组件（class component）
 
 ```js
@@ -338,9 +340,10 @@ export default ClassComponent
 
 #### 3-2、函数式组件（function component）
 
-函数组件中，你无法使用 State，也无法使用组件的生命周期方法，这就决定了函数组件都是展示性组件（Presentational Components），接收 Props，渲染 DOM，而不关注其他逻辑
-
-> React16.8 引入了 hooks，函数组件也可以有状态
+**函数式组件特点：**
+1. 没有 this
+2. 函数组件中，你无法使用 State，也无法使用组件的生命周期方法，这就决定了函数组件都是展示性组件（Presentational Components），接收 Props，渲染 DOM，而不关注其他逻辑。
+3. 但是，React16.8 引入了 hooks，函数组件也可以有状态
 
 ```js
 import React from 'react'
@@ -359,7 +362,7 @@ export default FunComponent
 
 1. 函数组件必须返回 jsx 对象
 
-> 声明了组件，直接导入，然后使用；不需要像 Vue 一样还要去注册
+> 声明了组件，直接导入，然后使用；不需要像 Vue 一样还要去 component 注册
 
 ### 4、props
 
@@ -848,7 +851,7 @@ class Xxxx extends Component {
 类继承于 React.Component，所以才有 render()，生命周期等方法可以使用，这也说明为什么函数组件不能使用这些方法的原因。但 react hook 出来后，函数也支持
 
 super(props) 用来调用基类的构造方法 constructor(), 也将父组件的 props 注入给子组件，供子组件读取 (组件
-中 props 属性只读不可写，state 可写) 。 而 constructor() 用来做一些组件的初始化工作，比如定义 this.state 的初始内容
+中 props 属性只读不可写，state 可写) 。 而 constructor() 用来做一些组件的初始化工作，比如定义 this.state 的初始内容，或者绑定事件 this（bind(this)）
 
 **2、组件挂载阶段（Mounting）**
 
@@ -858,7 +861,7 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 - render：根据组件的 props 和 state（无论两者是重传递或重赋值，无论值是否有变化，都可以引起组件重新 render） ，内部 return 一个 React 元素（描述组件，即 UI），该元素不负责组件的实际渲染工作，之后由 React 自身根据此元素去渲染出页面 DOM。render 是纯函数 （Pure function：函数的返回结果只依赖于它的参数；函数执行过程里面没有副作用），不能在 render()里面执行 this.setState 等操作，会有改变组件状态的副作用。
 
-- componentDidMount：组件挂载到 DOM 后调用，且只会被调用一次
+- componentDidMount：组件挂载到 DOM 后调用，且只会被调用一次。这个阶段一般可做：1、依赖 DOM 的操作；2、发送网络请求（官方推荐）；3、添加订阅（需要在 componentWillUnmount 中取消订阅，避免内存泄露）
 
 **3、组件更新阶段（Update）**
 
@@ -874,7 +877,7 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 - componentDidUpdate(prevProps, prevState)：此方法在组件更新后被调用，可以操作组件更新的 DOM，prevProps 和 prevState 这两个参数指的是组件更新前的 props 和 state
 
-react 组件的更新机制：setState 引起的 state 更新，或父组件重新 render 引起的 props 更新，更新后的 state 和 props 相比较之前的结果，无论是否有变化，都将引起子组件的重新 render。造成组件更新有两类（三种）情况
+**需要注意的是 react 组件的更新机制**：setState 引起的 state 更新，或父组件重新 render 引起的 props 更新，更新后的 state 和 props 相比较之前的结果，无论是否有变化，都将引起子组件的重新 render。造成组件更新有两类（三种）情况
 
 1. 父组件重新 render 父组件重新 render 引起子组件重新 render 的情况有两种
 
@@ -936,13 +939,15 @@ react 组件的更新机制：setState 引起的 state 更新，或父组件重�
 
 **4、组件卸载阶段（Unmount）**
 
-- componentWillUnmount：此方法在组件被卸载前调用，可以在这里执行一些清理工作，比如清楚组件中使用的定时器，清除 componentDidMount 中手动创建的 DOM 元素等，以避免引起内存泄漏。此阶段不能调用 setState，因为组件永远不会重新渲染
+- componentWillUnmount：此方法在组件被卸载前调用，可以在这里执行一些清理工作，比如清楚组件中使用的定时器，清除 componentDidMount 中手动创建的 DOM 元素、订阅事件等，以避免引起内存泄漏。此阶段不能调用 setState，因为组件永远不会重新渲染
+
+> 对于类组件来说，最重要的几个生命周期是：constructor、render、componentDidMount、componentDidUpdate、componentWillUnmount。其他的是一些不常用或者用来优化的或者即将废弃的。
 
 #### 7-2、react16.4 之后的生命周期
 
 ![react16.4 之后的生命周期](/imgs/img2.jpg)
 
-原来（React v16.3 前）的生命周期在 React v16.4 推出的 Fiber 之后就不合适了，因为如果要开启 async rendering， 在 render 函数之前的所有函数，都有可能被执行多次
+原来（React v16.3 前）的生命周期在 React v16.4 推出的 Fiber 之后就不合适了，因为如果要开启 async rendering，在 render 函数之前的所有函数，都有可能被执行多次
 
 在 render 前执行的生命周期有:
 
@@ -951,7 +956,7 @@ react 组件的更新机制：setState 引起的 state 更新，或父组件重�
 - shouldComponentUpdate
 - componentWillUpdate
 
-如果开发者开了 async rendering，而且又在以上这些 render 前执行的生命周期方法做 AJAX 请求的话，那 AJAX 将被无谓地多次调用。。。明显不是我们期望的结果。而且在 componentWillMount 里发起 AJAX，不管多快得到结果也赶不上首次 render，而且 componentWillMount 在服务器端渲染也会被调用到（当然，也许这是预期的结果），这样的 IO 操作放在 componentDidMount 里更合适
+如果开发者开了 async rendering，而且又在以上这些 render 前执行的生命周期方法做 AJAX 请求的话，那 AJAX 将被无谓地多次调用。明显不是我们期望的结果。而且在 componentWillMount 里发起 AJAX，不管多快得到结果也赶不上首次 render，而且 componentWillMount 在服务器端渲染也会被调用到（当然，也许这是预期的结果），这样的 IO 操作放在 componentDidMount 里更合适
 
 禁止不能用比劝导开发者不要这样用的效果更好，所以除了 shouldComponentUpdate，其他在 render 函数之前的所有函数（componentWillMount，componentWillReceiveProps，componentWillUpdate）都可以被 getDerivedStateFromProps 替代
 
