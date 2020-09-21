@@ -1281,6 +1281,10 @@ class ClassComponent extends Component {
    - 但是如果是一个旧的项目，你并不需要直接将所有的代码重构为 Hooks，因为它完全向下兼容，你可以渐进式的来使用它；
    - Hook 只能在函数组件中使用，不能在类组件，或者函数组件之外的地方使用；
 
+**Hook 原则：**
+1. 不要在循环、条件判断或者子函数中使用 hook
+2. 不要在 React 函数组件以外的地方使用 hook
+
 #### -1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
@@ -1313,6 +1317,70 @@ export default HookComponent;
 当然如果有多个 state，那么你只需调用多次 useState 即可
 
 > useState 的 setState 是全量替代，而 this.setState 是将当前设置的 state 浅归并（shallowly merge）到旧 state 的操作。所以在使用 useState 的 setState 时，应该避免将没有关系的状态放在一起管理
+
+**useState 对于复杂数据的添加：**
+
+1. 往数组中添加一项
+
+```js
+import React, { useState, useEffect, useRef } from 'react';
+
+const HookComponent = (id) => {
+  const [arr, setArr] = useState(['nba']);
+
+  return (
+    <div>
+      <ul>
+        {arr.map((item, index) => {
+          return <li key={index}>{item}</li>
+        })}
+      </ul>
+      <button onClick={ e => setArr([...arr, 'cba']) }>添加数组</button>
+    </div>
+  );
+};
+```
+
+2. 修改数组对象的某一个值
+
+```js
+import React, { useState, useEffect, useRef } from 'react';
+
+const HookComponent = (id) => {
+  const [userList, setUserList] = useState([
+    { id: '001', name: 'jack', 'age': 18 },
+    { id: '002', name: 'mark', 'age': 19 },
+    { id: '003', name: 'lucy', 'age': 20 },
+  ]);
+
+  const editAge = (index) => {
+    // 对于数组的操作都得这样，复制一份新数组
+    const newUserList = [...userList];
+    newUserList[index].age += 1;
+    // set 一个新的数组，react 就会重新渲染
+    setUserList(newUserList)
+  }
+
+  return (
+    <div>
+      <ul>
+        {
+          userList.map((item, index) => {
+            return (
+              <li key={item.id} onClick={() => editAge(index)}>
+                名字：{item.name} 年龄：{item.age}
+                <button>年龄+</button>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </div>
+  );
+};
+```
+
+> 不要通过往数组 arr.push() 一项，然后用 setArr(arr) 设置上去，而是使用 setArr([...arr, xxx]) 这样。因为 react 内部优化了，如果是同一个数组，那么不进行重新渲染；setArr([...arr, xxx]) 这样等于传了一个新数组，所以会重新渲染
 
 #### -2、useEffect
 
