@@ -1320,67 +1320,134 @@ export default HookComponent;
 
 **useState 对于复杂数据的添加：**
 
-1. 往数组中添加一项
+源码内定义的 useState 
 
 ```js
-import React, { useState, useEffect, useRef } from 'react';
+function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
 
-const HookComponent = (id) => {
-  const [arr, setArr] = useState(['nba']);
+type Dispatch<A> = (value: A) => void;
 
-  return (
-    <div>
-      <ul>
-        {arr.map((item, index) => {
-          return <li key={index}>{item}</li>
-        })}
-      </ul>
-      <button onClick={ e => setArr([...arr, 'cba']) }>添加数组</button>
-    </div>
-  );
-};
+type SetStateAction<S> = S | ((prevState: S) => S);
 ```
 
-2. 修改数组对象的某一个值
+1. useState
+  - 参数
+    - 一个值 | 带返回值的函数
+  - 返回值
+    - [state, 操作函数]
 
-```js
-import React, { useState, useEffect, useRef } from 'react';
+2. 往数组中添加一项
 
-const HookComponent = (id) => {
-  const [userList, setUserList] = useState([
-    { id: '001', name: 'jack', 'age': 18 },
-    { id: '002', name: 'mark', 'age': 19 },
-    { id: '003', name: 'lucy', 'age': 20 },
-  ]);
+   ```js
+   import React, { useState, useEffect, useRef } from 'react';
+   
+   const HookComponent = (id) => {
+     const [arr, setArr] = useState(['nba']);
+   
+     return (
+       <div>
+         <ul>
+           {arr.map((item, index) => {
+             return <li key={index}>{item}</li>
+           })}
+         </ul>
+         <button onClick={ e => setArr([...arr, 'cba']) }>添加数组</button>
+       </div>
+     );
+   };
+   ```
 
-  const editAge = (index) => {
-    // 对于数组的操作都得这样，复制一份新数组
-    const newUserList = [...userList];
-    newUserList[index].age += 1;
-    // set 一个新的数组，react 就会重新渲染
-    setUserList(newUserList)
-  }
+3. 修改数组对象的某一个值
 
-  return (
-    <div>
-      <ul>
-        {
-          userList.map((item, index) => {
-            return (
-              <li key={item.id} onClick={() => editAge(index)}>
-                名字：{item.name} 年龄：{item.age}
-                <button>年龄+</button>
-              </li>
-            )
-          })
-        }
-      </ul>
-    </div>
-  );
-};
-```
+   ```js
+   import React, { useState, useEffect, useRef    } from 'react';
+   
+   const HookComponent = (id) => {
+     const [userList, setUserList] = useState([
+       { id: '001', name: 'jack', 'age': 18 },
+       { id: '002', name: 'mark', 'age': 19 },
+       { id: '003', name: 'lucy', 'age': 20 },
+     ]);
+   
+     const editAge = (index) => {
+       // 对于数组的操作都得这样，复制一份新数组
+       const newUserList = [...userList];
+       newUserList[index].age += 1;
+       // set 一个新的数组，react 就会重新渲染
+       setUserList(newUserList)
+     }
+   
+     return (
+       <div>
+         <ul>
+           {
+             userList.map((item, index) => {
+               return (
+                 <li key={item.id} onClick={()    => editAge(index)}>
+                   名字：{item.name} 年龄：{item.   age}
+                   <button>年龄+</button>
+                 </li>
+               )
+             })
+           }
+         </ul>
+       </div>
+     );
+   };
+   ```
 
-> 不要通过往数组 arr.push() 一项，然后用 setArr(arr) 设置上去，而是使用 setArr([...arr, xxx]) 这样。因为 react 内部优化了，如果是同一个数组，那么不进行重新渲染；setArr([...arr, xxx]) 这样等于传了一个新数组，所以会重新渲染
+   > 不要通过往数组 arr.push() 一项，然后用 setArr(arr) 设置上去，而是使用 setArr([...arr, xxx]) 这样。因为 react 内部优化了，如果是同一个数组，那么不进行重新渲染；setArr([...arr, xxx]) 这样等于传了一个新数组，所以会重新渲染
+
+4. useState 初始值也可以是一个有返回值的函数
+
+   ```js
+   // function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
+
+   const HookComponent = (id) => {
+    // useState 初始值也可以是一个有返回值的函数
+    const [count, setCount] = useState(() => 10);
+
+    return (
+      <div>
+        <p>函数useState：{count}</p>
+        <button onClick={() => setCount(count + 10)}>count+</button>
+      </div>
+    );
+   };
+   ```
+
+5. 接收的的操作函数的参数可以是函数
+
+   ```js
+   // function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
+   // type Dispatch<A> = (value: A) => void;
+   // type SetStateAction<S> = S | ((prevState: S) => S);
+
+   const HookComponent = (id) => {
+    const [count, setCount] = useState(() => 10);
+
+    const addCount = () => {
+      // setCount(count + 10) 三次会被合并，最终结果是 20
+      // setCount(count + 10);
+      // setCount(count + 10);
+      // setCount(count + 10);
+
+      // 三次操作不会被合并，最终结果是 40
+      setCount((prevCount) => prevCount + 10);
+      setCount((prevCount) => prevCount + 10);
+      setCount((prevCount) => prevCount + 10);
+    };
+
+    return (
+      <div>
+        <p>函数useState：{count}</p>
+        <button onClick={addCount}>count+</button>
+      </div>
+    );
+   };
+   ```
+
+   >　操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
 
 #### -2、useEffect
 

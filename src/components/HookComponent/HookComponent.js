@@ -35,8 +35,19 @@ const HookComponent = (id) => {
     const newUserList = [...userList];
     newUserList[index].age += 1;
     // set 一个新的数组，react 就会重新渲染
-    setUserList(newUserList)
-  }
+    setUserList(newUserList);
+  };
+
+  const [count, setCount] = useState(() => 10);
+
+  const addCount = () => {
+    // setCount(count + 10);
+    // setCount(count + 10);
+    // setCount(count + 10);
+    setCount((prevCount) => prevCount + 10);
+    setCount((prevCount) => prevCount + 10);
+    setCount((prevCount) => prevCount + 10);
+  };
 
   return (
     <div>
@@ -64,6 +75,10 @@ const HookComponent = (id) => {
           })
         }
       </ul>
+      <hr/>
+      <p>函数useState：{count}</p>
+      {/* <button onClick={() => setCount(count + 10)}>count+</button> */}
+      <button onClick={addCount}>count+</button>
     </div>
   );
 };
