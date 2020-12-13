@@ -291,6 +291,40 @@ class ClassComponent extends Component {
 > 使用 className 是为了避免与 class 组件里面的 class 冲突  
 > style 使用 {} 插值， 里面那层的 {} 代表的是一个对象
 
+对于动态的 class 属性，官方推荐使用 `classnames` 这个库，好处：
+
+- 语法更加简洁
+- className 的模板字符串直接判断如果是 false **会渲染一个空格**，不太好
+
+```js
+npm install classnames --save
+```
+
+使用：
+
+```js
+import classnames from 'classnames';
+
+class ClassComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      active: true,
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        <div className={classnames('classone', this.state.active ? 'active' : '')}>classnames库</div>
+      </div>
+    );
+  }
+}
+```
+
+
+
 #### 2-7、模块化
 
 ```js
@@ -805,7 +839,7 @@ fn() // 此时的 this 指向 undefind
 
 1. state 是当前组件的自定义属性，通过在 constructor() 中初始化 state
 2. 不能直接修改 state，而是需要通过 setState() 去修改，直接修改如：this.state.xxx = 'xxx' 不会重新渲染
-3. setState 是会更改组件的，会造成组件的重新渲染，如果短时间有很多 setState 去操作 state，那么就会造成组件不断地更行，影响性能；setState 的异步更新主要就是一个合并批量更新的操作，减少组件的更新次数，达到优化性能的目的
+3. setState 是会更改组件的，会造成组件的重新渲染，如果短时间有很多 setState 去操作 state，那么就会造成组件不断地更行，影响性能；setState 的异步更新主要就是一个合并批量更新的操作，减少组件的更新次数，达到优化性能的目的。第二点就是如果同步更新 state，但是还没有执行 render 函数，那么可能会导致 state 和 props 的数据不同步，造成父组件和子组件相同的依赖但是结果不同。
 4. state 的更新会被合并，当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state
 
 #### 7-1、初始化一个 state
@@ -824,7 +858,7 @@ class ClassComponent extends Component {
 
 #### 7-2、通过 setState() 修改 state
 
-> 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新
+> 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新和使 state 和 props 数据一致
 
 **1、setState(partialState, callback)**
 
@@ -891,7 +925,7 @@ class ClassComponent extends Component {
 }
 ```
 
-**4、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state**
+**4、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state（在 ComponentDidUpdate 中也能获取更新后的 state）**
 
 ```js
 class ClassComponent extends Component {

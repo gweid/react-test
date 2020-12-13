@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 // 如果通过类的方式去定义组件，那么组件必须继承于 React.Component 这个类
 // 必须定义一个 render 方法，render 里面返回一个 jsx
@@ -9,7 +10,7 @@ class ClassComponent extends Component {
         this.state = { 
             date: new Date(),
             count: 1,
-            active: true,
+            active: false,
             isShow: true,
             nums: [1, 50 ,40, 20, 60, 100, 55, 24, 33, 66]
         };
@@ -88,6 +89,7 @@ class ClassComponent extends Component {
                         this.state.nums.slice(0, 4).map(item => <li key={item}>{item}</li>)
                     }
                 </ul>
+                <div className={classnames('classone, classtwo', this.state.active ? 'active' : '')}>classnames 库</div>
             </div>
         );
     }
