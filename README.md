@@ -421,7 +421,87 @@ export default FunComponent;
 
 #### 4-1、props 值
 
+props 接收的是组件传过来的值。
 
+一个有意思的问题： 为什么当 super() 中没有继承 props 时，constructor 中打印的 props 是 undefined，而 render 函数中打印的 props 是有值的
+
+```js
+import React, { Component } from 'react';
+
+class Child extends Component {
+  constructor(props) {
+    super();
+    this.state = {};
+    console.log('constructor 的 props：', this.props); // undefined
+  }
+
+  render() {
+    console.log('render 的 props：', this.props);
+    const { txt, addCount } = this.props;
+    
+    return (
+      <div>
+        <h2>子组件</h2>
+        <p>{txt}</p>
+        <button onClick={e => addCount(e, 'jack')}>加+</button>
+      </div>
+    );
+  }
+}
+
+export default Child;
+```
+
+**主要原因：**因为 react 在挂载 class 组件的时候会自主的把 props 挂载到组件实例上，所以在 moutend 和 render 都可以在没有 super(props) 的情况下都可以访问得到
+
+```js
+  _mountClassComponent(
+    elementType: Function,
+    element: ReactElement,
+    context: null | Object,
+  ) {
+    this._instance.context = context;
+    // 这里对 props 重新赋值，所以才有super() 这样也能在 render 中获取到 this.props 的值，而不需要 super(props)
+    // class Clild extends Component {
+    //   constructor() {
+    //     super();
+    //   }
+    // }
+    this._instance.props = element.props;
+    this._instance.state = this._instance.state || null;
+    this._instance.updater = this._updater;
+
+    if (
+      typeof this._instance.UNSAFE_componentWillMount === 'function' ||
+      typeof this._instance.componentWillMount === 'function'
+    ) {
+      const beforeState = this._newState;
+
+      // In order to support react-lifecycles-compat polyfilled components,
+      // Unsafe lifecycles should not be invoked for components using the new APIs.
+      if (
+        typeof elementType.getDerivedStateFromProps !== 'function' &&
+        typeof this._instance.getSnapshotBeforeUpdate !== 'function'
+      ) {
+        if (typeof this._instance.componentWillMount === 'function') {
+          this._instance.componentWillMount();
+        }
+        if (typeof this._instance.UNSAFE_componentWillMount === 'function') {
+          this._instance.UNSAFE_componentWillMount();
+        }
+      }
+
+      // setState may have been called during cWM
+      if (beforeState !== this._newState) {
+        this._instance.state = this._newState || emptyObject;
+      }
+    }
+
+    this._rendered = this._instance.render();
+    // Intentionally do not call componentDidMount()
+    // because DOM refs are not available.
+  }
+```
 
 
 
