@@ -350,6 +350,64 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 
 
+#### 2-8、布尔类型、Null 以及 Undefined 将会忽略
+
+```js
+<div>{false}</div>
+
+<div>{true}</div>
+
+<div>{null}</div>
+
+<div>{undefined}</div>
+
+```
+
+以上的都不会渲染
+
+
+
+#### 2-9、属性展开
+
+例如有：
+
+```js
+function App1() {
+  return <Greeting firstName="Ben" lastName="Hector" />;
+}
+```
+
+等价于：
+
+```js
+function App2() {
+  const props = {firstName: 'Ben', lastName: 'Hector'};
+  return <Greeting {...props} />;
+}
+```
+
+也可以传递某些值：
+
+```js
+const Button = props => {
+  const { kind, ...other } = props;
+  const className = kind === "primary" ? "PrimaryButton" : "SecondaryButton";
+  return <button className={className} {...other} />;
+};
+
+const App = () => {
+  return (
+    <div>
+      <Button kind="primary" onClick={() => console.log("clicked!")}>
+        Hello World!
+      </Button>
+    </div>
+  );
+};
+```
+
+
+
 ### 3、组件
 
 > 无论是类组件还是函数式组件，都需要首字母大写
