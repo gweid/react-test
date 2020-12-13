@@ -32,6 +32,8 @@ serviceWorker.unregister(); // pwa 相关
 
 > babel-loader 将 jsx 编译为相应 js 对象，React.createElement 再将这个 js 对象构造成虚拟 Dom
 
+
+
 ### 2、jsx 语法
 
 jsx 是 js 语法的扩展，表面上像 HTML，本质上还是通过 babel 转换为 js 去执行
@@ -346,6 +348,8 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 > css 模块化可以避免组件之间类名冲突
 
+
+
 ### 3、组件
 
 > 无论是类组件还是函数式组件，都需要首字母大写
@@ -411,118 +415,17 @@ export default FunComponent;
 - 有自己的生命周期，在生命周期内完成特定的操作
 - class 组件更新时只会执行 render 函数或者 componentDidUpdate 这些；函数式组件在更新时，整个函数都会被重新执行
 
-### 4、父子组件通讯
 
-#### 4-1、父传子
 
-通过 props 进行传值
+### 4、props
 
-```js
-// 子组件
-import React, { Component } from 'react';
+#### 4-1、props 值
 
-class Child extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-  render() {
-    const { txt } = this.props;
 
-    return (
-      <div>
-        <h2>子组件</h2>
-        <p>{txt}</p>
-      </div>
-    );
-  }
-}
 
-// 父组件
-import React, { Component } from 'react';
-import Child from './Child';
 
-class Parent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-  render() {
-    return (
-      <div>
-        <h2>父子组件传值</h2>
-        <Child txt="传过来的值" />
-      </div>
-    );
-  }
-}
-```
 
-#### 4-2、子传父
-
-也是通过 props，只是让父组件给子组件传递一个回调函数，子组件调用回调函数即可。区别于 vue 使用自定义事件
-
-```js
-// 子组件
-import React, { Component } from 'react';
-
-class Child extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    const { txt, addCount } = this.props;
-
-    return (
-      <div>
-        <h2>子组件</h2>
-        <p>{txt}</p>
-        {/*传递一个值，也可以不传，e 是事件*/}
-        <button onClick={(e) => addCount(e, 'jack')}>加+</button>
-      </div>
-    );
-  }
-}
-
-// 父组件
-import React, { Component } from 'react';
-import Child from './Child';
-
-class Parent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      count: 1,
-    };
-  }
-
-  addCount(name) {
-    console.log(name);
-    this.setState({
-      count: this.state.count + 1,
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <h2>父子组件传值</h2>
-        {/* 这里也要对 this 做处理*/}
-        <Child txt="传过来的值" addCount={(e, name) => this.addCount(name)} />
-        <div>当前计数值：{this.state.count}</div>
-      </div>
-    );
-  }
-}
-
-export default Parent;
-```
-
-### 5、props 检验和默认值
-
-#### 5-1、props 校验
+#### 4-2、props 校验
 
 ```js
 // 单类型校验
@@ -593,7 +496,7 @@ class ClassComponent extends Component {
 }
 ```
 
-#### 5-2、props 默认值
+#### 4-3、props 默认值
 
 ```js
 [组件名].defaultProps = {
@@ -645,6 +548,200 @@ class ClassComponent extends Component {
   }
 }
 ```
+
+
+
+### 5、state
+
+1. state 是当前组件的自定义属性，通过在 constructor() 中初始化 state
+2. 不能直接修改 state，而是需要通过 setState() 去修改，直接修改如：this.state.xxx = 'xxx' 不会重新渲染
+3. setState 是会更改组件的，会造成组件的重新渲染，如果短时间有很多 setState 去操作 state，那么就会造成组件不断地更行，影响性能；setState 的异步更新主要就是一个合并批量更新的操作，减少组件的更新次数，达到优化性能的目的。第二点就是如果同步更新 state，但是还没有执行 render 函数，那么可能会导致 state 和 props 的数据不同步，造成父组件和子组件相同的依赖但是结果不同。
+4. state 的更新会被合并，当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state
+
+#### 5-1、初始化一个 state
+
+```js
+class ClassComponent extends Component {
+  constructor(props) {
+    // 初始化一个 state
+    this.state = {
+      date: new Date(),
+      count: 1,
+    };
+  }
+}
+```
+
+#### 5-2、通过 setState() 修改 state
+
+> 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新和使 state 和 props 数据一致
+
+**1、setState(partialState, callback)**
+
+1. partialState: object | function(stete, props)
+   - 用于产生与当前 state 合并的子集
+2. callback: function
+   - state 更新后被调用
+
+**2、setState 第一个参数是对象时：**
+
+```js
+class ClassComponent extends Component {
+  constructor(props) {
+    this.state = {
+      date: new Date(),
+      count: 1,
+    };
+  }
+
+  handleLog(arg1, arg2) {
+    this.setState({
+      count: 2,
+    });
+    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+  }
+
+  render() {
+    return (
+      <div>
+        <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+      </div>
+    );
+  }
+}
+```
+
+**3、setState 第一个参数是函数时：**
+
+```js
+class ClassComponent extends Component {
+  constructor(props) {
+    this.state = {
+      date: new Date(),
+      count: 1,
+    };
+  }
+
+  handleLog(arg1, arg2) {
+    this.setState((state, props) => {
+      return { count: state.count + 1 };
+    });
+    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+  }
+
+  render() {
+    return (
+      <div>
+        <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+      </div>
+    );
+  }
+}
+```
+
+**4、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state（在 ComponentDidUpdate 中也能获取更新后的 state）**
+
+```js
+class ClassComponent extends Component {
+  constructor(props) {
+    this.state = {
+      date: new Date(),
+      count: 1,
+    };
+  }
+
+  handleLog(arg1, arg2) {
+    this.setState(
+      (state, props) => {
+        return { count: state.count + 1 };
+      },
+      () => {
+        console.log('state的值已经变更');
+      }
+    );
+    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+  }
+
+  render() {
+    return (
+      <div>
+        <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+      </div>
+    );
+  }
+}
+```
+
+**5、setState 在原生事件和 setTimeout 中都是同步的**
+
+1. 在 setTimeout 中
+
+   ```js
+   class ClassComponent extends Component {
+     constructor(props) {
+       this.state = {
+         date: new Date(),
+         count: 1,
+       };
+     }
+   
+     handleLog(arg1, arg2) {
+       setTimeout(() => {
+         this.setState((state, props) => {
+           return { count: state.count + 1 };
+         });
+   
+         console.log(this.state);
+       }, 0);
+     }
+   
+     render() {
+       return (
+         <div>
+           <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+         </div>
+       );
+     }
+   }
+   ```
+
+2. 在原生事件中是同步的
+
+   ```js
+   class ClassComponent extends Component {
+     constructor(props) {
+       super(props);
+       this.state = {
+         date: new Date(),
+         count: 1,
+       };
+     }
+   
+     handleLog = (arg1, arg2) => {
+       this.setState((state, props) => {
+         return { count: state.count + 1 };
+       });
+       console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+     };
+   
+     componentDidMount() {
+       // setState 在原生事件是同步的
+       document.querySelector('.class-component-event').addEventListener('click', this.handleLog, false);
+     }
+   
+     render() {
+       return (
+         <div>
+           <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+           <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
+           <div>{this.state.date.toLocaleTimeString()}</div>
+         </div>
+       );
+     }
+   }
+   ```
+
+
 
 ### 6、事件绑定
 
@@ -835,197 +932,118 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-### 7、state
 
-1. state 是当前组件的自定义属性，通过在 constructor() 中初始化 state
-2. 不能直接修改 state，而是需要通过 setState() 去修改，直接修改如：this.state.xxx = 'xxx' 不会重新渲染
-3. setState 是会更改组件的，会造成组件的重新渲染，如果短时间有很多 setState 去操作 state，那么就会造成组件不断地更行，影响性能；setState 的异步更新主要就是一个合并批量更新的操作，减少组件的更新次数，达到优化性能的目的。第二点就是如果同步更新 state，但是还没有执行 render 函数，那么可能会导致 state 和 props 的数据不同步，造成父组件和子组件相同的依赖但是结果不同。
-4. state 的更新会被合并，当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state
 
-#### 7-1、初始化一个 state
+### 7、父子组件通讯
+
+#### 7-1、父传子
+
+通过 props 进行传值
 
 ```js
-class ClassComponent extends Component {
+// 子组件
+import React, { Component } from 'react';
+
+class Child extends Component {
   constructor(props) {
-    // 初始化一个 state
-    this.state = {
-      date: new Date(),
-      count: 1,
-    };
+    super(props);
+    this.state = {};
+  }
+  render() {
+    const { txt } = this.props;
+
+    return (
+      <div>
+        <h2>子组件</h2>
+        <p>{txt}</p>
+      </div>
+    );
+  }
+}
+
+// 父组件
+import React, { Component } from 'react';
+import Child from './Child';
+
+class Parent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    return (
+      <div>
+        <h2>父子组件传值</h2>
+        <Child txt="传过来的值" />
+      </div>
+    );
   }
 }
 ```
 
-#### 7-2、通过 setState() 修改 state
+#### 7-2、子传父
 
-> 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新和使 state 和 props 数据一致
-
-**1、setState(partialState, callback)**
-
-1. partialState: object | function(stete, props)
-
-   - 用于产生与当前 state 合并的子集
-
-2. callback: function
-   - state 更新后被调用
-
-**2、setState 第一个参数是对象时：**
+也是通过 props，只是让父组件给子组件传递一个回调函数，子组件调用回调函数即可。区别于 vue 使用自定义事件
 
 ```js
-class ClassComponent extends Component {
+// 子组件
+import React, { Component } from 'react';
+
+class Child extends Component {
   constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    const { txt, addCount } = this.props;
+
+    return (
+      <div>
+        <h2>子组件</h2>
+        <p>{txt}</p>
+        {/*传递一个值，也可以不传，e 是事件*/}
+        <button onClick={(e) => addCount(e, 'jack')}>加+</button>
+      </div>
+    );
+  }
+}
+
+// 父组件
+import React, { Component } from 'react';
+import Child from './Child';
+
+class Parent extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      date: new Date(),
       count: 1,
     };
   }
 
-  handleLog(arg1, arg2) {
+  addCount(name) {
+    console.log(name);
     this.setState({
-      count: 2,
+      count: this.state.count + 1,
     });
-    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
   }
 
   render() {
     return (
       <div>
-        <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
+        <h2>父子组件传值</h2>
+        {/* 这里也要对 this 做处理*/}
+        <Child txt="传过来的值" addCount={(e, name) => this.addCount(name)} />
+        <div>当前计数值：{this.state.count}</div>
       </div>
     );
   }
 }
+
+export default Parent;
 ```
 
-**3、setState 第一个参数是函数时：**
 
-```js
-class ClassComponent extends Component {
-  constructor(props) {
-    this.state = {
-      date: new Date(),
-      count: 1,
-    };
-  }
-
-  handleLog(arg1, arg2) {
-    this.setState((state, props) => {
-      return { count: state.count + 1 };
-    });
-    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
-  }
-
-  render() {
-    return (
-      <div>
-        <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-      </div>
-    );
-  }
-}
-```
-
-**4、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state（在 ComponentDidUpdate 中也能获取更新后的 state）**
-
-```js
-class ClassComponent extends Component {
-  constructor(props) {
-    this.state = {
-      date: new Date(),
-      count: 1,
-    };
-  }
-
-  handleLog(arg1, arg2) {
-    this.setState(
-      (state, props) => {
-        return { count: state.count + 1 };
-      },
-      () => {
-        console.log('state的值已经变更');
-      }
-    );
-    console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
-  }
-
-  render() {
-    return (
-      <div>
-        <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-      </div>
-    );
-  }
-}
-```
-
-**5、setState 在原生事件和 setTimeout 中都是同步的**
-
-1. 在 setTimeout 中
-
-   ```js
-   class ClassComponent extends Component {
-     constructor(props) {
-       this.state = {
-         date: new Date(),
-         count: 1,
-       };
-     }
-
-     handleLog(arg1, arg2) {
-       setTimeout(() => {
-         this.setState((state, props) => {
-           return { count: state.count + 1 };
-         });
-
-         console.log(this.state);
-       }, 0);
-     }
-
-     render() {
-       return (
-         <div>
-           <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-         </div>
-       );
-     }
-   }
-   ```
-
-2. 在原生事件中是同步的
-
-   ```js
-   class ClassComponent extends Component {
-     constructor(props) {
-       super(props);
-       this.state = {
-         date: new Date(),
-         count: 1,
-       };
-     }
-
-     handleLog = (arg1, arg2) => {
-       this.setState((state, props) => {
-         return { count: state.count + 1 };
-       });
-       console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
-     };
-
-     componentDidMount() {
-       // setState 在原生事件是同步的
-       document.querySelector('.class-component-event').addEventListener('click', this.handleLog, false);
-     }
-
-     render() {
-       return (
-         <div>
-           <h1 onClick={this.handleLog.bind(this, 'arg1', 'arg2')}>{this.props.title}</h1>
-           <h3 className="class-component-event">setState 在原生事件中是同步的</h3>
-           <div>{this.state.date.toLocaleTimeString()}</div>
-         </div>
-       );
-     }
-   }
-   ```
 
 ### 8、生命周期
 
@@ -1242,6 +1260,8 @@ class ScrollingList extends Component {
 }
 ```
 
+
+
 ### 9、React 中的 Dom 操作
 
 通过 ref 获取 Dom，然后通过 this.refs.xxx 操作
@@ -1272,6 +1292,8 @@ class ClassComponent extends Component {
 ```
 
 > 不要在 render 或者 render 之前访问 refs
+
+
 
 ### React Hook
 
