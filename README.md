@@ -512,6 +512,8 @@ export default Child;
 
 **主要原因：**因为 react 在挂载 class 组件的时候会自主的把 props 挂载到组件实例上，所以在 moutend 和 render 都可以在没有 super(props) 的情况下都可以访问得到
 
+在 react 源码 package >> react-test-render >> src >> ReactShallowRender
+
 ```js
   _mountClassComponent(
     elementType: Function,
@@ -714,14 +716,39 @@ class ClassComponent extends Component {
 
 > 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新和使 state 和 props 数据一致
 
-**1、setState(partialState, callback)**
+**1、问题：在组件中没有实现 setState，怎么能通过 this.setState 调用**
+
+因为，setState 是从 Component 中继承过来的
+
+```js
+Component.prototype.setState = function(partialState, callback) {
+  invariant(
+    typeof partialState === 'object' ||
+      typeof partialState === 'function' ||
+      partialState == null,
+    'setState(...): takes an object of state variables to update or a ' +
+      'function which returns an object of state variables.',
+  );
+  this.updater.enqueueSetState(this, partialState, callback, 'setState');
+};
+```
+
+**2、setState 设置成异步主要是：**
+
+- `setState` 设计为异步，可以显著的提升性能
+  - 如果每次调用 setState 都进行一次更新，那么意味着 render 函数会被频繁调用，界面重新渲染，这样效率是很低的
+  - 最好的办法应该是获取到多个更新，之后进行批量更新
+- 如果同步更新了state，但是还没有执行render函数，那么 state 和 props 不能保持同步
+  - state 和 props 不能保持一致性，会在开发中产生很多的问题
+
+**3、setState(partialState, callback)**
 
 1. partialState: object | function(stete, props)
    - 用于产生与当前 state 合并的子集
 2. callback: function
    - state 更新后被调用
 
-**2、setState 第一个参数是对象时：**
+**4、setState 第一个参数是对象时：**
 
 ```js
 class ClassComponent extends Component {
@@ -749,7 +776,7 @@ class ClassComponent extends Component {
 }
 ```
 
-**3、setState 第一个参数是函数时：**
+**5、setState 第一个参数是函数时：**
 
 ```js
 class ClassComponent extends Component {
@@ -777,7 +804,7 @@ class ClassComponent extends Component {
 }
 ```
 
-**4、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state（在 ComponentDidUpdate 中也能获取更新后的 state）**
+**6、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state（在 ComponentDidUpdate 中也能获取更新后的 state）**
 
 ```js
 class ClassComponent extends Component {
@@ -810,7 +837,7 @@ class ClassComponent extends Component {
 }
 ```
 
-**5、setState 在原生事件和 setTimeout 中都是同步的**
+**7、setState 在原生事件和 setTimeout 中都是同步的**
 
 1. 在 setTimeout 中
 

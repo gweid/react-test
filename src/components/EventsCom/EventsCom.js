@@ -5,7 +5,7 @@ const eventBus = new EventEmitter();
 
 class Head extends Component {
   handleClick() {
-    eventBus.emit('handleEvent', 'jack', 18)
+    eventBus.emit('handleEvent', 'jack', 18);
   };
 
   render() {
@@ -25,7 +25,7 @@ class Top extends Component {
 
 export default class EventsCom extends Component {
   componentDidMount() {
-    eventBus.addListener("handleEvent", this.headleClick)
+    eventBus.addListener("handleEvent", this.headleClick);
   };
 
   headleClick(name, age) {
