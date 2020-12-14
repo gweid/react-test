@@ -1274,6 +1274,76 @@ export default class ContextCom extends Component {
 }
 ```
 
+> 更复杂的数据共享应该使用 redux
+
+
+
+#### 7-4、跨组件事件共享
+
+Context 实现的是数据的跨组件共享，而需要实现事件的跨组件共享，需要依赖 `events` 这个第三方库。
+
+```js
+npm i events
+```
+
+`events` 常用的 api
+
+- `new EventEmitter()`：创建一个 eventBus 对象
+- `eventBus.emit("事件名称", 参数列表)`：发布一事件
+- `eventBus.addListener("事件名称", 监听函数)`：监听一事件
+- `eventBus.removeListener("事件名称", 监听函数)`：移除一事件
+
+使用：
+
+```js
+import React, { Component } from 'react';
+import { EventEmitter } from 'events';
+
+const eventBus = new EventEmitter();
+
+class Head extends Component {
+  handleClick() {
+    eventBus.emit('handleEvent', 'jack', 18)
+  };
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleClick}>events跨组件</button>
+      </div>
+    )
+  };
+}
+
+class Top extends Component {
+  render() {
+    return <div><Head /></div>
+  }
+}
+
+export default class EventsCom extends Component {
+  componentDidMount() {
+    eventBus.addListener("handleEvent", this.headleClick)
+  };
+
+  headleClick(name, age) {
+    console.log(name, age);
+  };
+
+  componentWillUnmount() {
+    eventBus.removeListener("handleEvent", this.headleClick);
+  };
+
+  render() {
+    return (
+      <div>
+        <Top />
+      </div>
+    );
+  }
+}
+```
+
 
 
 ### 8、生命周期
