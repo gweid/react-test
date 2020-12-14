@@ -21,7 +21,7 @@ import * as serviceWorker from './serviceWorker';
 // jsx ==> React.createElement(...)
 // ReactDOM.render 生成真实的 Dom
 ReactDOM.render(
-  <React.StrictMode>
+  <React.StrictMode> {/*StrictMode: 指严格模式*/}
     <App /> {/* 这个是虚拟 Dom，这种是 jsx 写法*/}
   </React.StrictMode>,
   document.getElementById('root') // 将真实的 Dom 插入到根节点（root）下面
@@ -70,7 +70,7 @@ ReactDOM.render(<Test />, document.getElementById('root'));
 
 **jsx 到页面的流程：**
 
-jsx-->Babel 转换成 React.createElement-->ReactElement 生成虚拟 DOM-->ReactDOM.render 生成真实 DOM
+jsx-->Babel 将 jsx 编译为相应 js 对象-->ReactElement 将这个 js 对象生成虚拟 DOM-->ReactDOM.render 生成真实 DOM
 
 ![jsx 到页面流程](/imgs/img1.jpg)
 
@@ -377,7 +377,7 @@ export default FunComponent;
 - 有自己的生命周期，在生命周期内完成特定的操作
 - class 组件更新时只会执行 render 函数或者 componentDidUpdate 这些；函数式组件在更新时，整个函数都会被重新执行
 
-### 4、父子组件通讯
+### 4、组件通讯
 
 #### 4-1、父传子
 
@@ -485,6 +485,10 @@ class Parent extends Component {
 
 export default Parent;
 ```
+
+#### 4-3、非父子组件通讯
+
+对于跨多个组件的数据传递，一个一个组件往下传是非常麻烦的；因此 react 提供了一个 content api
 
 ### 5、props 检验和默认值
 
