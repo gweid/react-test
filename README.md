@@ -905,6 +905,42 @@ class ClassComponent extends Component {
      }
    }
    ```
+   
+   setState 是同步还是异步主要分两种情况：
+   
+   - 在组件生命周期或 React 合成事件中，setState 是异步
+   - 在 setTimeout 或者原生dom事件中，setState 是同步
+
+**8、setState 的合并**
+
+1. 数据的合并
+
+   假设：
+
+   ```js
+   this.state = {
+     name: "jack",
+     age: 24
+   }
+   ```
+
+   需要更新 age
+
+   ```js
+   this.setState({
+     age: 18
+   })
+   ```
+
+   这样子去更新 age 是不会影响到 name 的，因为在 react 源码中实际上是利用 Object.assign 将原对象与新对象合并
+
+   ```js
+   
+   ```
+
+2. 多个 setState 合并
+
+   
 
 
 
