@@ -507,8 +507,6 @@ export default class NavBar extends Component {
 
 
 
-
-
 ### 4、props
 
 #### 4-1、props 值
@@ -1333,6 +1331,49 @@ MyClass.contextType = MyContext;
 
 
 **Context.Consumer**
+
+这个主要是在函数组件中使用
+
+```js
+import React, { Component, createContext } from 'react';
+
+const MyContext = createContext({title: '标题'});
+
+function FunHead() {
+  return (
+    <MyContext.Consumer>
+      {
+        value => {
+          return <h1>{value.title}</h1>
+        }
+      }
+    </MyContext.Consumer>
+  );
+}
+
+class Top extends Component {
+  render() {
+    return (
+      <div>
+        <FunHead />
+      </div>
+    );
+  }
+}
+
+export default class ContextCom extends Component {
+  render() {
+    return (
+      <div>
+        <MyContext.Provider value={{title: '首页'}}>
+          <Top />
+        </MyContext.Provider>
+      </div>
+    );
+  }
+}
+
+```
 
 
 

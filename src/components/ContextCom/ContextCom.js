@@ -2,6 +2,18 @@ import React, { Component, createContext } from 'react';
 
 const MyContext = createContext({title: '标题'});
 
+function FunHead() {
+  return (
+    <MyContext.Consumer>
+      {
+        value => {
+          return <h1>{value.title}</h1>
+        }
+      }
+    </MyContext.Consumer>
+  );
+}
+
 class Head extends Component {
   static contextType = MyContext;
 
@@ -12,7 +24,12 @@ class Head extends Component {
 
 class Top extends Component {
   render() {
-    return <div><Head /></div>
+    return (
+      <div>
+        <Head />
+        <FunHead />
+      </div> 
+    );
   }
 }
 
