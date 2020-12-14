@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 
 class Child extends Component {
   constructor(props) {
-    super(props);
+    super();
     this.state = {};
+    console.log('constructor 的 props：', this.props);
   }
 
   render() {
