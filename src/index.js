@@ -10,6 +10,7 @@ import HookComponent from './components/HookComponent/HookComponent.js';
 import Parent from './components/ParentChild/Parent.js';
 import ContextCom from './components/ContextCom/ContextCom.js';
 import EventsCom from './components/EventsCom/EventsCom';
+import NavBar from './components/NavBar/index';
 
 const name = 'world';
 const params = {
@@ -58,6 +59,11 @@ const jsx = (
     <Parent />
     <ContextCom />
     <EventsCom />
+    <NavBar
+      leftSlot={<span>左边</span>}
+      centerSlot={<span>中间</span>}
+      rightSlot={<span>右边</span>}
+    />
   </div>
 );
 

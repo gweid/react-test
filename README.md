@@ -473,6 +473,40 @@ export default FunComponent;
 - 有自己的生命周期，在生命周期内完成特定的操作
 - class 组件更新时只会执行 render 函数或者 componentDidUpdate 这些；函数式组件在更新时，整个函数都会被重新执行
 
+#### 3-3、react 实现类似 vue 的插槽
+
+```js
+import React, { Component } from 'react';
+import './index.css';
+
+export default class NavBar extends Component {
+  constructor(props) {
+    super();
+  };
+
+  render() {
+    const { leftSlot, centerSlot, rightSlot } = this.props;
+  
+    return (
+      <div className="nav-bar">
+        <div className="nav-left">{ leftSlot }</div>
+        <div className="nav-center">{ centerSlot }</div>
+        <div className="nav-right">{ rightSlot }</div>
+      </div>
+    );
+  }
+}
+
+// 使用
+<NavBar
+  leftSlot={<span>左边</span>}
+  centerSlot={<span>中间</span>}
+  rightSlot={<span>右边</span>}
+/>
+```
+
+
+
 
 
 ### 4、props
@@ -940,7 +974,6 @@ class ClassComponent extends Component {
 
 2. 多个 setState 合并
 
-   
 
 
 
