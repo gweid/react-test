@@ -744,13 +744,13 @@ class ClassComponent extends Component {
 }
 ```
 
-#### 5-2、通过 setState() 修改 state
+#### 5-2、setState
 
 > 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新和使 state 和 props 数据一致
 
 **1、问题：在组件中没有实现 setState，怎么能通过 this.setState 调用**
 
-因为，setState 是从 Component 中继承过来的
+因为，setState 是从 Component 中继承过来的，源码中定义：
 
 ```js
 Component.prototype.setState = function(partialState, callback) {
@@ -765,7 +765,7 @@ Component.prototype.setState = function(partialState, callback) {
 };
 ```
 
-**2、setState 设置成异步主要是：**
+**2、setState 是异步更新：**
 
 - `setState` 设计为异步，可以显著的提升性能
   - 如果每次调用 setState 都进行一次更新，那么意味着 render 函数会被频繁调用，界面重新渲染，这样效率是很低的
@@ -975,6 +975,12 @@ class ClassComponent extends Component {
 
 
 
+#### 5-3、setState 性能优化
+
+
+
+
+
 ### 6、事件绑定
 
 1. 直接在 jsx 渲染的标签对象上进行绑定，需要写成驼峰式；onclick ==> onClick
@@ -1163,6 +1169,10 @@ fn() // 此时的 this 指向 undefind
      }
    }
    ```
+
+#### 6-3、为什么 react 的事件是合成事件
+
+因为 react 不仅仅是只跑在浏览器中，还有 react-native；如果写死为浏览器原生事件，那么就需要分开浏览器和手机客户端分别写两套。而使用合成事件，则可以当跑在浏览器，就合成 dom 事件，跑在手机端，则合成手机app 事件。
 
 
 
