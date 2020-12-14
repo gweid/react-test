@@ -1183,7 +1183,96 @@ export default Parent;
 
 
 
-#### 7-3、跨组件
+#### 7-3、跨组件数据共享
+
+对于跨组件之间的通信，如果用 props 一层一层去传递，那是非常麻烦的。在 react 中提供了 Context 进行跨组价的数据传递。
+
+
+
+**React.createContext：创建一个 Context**
+
+```js
+const MyContext = React.createContext(defaultValue);
+```
+
+创建一个需要共享的 Context
+
+- 如果一个组件订阅了 Context，那么这个组件会从离自身最近的那个匹配的  `Provider`  中读取到当前的context值
+- defaultValue：默认值，组件在顶层查找过程中没有找到对应的`Provider`，就会使用 defaultValue 这个默认值
+
+
+
+**Context.Provider**
+
+```js
+<MyContext.Provider value={/* 某个值 */}>
+```
+
+每个 Context 对象都会返回一个 Provider React 组件，它允许消费组件订阅 context 的变化：
+
+- Provider 接收一个 `value` 属性，传递给消费组件
+- 一个 Provider 可以和多个消费组件有对应关系
+- 多个 Provider 也可以嵌套使用，里层的会覆盖外层的数据
+
+当 Provider 的 `value` 值发生变化时，它内部的所有消费组件都会重新渲染
+
+
+
+**Class.contextType**
+
+```js
+class MyClass extends Component {
+  static contextType = MyContext;
+}
+
+// 或者在外部
+MyClass.contextType = MyContext;
+```
+
+挂载在 class 上的 `contextType` 属性会被重赋值为一个由 `React.createContext()` 创建的 Context 对象：
+
+- 使得可以使用 `this.context` 来消费最近 Context 上的那个值
+- 可以在任何生命周期中访问到它，包括 render 函数中
+
+
+
+**Context.Consumer**
+
+
+
+**使用：**
+
+```js
+import React, { Component, createContext } from 'react';
+
+const MyContext = createContext({title: '标题'});
+
+class Head extends Component {
+  static contextType = MyContext;
+
+  render() {
+    return <h1>{this.context.title}</h1>
+  }
+}
+
+class Top extends Component {
+  render() {
+    return <div><Head /></div>
+  }
+}
+
+export default class ContextCom extends Component {
+  render() {
+    return (
+      <div>
+        <MyContext.Provider value={{title: '首页'}}>
+          <Top />
+        </MyContext.Provider>
+      </div>
+    );
+  }
+}
+```
 
 
 
@@ -1804,4 +1893,4 @@ const HookComponent = (id) => {
 
 > 注意：更新 ref 对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
 
-#### -3、useCallback
+#### -4、useCallback

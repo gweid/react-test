@@ -7,7 +7,8 @@ import FunComponent from './components/FunComponent/FunComponent.js';
 import Login from './components/Login/Login.js';
 import LifeCyclePage from './components/LifeCyclePage/LifeCyclePage.js';
 import HookComponent from './components/HookComponent/HookComponent.js';
-import Parent from './components/ParentChild/Parent';
+import Parent from './components/ParentChild/Parent.js';
+import ContextCom from './components/ContextCom/ContextCom.js';
 
 const name = 'world';
 const params = {
@@ -54,6 +55,7 @@ const jsx = (
     <LifeCyclePage />
     <HookComponent />
     <Parent />
+    <ContextCom />
   </div>
 );
 
