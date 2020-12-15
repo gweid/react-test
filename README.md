@@ -964,10 +964,21 @@ class ClassComponent extends Component {
    })
    ```
 
-   这样子去更新 age 是不会影响到 name 的，因为在 react 源码中实际上是利用 Object.assign 将原对象与新对象合并
+   这样子去更新 age 是不会影响到 name 的，因为在 react 源码中实际上是利用 Object.assign 将原对象与新对象合并。
+
+   react 中源码(react-reconciler/src/ReactUpdateQueue.js)：
 
    ```js
-   
+   function getStateFromUpdate() {
+     switch (update.tag) {
+       ...
+       case UpdateState: {
+          ...
+         // Merge the partial state and the previous state.
+         return Object.assign({}, prevState, partialState);
+       }
+     }
+   }
    ```
 
 2. 多个 setState 合并
@@ -1007,7 +1018,55 @@ class ClassComponent extends Component {
    export default ClassComponent;
    ```
 
-   执行 handleSetStateMerge ，times 的结果是 1，因为会对多个 setState 合并
+   执行 handleSetStateMerge ，times 的结果是 1，因为会对多个 setState 合并。
+
+   react 中源码（react-reconciler/src/ReactUpdateQueue.js）：在源码的processUpdateQueue中有一个do...while循环，就是从队列中取出多个state进行合并的
+
+   ```js
+   function processUpdateQueue(
+     workInProgress: Fiber,
+     props: any,
+     instance: any,
+     renderExpirationTime: ExpirationTime,
+   ) {
+      ...
+     // These values may change as we process the queue.
+     if (baseQueue !== null) {
+        ...
+       if (first !== null) {
+         let update = first;
+         do {
+           const updateExpirationTime = update.expirationTime;
+           if (updateExpirationTime < renderExpirationTime) {
+             // Priority is insufficient. Skip this update. If this is the first
+             // skipped update, the previous update/state is the new base
+             // update/state.
+             const clone: Update<State> = {
+               expirationTime: update.expirationTime,
+               suspenseConfig: update.suspenseConfig,
+   
+               tag: update.tag,
+               payload: update.payload,
+               callback: update.callback,
+   
+               next: (null: any),
+             };
+             if (newBaseQueueLast === null) {
+               newBaseQueueFirst = newBaseQueueLast = clone;
+               newBaseState = newState;
+             } else {
+               newBaseQueueLast = newBaseQueueLast.next = clone;
+             }
+             // Update the remaining priority in the queue.
+             if (updateExpirationTime > newExpirationTime) {
+               newExpirationTime = updateExpirationTime;
+             }
+           } else {
+             ...
+         } while (true);
+       }
+   }
+   ```
 
    要想结果为 3，那么可以将 setState 第一个参数改为函数形式：
 
@@ -1045,14 +1104,6 @@ class ClassComponent extends Component {
     
    export default ClassComponent;
    ```
-
-   
-
-
-#### 5-3、setState 性能优化
-
-
-
 
 
 ### 6、事件绑定
