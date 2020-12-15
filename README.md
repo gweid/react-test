@@ -1715,12 +1715,11 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 **需要注意的是 react 组件的更新机制**：setState 引起的 state 更新，或父组件重新 render 引起的 props 更新，更新后的 state 和 props 相比较之前的结果，无论是否有变化，都将引起子组件的重新 render。造成组件更新有两类（三种）情况
 
-1. 父组件重新 render 父组件重新 render 引起子组件重新 render 的情况有两种
+1. 父组件重新 render 引起子组件重新 render 的情况有两种
 
    ```js
-   直接使用，每当父组件重新 render 导致的重传 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通
-   过 shouldComponentUpdate 方法控制优化
-
+   直接使用，每当父组件重新 render 导致的重传 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通过 shouldComponentUpdate 方法控制优化
+   
    class Child extends Component {
       // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
       shouldComponentUpdate(nextProps){
@@ -1746,15 +1745,15 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
       }
       componentWillReceiveProps(nextProps) {
           // 父组件重传 props 时就会调用这个方法
-          this.setState({someThings: nextProps.   someThings});
+          this.setState({someThings: nextProps.someThings});
       }
       render() {
-          return <>{this.state.someThings}</   div>
+          return <div>{this.state.someThings}</div>
       }
    }
 
-   根据官网的描述: 在 componentWillReceiveProps    方法中，将 props 转换成自己的 state
-   是因为 componentWillReceiveProps 中判断 props    是否变化了，若变化了，this.setState 将引起    state 变化，从而引起render，此时就没必要再做第二   次因重传 props 来引起 render了，不然就重复做一样   的渲染了
+   根据官网的描述: 在 componentWillReceiveProps 方法中，将 props 转换成自己的 state
+   是因为 componentWillReceiveProps 中判断 props 是否变化了，若变化了，this.setState 将引起    state 变化，从而引起render，此时就没必要再做第二次因重传 props 来引起 render了，不然就重复做一样的渲染了
    ```
 
 3. 组件本身调用 setState，无论 state 有没有变化。可以通过 shouldComponentUpdate 方法控制优化
