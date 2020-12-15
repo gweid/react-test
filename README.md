@@ -1020,54 +1020,6 @@ class ClassComponent extends Component {
 
    执行 handleSetStateMerge ，times 的结果是 1，因为会对多个 setState 合并。
 
-   react 中源码（react-reconciler/src/ReactUpdateQueue.js）：在源码的processUpdateQueue中有一个do...while循环，就是从队列中取出多个state进行合并的
-
-   ```js
-   function processUpdateQueue(
-     workInProgress: Fiber,
-     props: any,
-     instance: any,
-     renderExpirationTime: ExpirationTime,
-   ) {
-      ...
-     // These values may change as we process the queue.
-     if (baseQueue !== null) {
-        ...
-       if (first !== null) {
-         let update = first;
-         do {
-           const updateExpirationTime = update.expirationTime;
-           if (updateExpirationTime < renderExpirationTime) {
-             // Priority is insufficient. Skip this update. If this is the first
-             // skipped update, the previous update/state is the new base
-             // update/state.
-             const clone: Update<State> = {
-               expirationTime: update.expirationTime,
-               suspenseConfig: update.suspenseConfig,
-   
-               tag: update.tag,
-               payload: update.payload,
-               callback: update.callback,
-   
-               next: (null: any),
-             };
-             if (newBaseQueueLast === null) {
-               newBaseQueueFirst = newBaseQueueLast = clone;
-               newBaseState = newState;
-             } else {
-               newBaseQueueLast = newBaseQueueLast.next = clone;
-             }
-             // Update the remaining priority in the queue.
-             if (updateExpirationTime > newExpirationTime) {
-               newExpirationTime = updateExpirationTime;
-             }
-           } else {
-             ...
-         } while (true);
-       }
-   }
-   ```
-
    要想结果为 3，那么可以将 setState 第一个参数改为函数形式：
 
    ```js
@@ -1104,6 +1056,99 @@ class ClassComponent extends Component {
     
    export default ClassComponent;
    ```
+
+   react 中源码（react-reconciler/src/ReactUpdateQueue.js）：
+
+   ```js
+   function getStateFromUpdate() {
+     switch (update.tag) {
+       case UpdateState: {
+         const payload = update.payload;
+         let partialState;
+         // 判断 payload 是否是函数，即看 setState() 的第一个参数是对象还是函数
+         if (typeof payload === 'function') {
+           // Updater function
+           if (__DEV__) {
+             enterDisallowedContextReadInDEV();
+             if (
+               debugRenderPhaseSideEffectsForStrictMode &&
+               workInProgress.mode & StrictMode
+             ) {
+               payload.call(instance, prevState, nextProps);
+             }
+           }
+           // setState((prevState, nextProps) => { return { times: prevState.times + 1}})
+           // 会执行一次函数
+           partialState = payload.call(instance, prevState, nextProps);
+           if (__DEV__) {
+             exitDisallowedContextReadInDEV();
+           }
+         } else {
+           // Partial state object
+           // 如果 setState 的第一个参数是个对象
+           partialState = payload;
+         }
+         return Object.assign({}, prevState, partialState);
+       }
+     }
+   }
+   
+   function processUpdateQueue(
+     workInProgress: Fiber,
+     props: any,
+     instance: any,
+     renderExpirationTime: ExpirationTime,
+   ) {
+      ...
+     // These values may change as we process the queue.
+     if (baseQueue !== null) {
+        ...
+       if (first !== null) {
+         let update = first;
+         do {
+             ...
+             newState = getStateFromUpdate(
+               workInProgress,
+               queue,
+               update,
+               newState,
+               props,
+               instance,
+             );
+         } while (true);
+       }
+   }
+   ```
+
+   由上面可以看出：
+
+   - 首先，有一个 do...while 循环，就是从队列中取出多个 state 进行合并的，主要就是执行其中的 getStateFromUpdate
+
+   - getStateFromUpdate 中，会判断 setState 的第一个参数是一个函数还是一个对象，如果是一个函数，会将函数执行一下
+
+     ```js
+     // 源码
+     partialState = payload.call(instance, prevState, nextProps);
+     return Object.assign({}, prevState, partialState);
+     
+     // setState 
+     this.setState((state, props) => {
+       return { times: state.times + 1 }
+     });
+     // 执行了里面的函数，state.times + 1 就会执行，在 react 中， 直接操作 state 的属性会成功，但不会更新页面，所以实际上 state 的 times 会变为 1， 后面执行的两次也是一样，会累加
+     ```
+
+   - setState 的第一个参数是对象，那么仅仅是会合并
+
+     ```
+     // 源码
+     partialState = payload;
+     return Object.assign({}, prevState, partialState);
+     
+     // 这样子，三次操作其实state 中的 times 始终是 0，那么到最后一次，也就是
+     Object.assign({}, {times: 0}, {times: 1});
+     // 执行这个，所以会一直是 1
+     ```
 
 
 ### 6、事件绑定
