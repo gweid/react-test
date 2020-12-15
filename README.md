@@ -972,7 +972,81 @@ class ClassComponent extends Component {
 
 2. 多个 setState 合并
 
+   ```js
+   import React, { Component } from 'react';
+   
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props);
+           this.state = {
+               times: 0,
+           };
+       };
+   
+       handleSetStateMerge = () => {
+           this.setState({
+               times: this.state.times + 1
+           });
+           this.setState({
+               times: this.state.times + 1
+           });
+           this.setState({
+               times: this.state.times + 1
+           });
+       }
+   
+       render() {
+           return (
+               <div>
+                   <div onClick={this.handleSetStateMerge}>setState合并</div>
+               </div>
+           );
+       }
+   }
+    
+   export default ClassComponent;
+   ```
 
+   执行 handleSetStateMerge ，times 的结果是 1，因为会对多个 setState 合并
+
+   要想结果为 3，那么可以将 setState 第一个参数改为函数形式：
+
+   ```js
+   import React, { Component } from 'react';
+   
+   class ClassComponent extends Component {
+       constructor(props) {
+           super(props);
+           this.state = {
+               times: 0,
+           };
+       };
+   
+       handleSetStateMerge = () => {
+           this.setState((state, props) => {
+               return { times: state.times + 1 }
+           });
+           this.setState((state, props) => {
+               return { times: state.times + 1 }
+           });
+           this.setState((state, props) => {
+               return { times: state.times + 1 }
+           });
+       }
+   
+       render() {
+           return (
+               <div>
+                   <div onClick={this.handleSetStateMerge}>setState合并</div>
+               </div>
+           );
+       }
+   }
+    
+   export default ClassComponent;
+   ```
+
+   
 
 
 #### 5-3、setState 性能优化

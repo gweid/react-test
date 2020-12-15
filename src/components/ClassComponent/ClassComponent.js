@@ -12,7 +12,8 @@ class ClassComponent extends Component {
             count: 1,
             active: false,
             isShow: true,
-            nums: [1, 50 ,40, 20, 60, 100, 55, 24, 33, 66]
+            nums: [1, 50 ,40, 20, 60, 100, 55, 24, 33, 66],
+            times: 0,
         };
 
         this.btnClick = this.btnClick.bind(this);
@@ -59,6 +60,18 @@ class ClassComponent extends Component {
         this.refs.textIpt.focus();
     }
 
+    handleSetStateMerge = () => {
+        this.setState({
+            times: this.state.times + 1
+        });
+        this.setState({
+            times: this.state.times + 1
+        });
+        this.setState({
+            times: this.state.times + 1
+        });
+    }
+
     render() {
         return (
             <div>
@@ -90,6 +103,7 @@ class ClassComponent extends Component {
                     }
                 </ul>
                 <div className={classnames('classone, classtwo', this.state.active ? 'active' : '')}>classnames 库</div>
+                <div onClick={this.handleSetStateMerge}>setState合并</div>
             </div>
         );
     }
