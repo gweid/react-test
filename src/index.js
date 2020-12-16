@@ -9,8 +9,9 @@ import LifeCyclePage from './components/LifeCyclePage/LifeCyclePage.js';
 import HookComponent from './components/HookComponent/HookComponent.js';
 import Parent from './components/ParentChild/Parent.js';
 import ContextCom from './components/ContextCom/ContextCom.js';
-import EventsCom from './components/EventsCom/EventsCom';
-import NavBar from './components/NavBar/index';
+import EventsCom from './components/EventsCom/EventsCom.js';
+import NavBar from './components/NavBar/index.js';
+import ScuCom from './components/ScuCom/index.js'
 
 const name = 'world';
 const params = {
@@ -64,6 +65,7 @@ const jsx = (
       centerSlot={<span>中间</span>}
       rightSlot={<span>右边</span>}
     />
+    <ScuCom />
   </div>
 );
 

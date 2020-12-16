@@ -1972,7 +1972,111 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
 
 **SCU的优化**
 
+在 react 中，只要修改了父组件的数据，那么无论修改的数据有没有影响到子组件，子组件都会重新 render
 
+```js
+import React, { Component } from 'react';
+
+class TestScu extends Component {
+  render() {
+    console.log('TestScu进行了render');
+    return <div>TestScu</div>
+  }
+}
+
+class ScuCom extends Component {
+  constructor() {
+    super();
+    this.state = {
+      componentTitle: 'ScuCom'
+    }
+  }
+
+  handleClick = () => {
+    this.setState({
+      componentTitle: '变化后的ScuCom'
+    });
+  }
+
+  render() {
+    console.log('ScuCom进行了render');
+    return (
+      <div>
+        <p onClick={this.handleClick}>{this.state.componentTitle}</p>
+        <TestScu />
+      </div>
+    );
+  }
+}
+
+export default ScuCom;
+```
+
+事实上，很多的组件没有必须要重新 render；因此，react 提供了 `shouldComponentUpdate` 进行优化
+
+shouldComponentUpdate(nextProps , nextState )
+
+- 两个参数：nextProps 修改之后的 props 属性；nextState 修改之后的 state 属性
+- 应该返回一个 boolean 类型：返回值为 true，那么就需要调用 render 方法；返回值为 false，那么不需要调用 render 方法
+
+使用 shouldComponentUpdate 优化
+
+```js
+import React, { Component } from 'react';
+
+class TestScu extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.title !== this.props.title;
+  }
+
+  render() {
+    console.log('TestScu进行了render');
+    return (
+      <div>
+        <h1>{this.props.title}</h1>
+        TestScu
+      </div>
+    )
+  }
+}
+
+class ScuCom extends Component {
+  constructor() {
+    super();
+    this.state = {
+      componentTitle: 'ScuCom',
+      propTitle: '哈哈哈'
+    }
+  }
+
+  handleClick = () => {
+    this.setState({
+      componentTitle: '变化后的ScuCom'
+    });
+  }
+
+  handleClickTest = () => {
+    this.setState({
+      propTitle: '嘿嘿和'
+    });
+  }
+
+  render() {
+    console.log('ScuCom进行了render');
+    return (
+      <div>
+        <p onClick={this.handleClick}>{this.state.componentTitle}</p>
+        <p onClick={this.handleClickTest}>改变子组件props</p>
+        <TestScu title={this.state.propTitle} />
+      </div>
+    );
+  }
+}
+```
 
 
 
