@@ -1924,6 +1924,8 @@ class ClassComponent extends Component {
 
 更新流程：
 
+React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state & props），会自动的更新虚拟 DOM，获得一个新的虚拟 DOM 树，然后通过 Diff 算法，比较新旧虚拟 DOM 树，找出最小的有变化的部分，将这个变化的部分（Patch）加入队列，最终批量的更新这些 Patch 到实际的 DOM 中。
+
 ![](/imgs/img5.png)
 
 当 props 或者 state 发生改变，会调用 render 函数去生成新的 Dom 树，然后基于新旧两颗不同的树之间的差别来判断如何有效的更新视图。
@@ -1938,9 +1940,10 @@ class ClassComponent extends Component {
 
 这样子的算法复杂度降低为 O(n)。
 
-**Diff 对比**
+**Diff 算法**
 
-- 
+- 当节点是不同的元素，会删掉原来的树，创建新的树
+  - 当一个元素从 `div` 变成 `span`，
 
 
 
