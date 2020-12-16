@@ -61,14 +61,26 @@ class ClassComponent extends Component {
     }
 
     handleSetStateMerge = () => {
-        this.setState({
-            times: this.state.times + 1
+        // 结果 times 是 1
+        // this.setState({
+        //     times: this.state.times + 1
+        // });
+        // this.setState({
+        //     times: this.state.times + 1
+        // });
+        // this.setState({
+        //     times: this.state.times + 1
+        // });
+
+        // 结果 times 是 3
+        this.setState((state, props) => {
+            return { times: state.times + 1 }
         });
-        this.setState({
-            times: this.state.times + 1
+        this.setState((state, props) => {
+            return { times: state.times + 1 }
         });
-        this.setState({
-            times: this.state.times + 1
+        this.setState((state, props) => {
+            return { times: state.times + 1 }
         });
     }
 

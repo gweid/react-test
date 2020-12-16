@@ -1,5 +1,7 @@
 # React
 
+本文是一些 react 相关的基础知识。
+
 ### 1、基础
 
 #### 1-1、创建一个 React 项目并启动
@@ -1048,13 +1050,6 @@ class ClassComponent extends Component {
 
    
 
-
-#### 5-3、setState 性能优化
-
-
-
-
-
 ### 6、事件绑定
 
 1. 直接在 jsx 渲染的标签对象上进行绑定，需要写成驼峰式；onclick ==> onClick
@@ -1814,6 +1809,22 @@ class ClassComponent extends Component {
 ```
 
 > 不要在 render 或者 render 之前访问 refs
+
+
+
+### React 常见的性能优化
+
+首先，需要了解 react 的渲染与跟新流程
+
+渲染流程：
+
+![](/imgs/img1.jpg)
+
+更新流程：
+
+![](/imgs/img5.png)
+
+可知，react 的更新机制：
 
 
 
