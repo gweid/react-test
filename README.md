@@ -2145,6 +2145,8 @@ class ScuCom extends Component {
 
    PureComponent 的原理：**对 props 和 state 进行浅层比较**
 
+   > 在开发中，进行浅层比较就好，深层比较是很消耗性能的
+
    首先，在 react/ReactBaseClasses.js 中：在 PureComponent 的原型上增加一个 isPureReactComponent 为 true 的属性
 
    ```js
