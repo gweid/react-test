@@ -1940,6 +1940,8 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
 
 这样子的算法复杂度降低为 O(n)。
 
+
+
 **简单了解 Diff 算法**
 
 - 当对比节点为不同的元素，React会拆卸原有的树，并且建立起新的树
@@ -1956,6 +1958,8 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
   ```
 
   当在后面插入一条元素，前面两个比较是完全相同的，所以直接在后面插入即可；但前面插入一条元素，首先发现第一个对不上，那么会删掉旧 dom 的第一个，创建一个新 dom 的第一个，后面的对不上也是如此。
+
+
 
 **key 优化**
 
@@ -2017,7 +2021,7 @@ export default ScuCom;
 shouldComponentUpdate(nextProps , nextState )
 
 - 两个参数：nextProps 修改之后的 props 属性；nextState 修改之后的 state 属性
-- 应该返回一个 boolean 类型：返回值为 true，那么就需要调用 render 方法；返回值为 false，那么不需要调用 render 方法
+- 应该返回一个 boolean 类型：返回值为 true，那么就需要调用 render 方法；返回值为 false，那么不需要调用 render 方法。默认是 true。
 
 使用 shouldComponentUpdate 优化
 
@@ -2077,6 +2081,169 @@ class ScuCom extends Component {
   }
 }
 ```
+
+
+
+**PureComponent 和 memo**
+
+所有的类，都需要手动来实现 shouldComponentUpdate，那么会给开发者增加非常多的工作量。其实 react 有其更方便的实现方式。
+
+1. 当时 class 组件，那么可以继承自 PureComponent 
+
+   ```js
+   import React, { Component, PureComponent } from 'react';
+   
+   class TestScu extends PureComponent {
+     constructor(props) {
+       super();
+     }
+   
+     render() {
+       console.log('TestScu进行了render');
+       return (
+         <div>
+           <h1>{this.props.title}</h1>
+           TestScu
+         </div>
+       )
+     }
+   }
+   
+   class ScuCom extends Component {
+     constructor() {
+       super();
+       this.state = {
+         componentTitle: 'ScuCom',
+         propTitle: '哈哈哈'
+       }
+     }
+   
+     handleClick = () => {
+       this.setState({
+         componentTitle: '变化后的ScuCom'
+       });
+     }
+   
+     handleClickTest = () => {
+       this.setState({
+         propTitle: '嘿嘿和'
+       });
+     }
+   
+     render() {
+       console.log('ScuCom进行了render');
+       return (
+         <div>
+           <p onClick={this.handleClick}>{this.state.componentTitle}</p>
+           <p onClick={this.handleClickTest}>改变子组件props</p>
+           <TestScu title={this.state.propTitle} />
+         </div>
+       );
+     }
+   }
+   ```
+
+   PureComponent 的原理：**对 props 和 state 进行浅层比较**
+
+   首先，在 react/ReactBaseClasses.js 中：在 PureComponent 的原型上增加一个 isPureReactComponent 为 true 的属性
+
+   ```js
+   function Component(props, context, updater) {}
+   
+   Component.prototype.isReactComponent = {};
+   
+   Component.prototype.setState = function(partialState, callback) {};
+   
+   Component.prototype.forceUpdate = function(callback) {
+     this.updater.enqueueForceUpdate(this, callback, 'forceUpdate');
+   };
+   
+   function ComponentDummy() {}
+   ComponentDummy.prototype = Component.prototype;
+   
+   function PureComponent(props, context, updater) {}
+   
+   const pureComponentPrototype = (PureComponent.prototype = new ComponentDummy());
+   pureComponentPrototype.constructor = PureComponent;
+   Object.assign(pureComponentPrototype, Component.prototype);
+   
+   pureComponentPrototype.isPureReactComponent = true;
+   
+   export {Component, PureComponent};
+   ```
+
+   然后，在 React-reconcilier/ReactFiberClassComponent.js 中：会判断是使用了组件内部的 shouldComponentUpdate 还是使用了 PureComponent
+
+   ```js
+   function checkShouldComponentUpdate() {
+     const instance = workInProgress.stateNode;
+     // 当组件内部实现了 shouldComponentUpdate
+     if (typeof instance.shouldComponentUpdate === 'function') {
+        ...
+       startPhaseTimer(workInProgress, 'shouldComponentUpdate');
+       const shouldUpdate = instance.shouldComponentUpdate(
+         newProps,
+         newState,
+         nextContext,
+       );
+       stopPhaseTimer();
+       ...
+   	// 返回 shouldUpdate 是 true 或者 false
+       return shouldUpdate;
+     }
+   
+     // 使用了 PureComponent
+     if (ctor.prototype && ctor.prototype.isPureReactComponent) {
+       return (
+         !shallowEqual(oldProps, newProps) || !shallowEqual(oldState, newState)
+       );
+     }
+     return true;
+   }
+   ```
+
+   当使用了 PureComponent，会调用 shallowEqual(oldProps, newProps)  和 shallowEqual(oldState, newState) 进行 props 和 state 的浅层比较
+
+   在 shared/shallowEqual.js 中：
+
+   ```js
+   function shallowEqual(objA: mixed, objB: mixed): boolean {
+     // 判断两个对象是否是同一个对象
+     if (is(objA, objB)) {
+       return true;
+     }
+     
+     // 不是对象或者是个 null
+     if (
+       typeof objA !== 'object' ||
+       objA === null ||
+       typeof objB !== 'object' ||
+       objB === null
+     ) {
+       return false;
+     }
+   
+     const keysA = Object.keys(objA);
+     const keysB = Object.keys(objB);
+   
+     // 两个对象长度是否一样
+     if (keysA.length !== keysB.length) {
+       return false;
+     }
+   
+     // 遍历比较 objA 的 key 是否在 objB 里面，并且对应的值是否一致，只比对第一层
+     for (let i = 0; i < keysA.length; i++) {
+       if (
+         !hasOwnProperty.call(objB, keysA[i]) ||
+         !is(objA[keysA[i]], objB[keysA[i]])
+       ) {
+         return false;
+       }
+     }
+   
+     return true;
+   }
+   ```
 
 
 
