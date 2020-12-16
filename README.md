@@ -966,10 +966,21 @@ class ClassComponent extends Component {
    })
    ```
 
-   这样子去更新 age 是不会影响到 name 的，因为在 react 源码中实际上是利用 Object.assign 将原对象与新对象合并
+   这样子去更新 age 是不会影响到 name 的，因为在 react 源码中实际上是利用 Object.assign 将原对象与新对象合并。
+
+   react 中源码(react-reconciler/src/ReactUpdateQueue.js)：
 
    ```js
-   
+   function getStateFromUpdate() {
+     switch (update.tag) {
+       ...
+       case UpdateState: {
+          ...
+         // Merge the partial state and the previous state.
+         return Object.assign({}, prevState, partialState);
+       }
+     }
+   }
    ```
 
 2. 多个 setState 合并
@@ -1009,7 +1020,7 @@ class ClassComponent extends Component {
    export default ClassComponent;
    ```
 
-   执行 handleSetStateMerge ，times 的结果是 1，因为会对多个 setState 合并
+   执行 handleSetStateMerge ，times 的结果是 1，因为会对多个 setState 合并。
 
    要想结果为 3，那么可以将 setState 第一个参数改为函数形式：
 
@@ -1048,7 +1059,99 @@ class ClassComponent extends Component {
    export default ClassComponent;
    ```
 
+   react 中源码（react-reconciler/src/ReactUpdateQueue.js）：
+
+   ```js
+   function getStateFromUpdate() {
+     switch (update.tag) {
+       case UpdateState: {
+         const payload = update.payload;
+         let partialState;
+         // 判断 payload 是否是函数，即看 setState() 的第一个参数是对象还是函数
+         if (typeof payload === 'function') {
+           // Updater function
+           if (__DEV__) {
+             enterDisallowedContextReadInDEV();
+             if (
+               debugRenderPhaseSideEffectsForStrictMode &&
+               workInProgress.mode & StrictMode
+             ) {
+               payload.call(instance, prevState, nextProps);
+             }
+           }
+           // setState((prevState, nextProps) => { return { times: prevState.times + 1}})
+           // 会执行一次函数
+           partialState = payload.call(instance, prevState, nextProps);
+           if (__DEV__) {
+             exitDisallowedContextReadInDEV();
+           }
+         } else {
+           // Partial state object
+           // 如果 setState 的第一个参数是个对象
+           partialState = payload;
+         }
+         return Object.assign({}, prevState, partialState);
+       }
+     }
+   }
    
+   function processUpdateQueue(
+     workInProgress: Fiber,
+     props: any,
+     instance: any,
+     renderExpirationTime: ExpirationTime,
+   ) {
+      ...
+     // These values may change as we process the queue.
+     if (baseQueue !== null) {
+        ...
+       if (first !== null) {
+         let update = first;
+         do {
+             ...
+             newState = getStateFromUpdate(
+               workInProgress,
+               queue,
+               update,
+               newState,
+               props,
+               instance,
+             );
+         } while (true);
+       }
+   }
+   ```
+
+   由上面可以看出：
+
+   - 首先，有一个 do...while 循环，就是从队列中取出多个 state 进行合并的，主要就是执行其中的 getStateFromUpdate
+
+   - getStateFromUpdate 中，会判断 setState 的第一个参数是一个函数还是一个对象，如果是一个函数，会将函数执行一下
+
+     ```js
+     // 源码
+     partialState = payload.call(instance, prevState, nextProps);
+     return Object.assign({}, prevState, partialState);
+     
+     // setState 
+     this.setState((state, props) => {
+       return { times: state.times + 1 }
+     });
+     // 执行了里面的函数，state.times + 1 就会执行，在 react 中， 直接操作 state 的属性会成功，但不会更新页面，所以实际上 state 的 times 会变为 1， 后面执行的两次也是一样，会累加
+     ```
+
+   - setState 的第一个参数是对象，那么仅仅是会合并
+
+     ```
+     // 源码
+     partialState = payload;
+     return Object.assign({}, prevState, partialState);
+     
+     // 这样子，三次操作其实state 中的 times 始终是 0，那么到最后一次，也就是
+     Object.assign({}, {times: 0}, {times: 1});
+     // 执行这个，所以会一直是 1
+     ```
+
 
 ### 6、事件绑定
 
@@ -1614,12 +1717,11 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 **需要注意的是 react 组件的更新机制**：setState 引起的 state 更新，或父组件重新 render 引起的 props 更新，更新后的 state 和 props 相比较之前的结果，无论是否有变化，都将引起子组件的重新 render。造成组件更新有两类（三种）情况
 
-1. 父组件重新 render 父组件重新 render 引起子组件重新 render 的情况有两种
+1. 父组件重新 render 引起子组件重新 render 的情况有两种
 
    ```js
-   直接使用，每当父组件重新 render 导致的重传 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通
-   过 shouldComponentUpdate 方法控制优化
-
+   直接使用，每当父组件重新 render 导致的重传 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通过 shouldComponentUpdate 方法控制优化
+   
    class Child extends Component {
       // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
       shouldComponentUpdate(nextProps){
@@ -1645,15 +1747,15 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
       }
       componentWillReceiveProps(nextProps) {
           // 父组件重传 props 时就会调用这个方法
-          this.setState({someThings: nextProps.   someThings});
+          this.setState({someThings: nextProps.someThings});
       }
       render() {
-          return <>{this.state.someThings}</   div>
+          return <div>{this.state.someThings}</div>
       }
    }
 
-   根据官网的描述: 在 componentWillReceiveProps    方法中，将 props 转换成自己的 state
-   是因为 componentWillReceiveProps 中判断 props    是否变化了，若变化了，this.setState 将引起    state 变化，从而引起render，此时就没必要再做第二   次因重传 props 来引起 render了，不然就重复做一样   的渲染了
+   根据官网的描述: 在 componentWillReceiveProps 方法中，将 props 转换成自己的 state
+   是因为 componentWillReceiveProps 中判断 props 是否变化了，若变化了，this.setState 将引起    state 变化，从而引起render，此时就没必要再做第二次因重传 props 来引起 render了，不然就重复做一样的渲染了
    ```
 
 3. 组件本身调用 setState，无论 state 有没有变化。可以通过 shouldComponentUpdate 方法控制优化
