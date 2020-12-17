@@ -1916,7 +1916,7 @@ class ClassComponent extends Component {
 
 ### React 常见的性能优化手段
 
-**首先，需要了解 react 的更新机制**
+#### 首先，需要了解 react 的更新机制
 
 渲染流程：
 
@@ -1942,7 +1942,7 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
 
 
 
-**简单了解 Diff 算法**
+#### 简单了解 React 的 Diff 算法
 
 - 当对比节点为不同的元素，React会拆卸原有的树，并且建立起新的树
 
@@ -1961,7 +1961,7 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
 
 
 
-**key 优化**
+#### key 优化
 
 如果只是往前面插入一条数据，其他元素不变，只是位置变了，那么都删掉重新创建显然不合理。React 首先会对新集合进行遍历，通过唯一 key 来判断老集合中是否存在相同的节点，如果没有则创建，如果有的，则判断是否需要进行移动操作。这就有效避免低效的销毁重建。所以对于列表之类的使用 key 是非常有必要的。
 
@@ -1974,7 +1974,7 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
 
 
 
-**SCU的优化**
+#### SCU的优化
 
 在 react 中，只要修改了父组件的数据，那么无论修改的数据有没有影响到子组件，子组件都会重新 render
 
@@ -2084,166 +2084,262 @@ class ScuCom extends Component {
 
 
 
-**PureComponent 和 memo**
+#### PureComponent 和 memo
 
 所有的类，都需要手动来实现 shouldComponentUpdate，那么会给开发者增加非常多的工作量。其实 react 有其更方便的实现方式。
 
-1. 当时 class 组件，那么可以继承自 PureComponent 
+**当是 class 组件，那么可以继承自 PureComponent** 
 
-   ```js
-   import React, { Component, PureComponent } from 'react';
-   
-   class TestScu extends PureComponent {
-     constructor(props) {
-       super();
-     }
-   
-     render() {
-       console.log('TestScu进行了render');
-       return (
-         <div>
-           <h1>{this.props.title}</h1>
-           TestScu
-         </div>
-       )
-     }
-   }
-   
-   class ScuCom extends Component {
-     constructor() {
-       super();
-       this.state = {
-         componentTitle: 'ScuCom',
-         propTitle: '哈哈哈'
-       }
-     }
-   
-     handleClick = () => {
-       this.setState({
-         componentTitle: '变化后的ScuCom'
-       });
-     }
-   
-     handleClickTest = () => {
-       this.setState({
-         propTitle: '嘿嘿和'
-       });
-     }
-   
-     render() {
-       console.log('ScuCom进行了render');
-       return (
-         <div>
-           <p onClick={this.handleClick}>{this.state.componentTitle}</p>
-           <p onClick={this.handleClickTest}>改变子组件props</p>
-           <TestScu title={this.state.propTitle} />
-         </div>
-       );
-     }
-   }
-   ```
+```js
+import React, { Component, PureComponent } from 'react';
 
-   PureComponent 的原理：**对 props 和 state 进行浅层比较**
+class TestScu extends PureComponent {
+  constructor(props) {
+    super();
+  }
 
-   首先，在 react/ReactBaseClasses.js 中：在 PureComponent 的原型上增加一个 isPureReactComponent 为 true 的属性
+  render() {
+    console.log('TestScu进行了render');
+    return (
+      <div>
+        <h1>{this.props.title}</h1>
+        TestScu
+      </div>
+    )
+  }
+}
 
-   ```js
-   function Component(props, context, updater) {}
-   
-   Component.prototype.isReactComponent = {};
-   
-   Component.prototype.setState = function(partialState, callback) {};
-   
-   Component.prototype.forceUpdate = function(callback) {
-     this.updater.enqueueForceUpdate(this, callback, 'forceUpdate');
-   };
-   
-   function ComponentDummy() {}
-   ComponentDummy.prototype = Component.prototype;
-   
-   function PureComponent(props, context, updater) {}
-   
-   const pureComponentPrototype = (PureComponent.prototype = new ComponentDummy());
-   pureComponentPrototype.constructor = PureComponent;
-   Object.assign(pureComponentPrototype, Component.prototype);
-   
-   pureComponentPrototype.isPureReactComponent = true;
-   
-   export {Component, PureComponent};
-   ```
+class ScuCom extends Component {
+  constructor() {
+    super();
+    this.state = {
+      componentTitle: 'ScuCom',
+      propTitle: '哈哈哈'
+    }
+  }
 
-   然后，在 React-reconcilier/ReactFiberClassComponent.js 中：会判断是使用了组件内部的 shouldComponentUpdate 还是使用了 PureComponent
+  handleClick = () => {
+    this.setState({
+      componentTitle: '变化后的ScuCom'
+    });
+  }
 
-   ```js
-   function checkShouldComponentUpdate() {
-     const instance = workInProgress.stateNode;
-     // 当组件内部实现了 shouldComponentUpdate
-     if (typeof instance.shouldComponentUpdate === 'function') {
-        ...
-       startPhaseTimer(workInProgress, 'shouldComponentUpdate');
-       const shouldUpdate = instance.shouldComponentUpdate(
-         newProps,
-         newState,
-         nextContext,
-       );
-       stopPhaseTimer();
-       ...
-   	// 返回 shouldUpdate 是 true 或者 false
-       return shouldUpdate;
-     }
-   
-     // 使用了 PureComponent
-     if (ctor.prototype && ctor.prototype.isPureReactComponent) {
-       return (
-         !shallowEqual(oldProps, newProps) || !shallowEqual(oldState, newState)
-       );
-     }
-     return true;
-   }
-   ```
+  handleClickTest = () => {
+    this.setState({
+      propTitle: '嘿嘿和'
+    });
+  }
 
-   当使用了 PureComponent，会调用 shallowEqual(oldProps, newProps)  和 shallowEqual(oldState, newState) 进行 props 和 state 的浅层比较
+  render() {
+    console.log('ScuCom进行了render');
+    return (
+      <div>
+        <p onClick={this.handleClick}>{this.state.componentTitle}</p>
+        <p onClick={this.handleClickTest}>改变子组件props</p>
+        <TestScu title={this.state.propTitle} />
+      </div>
+    );
+  }
+}
+```
 
-   在 shared/shallowEqual.js 中：
+PureComponent 的原理：**对 props 和 state 进行浅层比较**
 
-   ```js
-   function shallowEqual(objA: mixed, objB: mixed): boolean {
-     // 判断两个对象是否是同一个对象
-     if (is(objA, objB)) {
-       return true;
-     }
-     
-     // 不是对象或者是个 null
-     if (
-       typeof objA !== 'object' ||
-       objA === null ||
-       typeof objB !== 'object' ||
-       objB === null
-     ) {
-       return false;
-     }
-   
-     const keysA = Object.keys(objA);
-     const keysB = Object.keys(objB);
-   
-     // 两个对象长度是否一样
-     if (keysA.length !== keysB.length) {
-       return false;
-     }
-   
-     // 遍历比较 objA 的 key 是否在 objB 里面，并且对应的值是否一致，只比对第一层
-     for (let i = 0; i < keysA.length; i++) {
-       if (
-         !hasOwnProperty.call(objB, keysA[i]) ||
-         !is(objA[keysA[i]], objB[keysA[i]])
-       ) {
-         return false;
-       }
-     }
-   
-     return true;
-   }
-   ```
+首先，在 react/ReactBaseClasses.js 中：在 PureComponent 的原型上增加一个 isPureReactComponent 为 true 的属性
+
+```js
+function Component(props, context, updater) {}
+
+Component.prototype.isReactComponent = {};
+
+Component.prototype.setState = function(partialState, callback) {};
+
+Component.prototype.forceUpdate = function(callback) {
+  this.updater.enqueueForceUpdate(this, callback, 'forceUpdate');
+};
+
+function ComponentDummy() {}
+ComponentDummy.prototype = Component.prototype;
+
+function PureComponent(props, context, updater) {}
+
+const pureComponentPrototype = (PureComponent.prototype = new ComponentDummy());
+pureComponentPrototype.constructor = PureComponent;
+Object.assign(pureComponentPrototype, Component.prototype);
+
+pureComponentPrototype.isPureReactComponent = true;
+
+export {Component, PureComponent};
+```
+
+然后，在 React-reconcilier/ReactFiberClassComponent.js 中：会判断是使用了组件内部的 shouldComponentUpdate 还是使用了 PureComponent
+
+```js
+function checkShouldComponentUpdate() {
+  const instance = workInProgress.stateNode;
+  // 当组件内部实现了 shouldComponentUpdate
+  if (typeof instance.shouldComponentUpdate === 'function') {
+     ...
+    startPhaseTimer(workInProgress, 'shouldComponentUpdate');
+    const shouldUpdate = instance.shouldComponentUpdate(
+      newProps,
+      newState,
+      nextContext,
+    );
+    stopPhaseTimer();
+    ...
+	// 返回 shouldUpdate 是 true 或者 false
+    return shouldUpdate;
+  }
+
+  // 使用了 PureComponent
+  if (ctor.prototype && ctor.prototype.isPureReactComponent) {
+    return (
+      !shallowEqual(oldProps, newProps) || !shallowEqual(oldState, newState)
+    );
+  }
+  return true;
+}
+```
+
+当使用了 PureComponent，会调用 shallowEqual(oldProps, newProps)  和 shallowEqual(oldState, newState) 进行 props 和 state 的浅层比较
+
+在 shared/shallowEqual.js 中：
+
+```js
+function shallowEqual(objA: mixed, objB: mixed): boolean {
+  // 判断两个对象是否是同一个对象
+  if (is(objA, objB)) {
+    return true;
+  }
+  
+  // 不是对象或者是个 null
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false;
+  }
+
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+
+  // 两个对象长度是否一样
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  // 遍历比较 objA 的 key 是否在 objB 里面，并且对应的值是否一致，只比对第一层
+  for (let i = 0; i < keysA.length; i++) {
+    if (
+      !hasOwnProperty.call(objB, keysA[i]) ||
+      !is(objA[keysA[i]], objB[keysA[i]])
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+```
+
+
+
+**当是函数组件时，pureComponent 不适用，可以使用 memo**
+
+```js
+import React, { Component, memo } from 'react';
+
+const MemoScu = memo(function(props) {
+  console.log('MemoScu被render');
+  return (
+    <div>{props.title}</div>
+  );
+})
+
+class ScuCom extends Component {
+  constructor() {
+    super();
+    this.state = {
+      componentTitle: 'ScuCom',
+      propTitle: '哈哈哈',
+      memoTitle: 'memo的标题'
+    }
+  }
+
+  handleClick = () => {
+    this.setState({
+      componentTitle: '变化后的ScuCom'
+    });
+  }
+
+  handleClickMemo = () => {
+    this.setState({
+      memoTitle: '变化后memo的标题'
+    });
+  }
+
+  render() {
+    console.log('ScuCom进行了render');
+    return (
+      <div>
+        <p onClick={this.handleClick}>{this.state.componentTitle}</p>
+        <p onClick={this.handleClickMemo}>改变子组件memo</p>
+        <MemoScu title={this.state.memoTitle} />
+      </div>
+    );
+  }
+}
+```
+
+React.memo 的基本原理：
+
+首先，在 react/memo.js 中：
+
+```js
+export default function memo<Props>(
+  type: React$ElementType,
+  compare?: (oldProps: Props, newProps: Props) => boolean,
+) {
+  if (__DEV__) {
+    if (!isValidElementType(type)) {
+      console.error(
+        'memo: The first argument must be a component. Instead ' +
+          'received: %s',
+        type === null ? 'null' : typeof type,
+      );
+    }
+  }
+  // 返回一个对象，这个对象有一些标记属性，对象带有一些标志属性，在react Fiber的过程中会做相应的处理（react-reconciler/ReactFiberBeginWork.js）
+  return {
+    $$typeof: REACT_MEMO_TYPE,
+    type,
+    compare: compare === undefined ? null : compare,
+  };
+}
+```
+
+memo 函数返回的是一个对象，这个对象带有一些标志属性，在 react Fiber 的过程中会做相应的处理。
+
+在 react-reconciler/ReactFiberBeginWork.js 中：
+
+```js
+if (updateExpirationTime < renderExpirationTime) {
+    const prevProps = currentChild.memoizedProps;
+    let compare = Component.compare;
+    // 在 memo 中有没有传入 compare，没有就使用 shallowEqual 浅层比较
+    // function memo<Props>(type: React$ElementType,compare?: (oldProps: Props, newProps: Props) => boolean,) {}
+    compare = compare !== null ? compare : shallowEqual;
+    if (compare(prevProps, nextProps) && current.ref === workInProgress.ref) {
+      return bailoutOnAlreadyFinishedWork(
+        current,
+        workInProgress,
+        renderExpirationTime,
+      );
+    }
+```
 
 
 

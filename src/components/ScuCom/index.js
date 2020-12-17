@@ -7,6 +7,8 @@ const MemoScu = memo(function(props) {
   );
 })
 
+console.log(MemoScu);
+
 class TestScu extends PureComponent {
   constructor(props) {
     super();
