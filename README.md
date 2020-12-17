@@ -1985,7 +1985,27 @@ export default class DomCom extends PureComponent {
 
 
 
-> 函数式组件没有实力，无法通过ref获取他们的实例。可以通过  hooks 中的 `useRef`
+#### 9-4、函数式组件获取 Dom
+
+**函数式组件没有实例**，无法通过ref获取他们的实例。可以通过  hooks 中的 `useRef`
+
+```js
+import React, { PureComponent, createRef, useRef } from 'react';
+
+function UseRefFun() {
+  const funRef = useRef(null);
+
+  const funRefClick = () => {
+    funRef.current.innerHTML = 'useRef执行';
+  }
+
+  return (
+    <div>
+      <button ref={funRef} onClick={funRefClick}>useRef</button>
+    </div>
+  )
+}
+```
 
 
 
