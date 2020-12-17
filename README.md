@@ -1202,11 +1202,11 @@ fn() // 此时的 this 指向 undefind
        super(props);
        this.state = { date: new Date() };
      }
-
+   
      handleLog() {
        console.log(this.state.date);
      }
-
+   
      render() {
        return (
          <div>
@@ -1218,7 +1218,7 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-   但是上面那种在 jsx 中绑定可能存在多次绑定 this，例如多个点击事件都需要使用**同一个事件处理函数**，这样会造成一定的性能损耗
+   但是上面那种在 jsx 中绑定可能存在多次绑定 this，例如多个点击事件都需要使用**同一个事件处理函数**，这样会造成一定的性能损耗。每一次调用的时候都会生成一个新的方法实例，因此对性能有影响，并且当这个函数作为属性值传入低阶组件的时候，这些组件可能会进行额外的重新渲染，因为每一次都是新的方法实例作为的新的属性传递
 
    改版：在 class 类执行 constructor 构造器的时候绑定，这样只需要绑定一次，因为构造器只会执行一次
 
@@ -1227,14 +1227,14 @@ fn() // 此时的 this 指向 undefind
      constructor(props) {
        super(props);
        this.state = { date: new Date() };
-
+   
        this.handleLog = this.handleLog.bind(this);
      }
-
+   
      handleLog() {
        console.log(this.state.date);
      }
-
+   
      render() {
        return (
          <div>
@@ -1246,7 +1246,7 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-2. 通过包一层箭头函数（如果需要传参数，推荐这种，既能传参，又能获取事件对象）
+2. 通过包一层箭头函数（如果需要传参数，推荐这种，既能传参，又能获取事件对象）；缺点：每一次调用的时候都会生成一个新的方法实例，因此对性能有影响，并且当这个函数作为属性值传入低阶组件的时候，这些组件可能会进行额外的重新渲染，因为每一次都是新的方法实例作为的新的属性传递
 
    ```js
    class ClassComponent extends Component {
@@ -1254,11 +1254,11 @@ fn() // 此时的 this 指向 undefind
        super(props);
        this.state = { date: new Date() };
      }
-
+   
      handleLog() {
        console.log(this.state.date);
      }
-
+   
      render() {
        return (
          <div>
@@ -1285,11 +1285,11 @@ fn() // 此时的 this 指向 undefind
        super(props);
        this.state = { date: new Date() };
      }
-
+   
      handleLog = () => {
        console.log(this.state.date);
      };
-
+   
      render() {
        return (
          <div>
@@ -1301,6 +1301,49 @@ fn() // 此时的 this 指向 undefind
    ```
 
    > 因为箭头函数永远不会绑定 this，所以箭头函数内部没有 this；但是会去外层去找 this
+
+   但这种在被循环创建的元素绑定会报错，例如：
+
+   ```js
+   class ImmutableCom extends Component {
+     constructor(props) {
+       super();
+   
+       this.state = {
+         dataList: [
+           { id: '1', name: 'jack', age: 20 },
+           { id: '2', name: 'mark', age: 21 },
+           { id: '3', name: 'lucy', age: 22 }
+         ]
+       }
+     }
+   
+     addAge = (index) =>　{
+       const newList = [...this.state.dataList];
+       newList[index].age += 1;
+       this.setState({
+         dataList: newList
+       });
+     }
+   
+     render() {
+       return (
+         <div>
+           {
+             this.state.dataList.map((item, index) => (
+               <div key={item.id}>
+                 姓名：<span>{item.name}</span> ==== 
+                 年龄：<span>{item.age}</span> ====
+                 <button onClick={this.addAge}>+1</button>
+               </div>
+             ))
+           }
+         </div>
+       );
+     }
+   }
+   ```
+
 
 #### 6-2、传参
 
