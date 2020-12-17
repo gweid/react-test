@@ -11,7 +11,8 @@ import Parent from './components/ParentChild/Parent.js';
 import ContextCom from './components/ContextCom/ContextCom.js';
 import EventsCom from './components/EventsCom/EventsCom.js';
 import NavBar from './components/NavBar/index.js';
-import ScuCom from './components/ScuCom/index.js'
+import ScuCom from './components/ScuCom/index.js';
+import DomCom from './components/DomCom/index.js';
 
 const name = 'world';
 const params = {
@@ -66,6 +67,7 @@ const jsx = (
       rightSlot={<span>右边</span>}
     />
     <ScuCom />
+    <DomCom />
   </div>
 );
 

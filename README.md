@@ -1895,27 +1895,24 @@ class ScrollingList extends Component {
 
 ### 9、React 中的 Dom 操作
 
-通过 ref 获取 Dom，然后通过 this.refs.xxx 操作
+#### 9-1、通过 ref 获取 Dom，然后通过 this.refs.xxx 操作
 
 ```js
-class ClassComponent extends Component {
+import React, { PureComponent } from 'react';
+
+export default class DomCom extends PureComponent {
   constructor(props) {
-    super(props);
-    this.state = {
-      date: new Date(),
-      count: 1,
-    };
+    super();
   }
 
-  componentDidMount() {
-    // 操作 Dom
-    this.refs.textIpt.focus();
+  refOnClick = () => {
+    this.refs.refone.innerHTML = 'this.refs.xxx 执行'
   }
 
   render() {
     return (
       <div>
-        <input ref="textIpt" />
+        <button ref="refone" onClick={this.refOnClick}>通过 this.refs.xxx</button>
       </div>
     );
   }
@@ -1923,6 +1920,72 @@ class ClassComponent extends Component {
 ```
 
 > 不要在 render 或者 render 之前访问 refs
+
+
+
+#### 9-2、通过`React.createRef()`
+
+- 对象是通过 `React.createRef()` 方式创建出来的
+- 使用时获取到创建的对象其中有一个`current`属性就是对应的元素
+
+```js
+import React, { PureComponent, createRef } from 'react';
+
+export default class DomCom extends PureComponent {
+  constructor(props) {
+    super();
+
+    this.reftwo = createRef()
+  }
+
+  refTwoClick = () => {
+    this.reftwo.current.innerHTML = 'createRef()执行'
+  }
+
+  render() {
+    return (
+      <div>
+        <button ref={this.reftwo} onClick={this.refTwoClick}>通过 React.createRef</button>
+      </div>
+    );
+  }
+}
+```
+
+
+
+#### 9-3、通过传入函数的方式
+
+该函数会在DOM被挂载时进行回调，这个函数会传入一个 元素对象，可以保存。使用时，直接拿到之前保存的元素对象即可
+
+```js
+import React, { PureComponent } from 'react';
+
+export default class DomCom extends PureComponent {
+  constructor(props) {
+    super();
+
+    this.refthree = null;
+  }
+
+
+  refThreeClick = () => {
+    this.refthree.innerHTML = '传入一个函数 执行';
+  }
+
+  render() {
+    return (
+      <div>
+        <button ref={e => this.refthree = e} onClick={this.refThreeClick}>通过传入一个函数</button>
+      </div>
+    );
+  }
+}
+```
+
+
+
+> 函数式组件没有实力，无法通过ref获取他们的实例。可以通过  hooks 中的 `useRef`
 
 
 
