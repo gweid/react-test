@@ -509,6 +509,18 @@ export default class NavBar extends Component {
 
 
 
+#### 3-4、受控非受控组件
+
+
+
+
+
+#### 3-5、高阶组件
+
+
+
+
+
 ### 4、props
 
 #### 4-1、props 值
@@ -1914,9 +1926,9 @@ class ClassComponent extends Component {
 
 
 
-### React 常见的性能优化手段
+### 10、React 常见的性能优化手段
 
-#### 首先，需要了解 react 的更新机制
+#### 10-1、首先，需要了解 react 的更新机制
 
 渲染流程：
 
@@ -1942,7 +1954,7 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
 
 
 
-#### 简单了解 React 的 Diff 算法
+#### 10-2、简单了解 React 的 Diff 算法
 
 - 当对比节点为不同的元素，React会拆卸原有的树，并且建立起新的树
 
@@ -1961,7 +1973,7 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
 
 
 
-#### key 优化
+#### 10-3、key 优化
 
 如果只是往前面插入一条数据，其他元素不变，只是位置变了，那么都删掉重新创建显然不合理。React 首先会对新集合进行遍历，通过唯一 key 来判断老集合中是否存在相同的节点，如果没有则创建，如果有的，则判断是否需要进行移动操作。这就有效避免低效的销毁重建。所以对于列表之类的使用 key 是非常有必要的。
 
@@ -1974,9 +1986,9 @@ React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state 
 
 
 
-#### SCU的优化
+#### 10-4、SCU的优化
 
-在 react 中，只要修改了父组件的数据，那么无论修改的数据有没有影响到子组件，子组件都会重新 render
+在 react 中，**只要修改了父组件的数据，那么无论修改的数据有没有影响到子组件，子组件都会重新 render**
 
 ```js
 import React, { Component } from 'react';
@@ -2084,7 +2096,7 @@ class ScuCom extends Component {
 
 
 
-#### PureComponent 和 memo
+#### 10-5、PureComponent 和 memo
 
 所有的类，都需要手动来实现 shouldComponentUpdate，那么会给开发者增加非常多的工作量。其实 react 有其更方便的实现方式。
 
@@ -2343,7 +2355,7 @@ if (updateExpirationTime < renderExpirationTime) {
 
 
 
-### React Hook
+### 11、React Hook
 
 **为什么需要 Hook：**
 
@@ -2389,7 +2401,7 @@ if (updateExpirationTime < renderExpirationTime) {
 1. 不要在循环、条件判断或者子函数中使用 hook
 2. 不要在 React 函数组件以外的地方使用 hook
 
-#### -1、useState
+#### 11-1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
 
@@ -2553,7 +2565,7 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 
    >　操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
 
-#### -2、useEffect
+#### 11-2、useEffect
 
 useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
 
@@ -2685,7 +2697,7 @@ const WindowScrollListener = () => {
    }
    ```
 
-#### -3、useRef
+#### 11-3、useRef
 
 useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
 
@@ -2710,4 +2722,4 @@ const HookComponent = (id) => {
 
 > 注意：更新 ref 对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
 
-#### -4、useCallback
+#### 11-4、useCallback
