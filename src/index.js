@@ -13,6 +13,7 @@ import EventsCom from './components/EventsCom/EventsCom.js';
 import NavBar from './components/NavBar/index.js';
 import ScuCom from './components/ScuCom/index.js';
 import DomCom from './components/DomCom/index.js';
+import ImmutableCom from './components/ImmutableCom/index.js';
 
 const name = 'world';
 const params = {
@@ -68,6 +69,7 @@ const jsx = (
     />
     <ScuCom />
     <DomCom />
+    <ImmutableCom />
   </div>
 );
 

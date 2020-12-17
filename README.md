@@ -1165,6 +1165,7 @@ class ClassComponent extends Component {
      ```
 
 
+
 ### 6、事件绑定
 
 1. 直接在 jsx 渲染的标签对象上进行绑定，需要写成驼峰式；onclick ==> onClick
@@ -2437,6 +2438,70 @@ if (updateExpirationTime < renderExpirationTime) {
       );
     }
 ```
+
+
+
+#### 10-6、不可变数据
+
+```js
+import React, { Component } from 'react'
+
+class ImmutableCom extends Component {
+  constructor(props) {
+    super();
+
+    this.state = {
+      dataList: [
+        { id: '1', name: 'jack', age: 20 },
+        { id: '2', name: 'mark', age: 21 },
+        { id: '3', name: 'lucy', age: 22 }
+      ]
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.dataList !== this.state.dataList;
+  }
+
+  addPeople = () => {
+    let id = String(+this.state.dataList[this.state.dataList.length-1].id + 1);
+    /**
+     * 一定不要这样子做，这样子做将导致 shouldComponentUpdate 或者 PureComponent 之类的有问题
+     * 首先，shouldComponentUpdate、PureComponent 的比较依赖于 state 或者 props，而 this.state.dataList.push({id: id, name: `people${id}`, age: 20 + id}) 将导致 nextState 和 state 的 dataList 相同，那么将不会重新 render
+     */
+    // this.state.dataList.push({id: id, name: `people${id}`, age: 20 + id});
+    // this.setState({
+    //   dataList: this.state.dataList
+    // })
+
+    const newData = [...this.state.dataList, {id: id, name: `people${id}`, age: 20 + id}];
+    this.setState({
+      dataList: newData
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        {
+          this.state.dataList.map(item => (
+            <div key={item.id}>
+              姓名：<span>{item.name}</span> ==== 
+              年龄：<span>{item.age}</span> ====
+              <button>+1</button>
+            </div>
+          ))
+        }
+        <button onClick={this.addPeople}>添加一个</button>
+      </div>
+    );
+  }
+}
+```
+
+使用 setState 修改数据，例如修改一个对象，**不要直接去修改 state 中的对象**，而是把 state 中的对象复制一份再操作。原因： 在 js 中，复杂数据类型，数据存在堆中，栈中存的是对于堆的一个引用指针；当往 state 的 dataList 中 push 一条数据，即往存数据的对中 push 一条数据，但是指针是不变的。在 shouldComponentUpdate(nextProps, nextState) 中比较 `nextState.dataList !== this.state.dataList`,实际上着**两者的 dataList 都是存在栈中的指针**，那么 肯定是相等的，所以返回 false，就会导致不进行 render。
+
+![](/imgs/img6.png)
 
 
 
