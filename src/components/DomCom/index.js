@@ -14,12 +14,36 @@ function UseRefFun() {
   )
 }
 
+class CountCom extends PureComponent {
+  constructor(props) {
+    super();
+    this.state = {
+      count: 0
+    }
+  }
+
+  handleAdd = () => {
+    this.setState({
+      count: this.state.count + 1
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <h3>{this.state.count}</h3>
+      </div>
+    );
+  }
+}
+
 export default class DomCom extends PureComponent {
   constructor(props) {
     super();
 
     this.reftwo = createRef();
     this.refthree = null;
+    this.refFour = createRef();
   }
 
   refOneClick = () => {
@@ -34,6 +58,10 @@ export default class DomCom extends PureComponent {
     this.refthree.innerHTML = '传入一个函数 执行';
   }
 
+  handleCountAdd = () =>　{
+    this.refFour.current.handleAdd();
+  }
+
   render() {
     return (
       <div>
@@ -41,6 +69,8 @@ export default class DomCom extends PureComponent {
         <button ref={this.reftwo} onClick={this.refTwoClick}>通过 React.createRef</button>
         <button ref={e => this.refthree = e} onClick={this.refThreeClick}>通过传入一个函数</button>
         <UseRefFun />
+        <CountCom ref={this.refFour} />
+        <button onClick={this.handleCountAdd}>addCount</button>
       </div>
     );
   }

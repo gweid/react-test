@@ -2053,6 +2053,61 @@ function UseRefFun() {
 
 
 
+#### 9-5、ref 在组件身上
+
+```js
+import React, { PureComponent, createRef } from 'react';
+
+class CountCom extends PureComponent {
+  constructor(props) {
+    super();
+    this.state = {
+      count: 0
+    }
+  }
+
+  handleAdd = () => {
+    this.setState({
+      count: this.state.count + 1
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <h3>{count}</h3>
+      </div>
+    );
+  }
+}
+
+export default class DomCom extends PureComponent {
+  constructor(props) {
+    super();
+
+    this.refFour = createRef();
+  }
+
+
+  handleCountAdd = () =>　{
+    this.refFour.current.handleAdd();
+  }
+
+  render() {
+    return (
+      <div>
+        <CountCom ref={refFour} />
+        <button onClick={this.handleCountAdd}>addCount</button>
+      </div>
+    );
+  }
+}
+```
+
+> ref 在类组件上，获取的是当前的组件实例。注意：不能再函数式组件上使用
+
+
+
 ### 10、React 常见的性能优化手段
 
 #### 10-1、首先，需要了解 react 的更新机制
