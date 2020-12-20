@@ -14,6 +14,7 @@ import NavBar from './components/NavBar/index.js';
 import ScuCom from './components/ScuCom/index.js';
 import DomCom from './components/DomCom/index.js';
 import ImmutableCom from './components/ImmutableCom/index.js';
+import ModelCom from './components/ModelCom/index.js';
 
 const name = 'world';
 const params = {
@@ -70,6 +71,7 @@ const jsx = (
     <ScuCom />
     <DomCom />
     <ImmutableCom />
+    <ModelCom />
   </div>
 );
 

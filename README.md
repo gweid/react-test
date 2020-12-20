@@ -511,6 +511,68 @@ export default class NavBar extends Component {
 
 #### 3-4、受控非受控组件
 
+**1、受控组件**
+
+在 HTML 中，表单元素（如`<input>`、 `<textarea>` 和 `<select>`）之类的表单元素通常自己维护 state，并根据用户输入进行更新。
+
+而在 React 中，可变状态（mutable state）通常保存在组件的 state 属性中，并且只能通过使用 `setState()`来更新。
+
+将两者结合起来，使 React 的 state 成为“唯一数据源”，渲染表单的 React 组件还控制着用户输入过程中表单发生的操作，被 React 以这种方式控制取值的表单输入元素就叫做“受控组件”。
+
+> 其实就是对应的 vue 中的 v-model
+
+```js
+import React, { PureComponent } from 'react';
+
+export default class ModelCom extends PureComponent {
+  constructor(props) {
+    super();
+
+    this.state = {
+      name: ''
+    }
+  }
+
+  handleName(e) {
+    this.setState({
+      name: e.target.value
+    });
+  }
+
+  handleSubmit(e) {
+    console.log(this.state.name);
+    e.preventDefault();
+  }
+
+  render() {
+    const { name } = this.state;
+    return (
+      <form onSubmit={e => this.handleSubmit(e)}>
+        <label htmlFor="name">
+          <input 
+            id="name"
+            type="text"
+            onChange={e => this.handleName(e)}
+            value={name}
+          />
+        </label>
+        <input type="submit" value="提交"/>
+      </form>
+    );
+  }
+}
+```
+
+常见的一些表单处理：
+
+| element                   | value                | change callback | new value in the callback |
+| :------------------------ | -------------------- | --------------- | ------------------------- |
+| <input type="text" />     | value="string"       | onChange        | event.target.value        |
+| <input type="checkbox" /> | value={boolean}      | onChange        | event.target.checked      |
+| <input type="radio" />    | value={boolean}      | onChange        | event.target.checked      |
+| <textarea />              | value="string"       | onChange        | event.target.value        |
+| <select />                | value="option value" | onChange        | event.target.value        |
+
 
 
 
