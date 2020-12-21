@@ -1,12 +1,14 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, createRef } from 'react';
 
 export default class ModelCom extends PureComponent {
   constructor(props) {
     super();
 
+    this.hobbitRef = createRef()
+
     this.state = {
       name: '',
-      fruits: 'orange'
+      fruits: 'orange',
     }
   }
 
@@ -32,10 +34,16 @@ export default class ModelCom extends PureComponent {
     console.log(this.state.fruits);
   }
 
+  handleHobbit(e) {
+    e.preventDefault();
+    console.log(this.hobbitRef.current.value);
+  }
+
   render() {
     const { name, fruits } = this.state;
     return (
       <div>
+        <h3>====================受控组件=====================</h3>
         <form onSubmit={e => this.handleSubmit(e)}>
           <label htmlFor="name">
             <input 
@@ -56,6 +64,14 @@ export default class ModelCom extends PureComponent {
             </select>
           </label>
           <input type="submit" value="确定" />
+        </form>
+        <h3>====================非受控组件=====================</h3>
+        <form onSubmit={e => this.handleHobbit(e)}>
+          <label>
+            兴趣：
+            <input type="text" defaultValue="ball" ref={this.hobbitRef} />
+          </label>
+          <input type="submit" value="提交" />
         </form>
       </div>
     );

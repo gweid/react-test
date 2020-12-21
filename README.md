@@ -626,6 +626,21 @@ export default class ModelCom extends PureComponent {
 
 
 
+**2、非受控组件**
+
+> React推荐大多数情况下使用 `受控组件` 来处理表单数据。一个受控组件中，表单数据是由 React 组件来管理的，而非受控组件，表单数据将交由 DOM 节点来处理（即使用 ref）
+
+非受控组件设置默认值：
+
+- 普通 `<input>` 表单、`<select>`、`<textarea>` 使用 defaultValue
+- `<input type="checkbox">`、`<input type="radio">` 使用 defaultCheck
+
+```js
+
+```
+
+
+
 #### 3-5、高阶组件
 
 
