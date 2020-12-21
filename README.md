@@ -628,7 +628,7 @@ export default class ModelCom extends PureComponent {
 
 **2、非受控组件**
 
-> React推荐大多数情况下使用 `受控组件` 来处理表单数据。一个受控组件中，表单数据是由 React 组件来管理的，而非受控组件，表单数据将交由 DOM 节点来处理（即使用 ref）
+> **React 推荐大多数情况下使用 `受控组件` 来处理表单数据，尽量不要使用非受控组件。**一个受控组件中，表单数据是由 React 组件来管理的，而非受控组件，表单数据将交由 DOM 节点来处理（即使用 ref）
 
 非受控组件设置默认值：
 
@@ -636,7 +636,34 @@ export default class ModelCom extends PureComponent {
 - `<input type="checkbox">`、`<input type="radio">` 使用 defaultCheck
 
 ```js
+import React, { PureComponent, createRef } from 'react';
 
+export default class ModelCom extends PureComponent {
+  constructor(props) {
+    super();
+
+    this.hobbitRef = createRef()
+  }
+
+  handleHobbit(e) {
+    e.preventDefault();
+    console.log(this.hobbitRef.current.value);
+  }
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={e => this.handleHobbit(e)}>
+          <label>
+            兴趣：
+            <input type="text" defaultValue="ball" ref={this.hobbitRef} />
+          </label>
+          <input type="submit" value="提交" />
+        </form>
+      </div>
+    );
+  }
+}
 ```
 
 
