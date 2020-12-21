@@ -5,7 +5,8 @@ export default class ModelCom extends PureComponent {
     super();
 
     this.state = {
-      name: ''
+      name: '',
+      fruits: 'orange'
     }
   }
 
@@ -20,20 +21,43 @@ export default class ModelCom extends PureComponent {
     e.preventDefault();
   }
 
+  handleFruits(e) {
+    this.setState({
+      fruits: e.target.value
+    });
+  }
+
+  handleFruitsSubmit(e) {
+    e.preventDefault();
+    console.log(this.state.fruits);
+  }
+
   render() {
-    const { name } = this.state;
+    const { name, fruits } = this.state;
     return (
-      <form onSubmit={e => this.handleSubmit(e)}>
-        <label htmlFor="name">
-          <input 
-            id="name"
-            type="text"
-            onChange={e => this.handleName(e)}
-            value={name}
-          />
-        </label>
-        <input type="submit" value="提交"/>
-      </form>
+      <div>
+        <form onSubmit={e => this.handleSubmit(e)}>
+          <label htmlFor="name">
+            <input 
+              id="name"
+              type="text"
+              onChange={e => this.handleName(e)}
+              value={name}
+            />
+          </label>
+          <input type="submit" value="提交"/>
+        </form>
+        <form onSubmit={e => this.handleFruitsSubmit(e)}>
+          <label>
+            <select value={fruits} onChange={e => this.handleFruits(e)}>
+              <option value="apple">苹果</option>
+              <option value="banana">香蕉</option>
+              <option value="orange">橙子</option>
+            </select>
+          </label>
+          <input type="submit" value="确定" />
+        </form>
+      </div>
     );
   }
 }

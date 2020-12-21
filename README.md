@@ -521,6 +521,8 @@ export default class NavBar extends Component {
 
 > 其实就是对应的 vue 中的 v-model
 
+
+
 ```js
 import React, { PureComponent } from 'react';
 
@@ -563,6 +565,8 @@ export default class ModelCom extends PureComponent {
 }
 ```
 
+
+
 常见的一些表单处理：
 
 | element                   | value                | change callback | new value in the callback |
@@ -574,6 +578,51 @@ export default class ModelCom extends PureComponent {
 | <select />                | value="option value" | onChange        | event.target.value        |
 
 
+
+select 表单
+
+```js
+import React, { PureComponent } from 'react';
+
+export default class ModelCom extends PureComponent {
+  constructor(props) {
+    super();
+
+    this.state = {
+      fruits: 'orange'
+    }
+  }
+
+  handleFruits(e) {
+    this.setState({
+      fruits: e.target.value
+    });
+  }
+
+  handleFruitsSubmit(e) {
+    e.preventDefault();
+    console.log(this.state.fruits);
+  }
+
+  render() {
+    const { fruits } = this.state;
+    return (
+      <div>
+        <form onSubmit={e => this.handleFruitsSubmit(e)}>
+          <label>
+            <select value={fruits} onChange={e => this.handleFruits(e)}>
+              <option value="apple">苹果</option>
+              <option value="banana">香蕉</option>
+              <option value="orange">橙子</option>
+            </select>
+          </label>
+          <input type="submit" value="确定" />
+        </form>
+      </div>
+    );
+  }
+}
+```
 
 
 
