@@ -670,9 +670,49 @@ export default class ModelCom extends PureComponent {
 
 #### 3-5、高阶组件
 
+高阶组价，英文名 **Higher-Order Components**，简称 `HOC`，它不是 React API 的一部分，而是基于 react 组合特性而形成的设计模式。官方定义：**高阶组件是参数为组件，返回值为新组件的函数**。即：
+
+- 高阶组件本身并不是一个组件，它是一个函数
+- 高阶组件的参数是一个组件，并且返回值也是一个组件
+
+一个简单例子：
+
+```js
+import React, { PureComponent } from 'react';
+
+function hightOrderCom(WrapperComponent) {
+  return class HOCCom extends PureComponent {
+    render() {
+      return (
+        <WrapperComponent />
+      );
+    }
+  }
+}
+
+class AppComponent extends PureComponent {
+  render() {
+    return (
+      <div>
+        <h3>===================高阶组件===================</h3>
+        <p>AppComponent</p>
+      </div>
+    );
+  }
+}
+
+export default hightOrderCom(AppComponent);
+```
 
 
 
+**高阶组件的使用：**
+
+1. props 值增强
+
+   
+
+2. 
 
 ### 4、props
 

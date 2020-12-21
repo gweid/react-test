@@ -15,6 +15,8 @@ import ScuCom from './components/ScuCom/index.js';
 import DomCom from './components/DomCom/index.js';
 import ImmutableCom from './components/ImmutableCom/index.js';
 import ModelCom from './components/ModelCom/index.js';
+import HOCCom from './components/HOCCom/index.js';
+import HOCProp from './components/HOCCom/HOCProp.js';
 
 const name = 'world';
 const params = {
@@ -72,6 +74,8 @@ const jsx = (
     <DomCom />
     <ImmutableCom />
     <ModelCom />
+    <HOCCom />
+    <HOCProp />
   </div>
 );
 
