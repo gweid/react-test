@@ -18,6 +18,7 @@ import ModelCom from './components/ModelCom/index.js';
 import HOCCom from './components/HOCCom/index.js';
 import HOCProp from './components/HOCCom/HOCProp.js';
 import HOCContext from './components/HOCCom/HOCContext.js';
+import HOCAuth from './components/HOCCom/HOCAuth.js';
 
 const name = 'world';
 const params = {
@@ -78,6 +79,7 @@ const jsx = (
     <HOCCom />
     <HOCProp />
     <HOCContext />
+    <HOCAuth />
   </div>
 );
 
