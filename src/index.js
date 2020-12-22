@@ -20,6 +20,7 @@ import HOCProp from './components/HOCCom/HOCProp.js';
 import HOCContext from './components/HOCCom/HOCContext.js';
 import HOCAuth from './components/HOCCom/HOCAuth.js';
 import HOCLifeCycle from './components/HOCCom/HOCLifeCycle.js';
+// import PortalCom from './components/PortalCom/index.js';
 
 const name = 'world';
 const params = {
@@ -82,6 +83,7 @@ const jsx = (
     <HOCContext />
     <HOCAuth />
     <HOCLifeCycle />
+    {/* <PortalCom /> */}
   </div>
 );
 

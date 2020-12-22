@@ -909,7 +909,7 @@ export default hightOrderCom(AppComponent);
        }
    
        componentDidMount() {
-         console.log('渲染了');
+         console.log(`${PageCom.name}渲染了`);
        }
    
        render() {
@@ -951,7 +951,7 @@ export default hightOrderCom(AppComponent);
 
 **高阶组件的意义：**
 
-早期的React有提供组件之间的一种复用方式是 mixin，目前已经不再建议使用，因为 mixin 有许多缺点：
+早期的 React 有提供组件之间的一种复用方式是 mixin，目前已经不再建议使用，因为 mixin 有许多缺点：
 
 - `Mixin` 可能会相互依赖，相互耦合，不利于代码维护
 - 不同的`Mixin`中的方法可能会相互冲突
@@ -962,6 +962,73 @@ HOC 没有上面的一些问题，但也带来了另外的问题：
 - `HOC`需要在原组件上进行包裹或者嵌套，如果大量使用`HOC`，将会产生非常多的嵌套，这让调试变得非常困难
 
 所以，在 Hook 出现后，更加推荐使用 Hook，而减少 HOC 的使用
+
+
+
+#### 3-6、更多的组件相关
+
+**1、Portal**
+
+在某些情况，会希望渲染的内容独立于父组件之外，甚至独立于当前挂载到的DOM元素中（默认都是挂载到id为root的DOM元素上的）
+
+Portal 提供了一种将子节点渲染到存在于父组件以外的 DOM 节点的优秀的方案
+
+```js
+ReactDOM.createPortal(child, container)
+```
+
+- 第一个参数（`child`）是任何可渲染的 React 子元素，例如一个元素，字符串或 fragment
+- 第二个参数（`container`）是一个 DOM 元素
+
+应用场景：准备开发一个 Modal 组件，它可以将它的子组件渲染到屏幕的中间位置
+
+第一步：修改 index.html，往其中加入新节点：
+
+```js
+<div id="root"></div>
+// 加入一个节点
+<div id="modal"></div>
+```
+
+第二步：帮节点添加样式 (index.html)
+
+```js
+<style>
+      #modal {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: pink;
+      }
+    </style>
+```
+
+第三步：编写 Modal 组件
+
+```js
+import React, { PureComponent } from 'react';
+import { createPortal } from 'react-dom';
+
+class Modal extends PureComponent {
+  render() {
+    // this.props.children：代表的是 Modal 组件里面的元素，类似 vue 插槽
+    return createPortal(this.props.children, document.getElementById('modal'));
+  }
+}
+
+export default class PortalCom extends PureComponent {
+  render() {
+    return (
+      <div>
+        <Modal>
+          <h2>我是标题</h2>
+        </Modal>
+      </div>
+    );
+  }
+}
+```
 
 
 

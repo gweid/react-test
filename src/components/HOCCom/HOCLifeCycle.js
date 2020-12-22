@@ -7,7 +7,7 @@ function withLifeCycle(PageCom) {
     }
 
     componentDidMount() {
-      console.log('渲染了');
+      console.log(`${PageCom.name}渲染了`);
     }
 
     render() {
