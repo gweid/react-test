@@ -19,6 +19,7 @@ import HOCCom from './components/HOCCom/index.js';
 import HOCProp from './components/HOCCom/HOCProp.js';
 import HOCContext from './components/HOCCom/HOCContext.js';
 import HOCAuth from './components/HOCCom/HOCAuth.js';
+import HOCLifeCycle from './components/HOCCom/HOCLifeCycle.js';
 
 const name = 'world';
 const params = {
@@ -80,6 +81,7 @@ const jsx = (
     <HOCProp />
     <HOCContext />
     <HOCAuth />
+    <HOCLifeCycle />
   </div>
 );
 
