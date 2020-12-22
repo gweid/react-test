@@ -2065,24 +2065,23 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 static getDerivedStateFromProps(props, state)
 ```
 
-> static getDerivedStateFromProps(props, state) 在组件初始化和更新时的 render 方法之前调用，父组件传入的 newProps 和当前组件的 prevState 进行比较，判断时候需要更新 state，返回值对象用作更新 state，如果不需要则返回 null。不管什么原因，都会在每次 render 之前触发这个方法。与 componentWillReceiveProps 形成对比，componentWillReceiveProps 仅仅在父组件重新渲染时触发，而在调用 setState 时不触发
+> static getDerivedStateFromProps(props, state) 在组件初始化和更新时的 render 方法之前调用，父组件传入的 newProps 和当前组件的 prevState 进行比较，判断是否需要更新 state，返回值为对象用作更新 state，如果不需要则返回 null。不管什么原因，都会在每次 render 之前触发这个方法。与 componentWillReceiveProps 形成对比，componentWillReceiveProps 仅仅在父组件重新渲染时触发，而在调用 setState 时不触发
 
 ```js
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      childDown: 1,
-      num: 0,
+      count: 0
     };
   }
-  static getDerivedStateFromProps(props, state) {
-    if (props.isDown === state.childDown) {
-      return {
-        num: state.childDown,
-      };
-    }
-    return null;
+  static getDerivedStateFromProps(nextProps, prevState) {
+    // getDerivedStateFromProps 在 render 之前调用
+    // 无论是初始化还是后续更新都会被调用
+    // 应该返回一个对象来更新 state，如果返回 null，则不更新任何内容
+    const { count } = prevState;
+    console.log('getDerivedStateFromProps：', count);
+    return count < 5 ? null : { count: 0 }; 
   }
   render() {
     return <div>22</div>;
