@@ -2795,7 +2795,63 @@ class ImmutableCom extends Component {
 
 
 
-### 11、React Hook
+### 11、React 动画
+
+
+
+#### 11-1、react-transition-group
+
+在 React 中，提供了一个库，`react-transition-group` 来做动画相关的。
+
+```js
+npm install react-transition-group -S
+```
+
+`react-transition-group` 本身非常小，不会为项目带来体积负担
+
+`react-transition-group` 主要包括四个组件：
+
+- Transition：该组件是一个和平台无关的组件（不一定要结合CSS），在开发中，通常结合CSS来完成样式，所以比较常用的是 CSSTransition
+- CSSTransition：结合 CSS 样式来完成动画
+- SwitchTransition：两个组件显示隐藏切换，可以使用这个组件
+- TransitionGroup：将多个动画组件包裹在其中，常用于列表中元素的动画
+
+
+
+#### 11-2、CSSTransition
+
+CSSTransition 基于 Transition 组件，它的执行过程有三种状态，分别为：appear、enter、exit；这三种状态，需要定义对应的 CSS 样式。
+
+- 第一类，开始状态：对应的类 `-appear`、`-enter`、`-exit`
+- 第二类，执行动画：对应的类`-appear-active`、`-enter-active`、`-exit-active`
+- 第三类，执行结束：对应的类`-appear-done`、`-enter-done`、`-exit-done`
+
+
+
+CSSTransition 常见的一些属性：
+
+- in：触发进入或者退出状态
+  - 当 in 为 true 时，触发进入状态，会添加 -enter 和 -enter-active 的 class，当动画执行结束，会移除这两个 class，并且添加 -enter-done 的 class
+  - 当 in 为 false，触发退出状态，会添加 -exit 和 -exit-active 的 class，当动画执行结束，会移除这两个 class，并且添加 -exit-done 的 class
+- classNames：动画的 class 的名称，决定写 CSS 的时候，需要写的 CSS 前缀名。例如 classNames="my"，那么 CSS 类名就是 my-enter
+- unmountOnExit：如果 `unmountOnExit={true}`，那么该组件会在执行退出动画结束后被移除掉
+- timeout：过渡动画时间
+- appear：是否在初次进入时添加动画，需要 in 也为 true
+
+
+
+CSSTransition 对应的钩子函数，用来在动画执行过程完成一些 js 操作：
+
+- onEnter：进入动画前
+- onEntering：进入动画
+- onEntered：进入动画后
+- onExit：退出动画前
+- onExiting：退出动画
+- onExited：退出动画后
+
+
+
+### 12、React Hook
 
 **为什么需要 Hook：**
 
@@ -2841,7 +2897,7 @@ class ImmutableCom extends Component {
 1. 不要在循环、条件判断或者子函数中使用 hook
 2. 不要在 React 函数组件以外的地方使用 hook
 
-#### 11-1、useState
+#### 12-1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
 
@@ -3005,7 +3061,7 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 
    >　操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
 
-#### 11-2、useEffect
+#### 12-2、useEffect
 
 useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
 
@@ -3137,7 +3193,7 @@ const WindowScrollListener = () => {
    }
    ```
 
-#### 11-3、useRef
+#### 12-3、useRef
 
 useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
 
@@ -3162,4 +3218,4 @@ const HookComponent = (id) => {
 
 > 注意：更新 ref 对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
 
-#### 11-4、useCallback
+#### 12-4、useCallback
