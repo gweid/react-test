@@ -367,6 +367,8 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
 以上的都不会渲染
 
+> 如果 undefined 需要展示，那么 undefined 就需要跟字符串进行拼接
+
 
 
 #### 2-9、属性展开
@@ -710,9 +712,132 @@ export default hightOrderCom(AppComponent);
 
 1. props 值增强
 
+   ```js
+   import React, { PureComponent } from 'react';
    
+   class Header extends PureComponent {
+     constructor(props) {
+       super();
+     }
+   
+     render() {
+       const { title, right } = this.props;
+       return (
+         <div>
+           <h2>{title}</h2>
+           <h3>{right}</h3>
+         </div>
+       );
+     }
+   }
+   
+   function changeProp(WrapperCom, otherProps) {
+     return props => <WrapperCom {...props} {...otherProps} />
+   }
+   
+   const PropHeader = changeProp(Header, {right: '点击'})
+   
+   class HOCProp extends PureComponent {
+     constructor(props) {
+       super();
+       this.state = {
+         headTitle: '首页'
+       }
+     }
+   
+     render() {
+       return (
+         <div>
+           <h4>----------------高阶组件props值增强-----------------</h4>
+           <PropHeader title={this.state.headTitle} />
+         </div>
+       );
+     }
+   }
+   
+   export default HOCProp;
+   ```
 
-2. 
+2. 利用高阶组件来共享Context
+
+   ```js
+   import React, { PureComponent, createContext } from 'react';
+   
+   const MyContext = createContext({title: '标题', right: '默认'});
+   
+   // function withContext(WrapperCom) {
+   //   return props => {
+   //     return (
+   //       <MyContext.Consumer>
+   //         {
+   //           value => <WrapperCom {...props} {...value}/>
+   //         }
+   //       </MyContext.Consumer>
+   //     )
+   //   }
+   // }
+   
+   // 简略代码
+   function withContext(WrapperCom) {
+     return props => (
+       <MyContext.Consumer>
+         {
+           value => <WrapperCom {...props} {...value}/>
+         }
+       </MyContext.Consumer>
+     );
+   }
+   
+   // function Header() {
+   //   return (
+   //       <MyContext.Consumer>
+   //         {
+   //           value => {
+   //             return (
+   //               <div>
+   //                 <h2>{value.title}</h2>
+   //                 <h3>{value.right}</h3>
+   //               </div>
+   //             );
+   //           }
+   //         }
+   //       </MyContext.Consumer>
+   //   );
+   // }
+   
+   function Header(props) {
+     const {title, right} = props;
+     return (
+       <div>
+         <h2>{title}</h2>
+         <h3>{right}</h3>
+       </div>
+     );
+   }
+   
+   const HeaderContext = withContext(Header);
+   
+   class HOCContext extends PureComponent {
+     constructor(props) {
+       super();
+     }
+   
+     render() {
+       return (
+         <div>
+           <h4>------------高阶组件共享Context----------</h4>
+           <MyContext.Provider value={{title: '我的', right: '点击'}}>
+             <HeaderContext />
+           </MyContext.Provider>
+         </div>
+       );
+     }
+   }
+   
+   export default HOCContext;
+   ```
+
+3. 
 
 ### 4、props
 
