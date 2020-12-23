@@ -1032,6 +1032,40 @@ export default class PortalCom extends PureComponent {
 
 
 
+**2、Fragment**
+
+在组件开发中，总会需要一个根标签包裹：
+
+```js
+export default class App extends PureComponent {
+  render() {
+    return (
+      <div>
+        <h2>当前计数: 0</h2>
+      </div>
+    )
+  }
+}
+```
+
+ 但是，当不需要渲染一个根 div 的时候，React 也支持不用 div 包裹，使用 Fragment 即可
+
+```js
+import React, { PureComponent, Fragment } from 'react';
+
+export default class FragmentCom extends PureComponent {
+  render() {
+    return (
+      <Fragment>
+        <h2>Fragment标签</h2>
+      </Fragment>
+    );
+  }
+}
+```
+
+
+
 ### 4、props
 
 #### 4-1、props 值
