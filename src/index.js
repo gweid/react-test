@@ -22,6 +22,9 @@ import HOCAuth from './components/HOCCom/HOCAuth.js';
 import HOCLifeCycle from './components/HOCCom/HOCLifeCycle.js';
 // import PortalCom from './components/PortalCom/index.js';
 import FragmentCom from './components/FragmentCom/index.js';
+import CSSAnimat from './components/AnimatCom/index';
+
+import './index.css';
 
 const name = 'world';
 const params = {
@@ -86,6 +89,7 @@ const jsx = (
     <HOCLifeCycle />
     {/* <PortalCom /> */}
     <FragmentCom />
+    <CSSAnimat />
   </div>
 );
 

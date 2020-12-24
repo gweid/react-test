@@ -3203,6 +3203,114 @@ CSSTransition 对应的钩子函数，用来在动画执行过程完成一些 js
 
 
 
+例子：
+
+```js
+import './index.css'
+import React, { PureComponent } from 'react'
+
+import { CSSTransition } from 'react-transition-group';
+
+import { Tabs } from 'antd'
+const { TabPane } = Tabs
+
+class CSSAnimat extends PureComponent {
+  constructor(props) {
+    super();
+    this.state = {
+      tabKey: '1'
+    }
+  }
+  changeTab = (activeKey) => {
+    this.setState({
+      tabKey: activeKey
+    });
+  }
+  render() {
+    const { tabKey } = this.state;
+    return (
+      <div className="css-animat">
+        <Tabs defaultActiveKey="1" onChange={(activeKey) => this.changeTab(activeKey)}>
+          <TabPane tab="Tab 1" key="1">
+            <CSSTransition
+              in={tabKey === '1'}
+              timeout={1000}
+              classNames="card"
+            >
+              <div>就安静安静安静安静</div>
+            </CSSTransition>
+          </TabPane>
+          <TabPane tab="Tab 2" key="2">
+            <CSSTransition
+              in={tabKey === '2'}
+              timeout={1000}
+              classNames="card"
+            >
+              <div>就安静安静安静安静</div>
+            </CSSTransition>
+          </TabPane>
+        </Tabs>
+      </div>
+    )
+  }
+}
+
+export default CSSAnimat
+```
+
+对应 css中样式：
+
+```js
+.card-enter, .card-appear {
+  opacity: 0;
+  transform: scale(.8);
+}
+
+.card-enter-active, .card-appear-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.card-exit {
+  opacity: 1;
+}
+
+.card-exit-active {
+  opacity: 0;
+  transform: scale(.8);
+  transition: opacity 300ms, transform 300ms;
+}
+```
+
+
+
+#### 11-3、SwitchTransition
+
+SwitchTransition 可以完成两个组件之间切换的炫酷动画
+
+SwitchTransition 中主要的属性 mode：
+
+- in-out：新组件先进入，旧组件再移除
+- out-in：旧组件先移除，新组件再进入
+
+SwitchTransition 组件的使用：
+
+- SwitchTransition 组件里面必须要有 Transition 或者 CSSTransition 组件，不能直接包裹我们想要切换的组件
+- SwitchTransition 里面的 CSSTransition 或 Transition 组件不再像以前那样接受 in 属性来判断元素是何种状态，取而代之的是 key 属性
+
+
+
+
+
+#### 11-4、TransitionGroup
+
+当有一组动画的时候，需要将这一组 CSSTransition 放到 TransitionGroup 中：
+
+ 
+
+
+
 ### 12、React Hook
 
 **为什么需要 Hook：**
