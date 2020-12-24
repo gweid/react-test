@@ -23,6 +23,7 @@ import HOCLifeCycle from './components/HOCCom/HOCLifeCycle.js';
 // import PortalCom from './components/PortalCom/index.js';
 import FragmentCom from './components/FragmentCom/index.js';
 import CSSAnimat from './components/AnimatCom/index';
+import SwitchAnimat from './components/AnimatCom/SwitchAnimat';
 
 import './index.css';
 
@@ -90,6 +91,7 @@ const jsx = (
     {/* <PortalCom /> */}
     <FragmentCom />
     <CSSAnimat />
+    <SwitchAnimat />
   </div>
 );
 

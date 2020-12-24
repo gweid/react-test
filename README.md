@@ -3301,13 +3301,118 @@ SwitchTransition 组件的使用：
 
 
 
+例子：
+
+```js
+import React, { PureComponent } from 'react';
+import { SwitchTransition, CSSTransition } from "react-transition-group";
+
+import './SwitchAnimat.css';
+
+export default class SwitchAnimation extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isOn: true
+    }
+  }
+
+  render() {
+    const {isOn} = this.state;
+
+    return (
+      <SwitchTransition mode="out-in">
+        <CSSTransition classNames="btn" timeout={500} key={isOn ? "on" : "off"}>
+          {
+            <button onClick={this.btnClick.bind(this)}>
+              {isOn ? "on": "off"}
+            </button>
+          }
+        </CSSTransition>
+      </SwitchTransition>
+    )
+  }
+
+  btnClick() {
+    this.setState({isOn: !this.state.isOn})
+  }
+}
+```
+
+样式 css：
+
+```js
+.btn-enter {
+  transform: translate(100%, 0);
+  opacity: 0;
+}
+
+.btn-enter-active {
+  transform: translate(0, 0);
+  opacity: 1;
+  transition: all 500ms;
+}
+
+.btn-exit {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+.btn-exit-active {
+  transform: translate(-100%, 0);
+  opacity: 0;
+  transition: all 500ms;
+}
+```
+
 
 
 #### 11-4、TransitionGroup
 
-当有一组动画的时候，需要将这一组 CSSTransition 放到 TransitionGroup 中：
+当有一组动画的时候，需要将这一组 CSSTransition 放到 TransitionGroup 中
 
- 
+例子：
+
+```js
+import React, { PureComponent } from 'react'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
+export default class GroupAnimation extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      friends: []
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <TransitionGroup>
+          {
+            this.state.friends.map((item, index) => {
+              return (
+                <CSSTransition classNames="friend" timeout={300} key={index}>
+                  <div>{item}</div>
+                </CSSTransition>
+              )
+            })
+          }
+        </TransitionGroup>
+        <button onClick={e => this.addFriend()}>+friend</button>
+      </div>
+    )
+  }
+
+  addFriend() {
+    this.setState({
+      friends: [...this.state.friends, "coderwhy"]
+    })
+  }
+}
+```
 
 
 
