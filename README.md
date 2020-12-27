@@ -3458,7 +3458,98 @@ function changeInfo(info) {
 
 
 
-### 13、React Hook
+### 13、Redux
+
+**为什么需要 Redux：**
+
+1. javascript 开发的应用程序，已经变得越来越复杂，需要管理的状态越来越多，包括服务器返回的数据、缓存数据、用户操作产生的数据、控制 ui 的状态等等。
+2. 对于不断变化的状态，想要管理好是非常困难的；状态之间可能会存在相互依赖（一个状态变化引起另外一个状态的改变）。而当应用程序复杂时，状态在什么时候，因为什么原因发生变化，发生了什么样的变化，将变得非常难以控制和追踪。
+3. Redux 就是一个帮助管理 state 状态的容器，提供了可预测的状态管理。除了可以和 React一起使用之外，它也可以和其他界面库一起来使用（比如Vue），并且它非常小（包括依赖在内，只有2kb）。
+
+**Redux 的核心理念：**
+
+场景：需要管理一个列表
+
+> 如果没有定义统一的规范来操作列表，那么整个数据的变化时无法追踪的。例如页面的某处通过 push 增加了一条数据，另外一个页面又通过xx.xx = '' 的方式修改了一条数据，整个应用程序错综复杂，当出现bug时，很难跟踪到底哪里发生的变化
+
+而 redux 要求通过 action 来更新数据：
+
+- 所有数据的变化，需要通过派发（dispatch）action 来更新
+- action 是一个普通的 javascript 对象，用来描述这次更新的类型（type）和内容（content）
+
+有如下数据：
+
+```js
+const initialState = {
+  userList: [
+    { name: "jack", age: 18 },
+    { name: "lucy", age: 40 },
+    { name: "john", age: 30 },
+  ]
+};
+```
+
+那么更新数据的 action 例如：
+
+```js
+const action1 = { type: "ADD_LIST", info: { name: "lindy", age: 20 } }
+const action2 = { type: "CHANGE_NAME", playload: { index: 0, newName: "mark" } }
+```
+
+使用 action 的好处：可以清晰的知道数据到底发生了什么样的变化，所有的数据变化都是可跟追、可预测的
+
+而将 state 和 action 联系在一起就需要 reducer
+
+- reducer 是一个纯函数
+- reducer 做的事情就是将传入的 redux state 和 action 结合起来生成一个新的 state
+
+```js
+function reducer(state = initialState, action) {
+  switch (action.type) {
+    case 'ADD_LIST':
+      return { ...state, userList: [...state.userList, action.info] };
+    case 'CHANGE_NAME':
+      return {
+        ...state,
+        userList: state.userList.map((item, index) => {
+          if (index === action.index) {
+            return { ...item, name: action.newName };
+          }
+          return item;
+        }),
+      };
+  }
+}
+```
+
+
+
+**Redux 的三大原则：**
+
+1. **单一数据源： **
+
+   整个应用程序的 state 被存储在一棵 object tree 中，而这个 object tree 只存在一个 store 中
+
+   - redux 中并没有说不可以创建多个 store，但是那样做不利于数据的维护
+   - 单一的数据源可以让整个应用程序的 state 变得变得方便维护、追踪、修改
+
+2. **redux 的 state 是只读的：**
+
+   唯一修改 redux 的 state 的方法是触发 action，不要试图使用其他方式来修改 redux 的 state
+
+   - 这样确保了 View 或网络请求都不能直接修改 redux 的 state，它们只能通过 action 来描述自己想要如何修改
+   - 这样可以保证所有修改都被集中处理，并且严格按照先后顺序，避免了竟态问题
+
+3. **使用纯函数来执行修改：**
+
+   通过 reducer 将旧 state 和 actions 联系在一起，并返回新的 state
+
+   - 随着用用的复杂度增加，可以将 reducer 拆分为多个小 reducer，分别操作不同 state tree 的一部分
+   - 但所有 reducer 都应该是纯函数，不能产生副作用
+
+
+
+### 14、React Hook
 
 **为什么需要 Hook：**
 
@@ -3504,7 +3595,7 @@ function changeInfo(info) {
 1. 不要在循环、条件判断或者子函数中使用 hook
 2. 不要在 React 函数组件以外的地方使用 hook
 
-#### 13-1、useState
+#### 14-1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
 
@@ -3668,7 +3759,7 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 
    >　操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
 
-#### 13-2、useEffect
+#### 14-2、useEffect
 
 useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
 
@@ -3800,7 +3891,7 @@ const WindowScrollListener = () => {
    }
    ```
 
-#### 13-3、useRef
+#### 14-3、useRef
 
 useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
 
@@ -3825,11 +3916,9 @@ const HookComponent = (id) => {
 
 > 注意：更新 ref 对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
 
-#### 13-4、useCallback
+#### 14-4、useCallback
 
 
-
-### 14、Redux
 
 
 
