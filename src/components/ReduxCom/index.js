@@ -12,5 +12,7 @@ function reducer(state = initialState, action) {
           return item;
         }),
       };
+    default:
+      return state;
   }
 }
