@@ -3422,7 +3422,43 @@ export default class GroupAnimation extends PureComponent {
 
 
 
-### 12、React Hook
+### 12、纯函数
+
+纯函数是函数式编程的一个概念。
+
+#### 12-1、纯函数的定义：
+
+- 确定的输入，一定会产生确定的输出
+- 函数在执行过程中，不能产生副作用
+
+#### 12-2、一些例子
+
+```js
+// sum 是一个纯函数；因为输入输出确定，并且返回的值一定是 num1 与 num2 这两个参数的和
+function sum(num1, num2) {
+  return num1 + num2;
+}
+
+// add 不是一个纯函数；因为输入相同，但是输出受到 flag 的影响，并不能保证确定输出
+let flag = 10;
+function add(num) {
+  return num + flag;
+}
+// 将 add 改成纯函数：只需要将 let flag 改为 const flag，因为 const 决定了 flag 不可重新赋值，那么 flag 永远都是 10，那么输入输出可以确定
+
+// changeInfo 不是一个纯函数；因为这个函数存在副作用
+function changeInfo(info) {
+  info.name = 'jack';
+}
+```
+
+
+
+> 在 react 中，纯函数的一些意义：所有 react 组件必须像纯函数一样保护他的 props 不被修改
+
+
+
+### 13、React Hook
 
 **为什么需要 Hook：**
 
@@ -3468,7 +3504,7 @@ export default class GroupAnimation extends PureComponent {
 1. 不要在循环、条件判断或者子函数中使用 hook
 2. 不要在 React 函数组件以外的地方使用 hook
 
-#### 12-1、useState
+#### 13-1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
 
@@ -3632,7 +3668,7 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 
    >　操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
 
-#### 12-2、useEffect
+#### 13-2、useEffect
 
 useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
 
@@ -3764,7 +3800,7 @@ const WindowScrollListener = () => {
    }
    ```
 
-#### 12-3、useRef
+#### 13-3、useRef
 
 useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
 
@@ -3789,13 +3825,13 @@ const HookComponent = (id) => {
 
 > 注意：更新 ref 对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
 
-#### 12-4、useCallback
+#### 13-4、useCallback
 
 
 
-### 13、Redux
+### 14、Redux
 
 
 
-### 14、react-router
+### 15、react-router
 
