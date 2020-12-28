@@ -3524,8 +3524,6 @@ function reducer(state = initialState, action) {
 }
 ```
 
-
-
 **Redux 的三大原则：**
 
 1. **单一数据源： **
@@ -3546,8 +3544,115 @@ function reducer(state = initialState, action) {
 
    通过 reducer 将旧 state 和 actions 联系在一起，并返回新的 state
 
-   - 随着用用的复杂度增加，可以将 reducer 拆分为多个小 reducer，分别操作不同 state tree 的一部分
+   - 随着应用的复杂度增加，可以将 reducer 拆分为多个小 reducer，分别操作不同 state tree 的一部分
    - 但所有 reducer 都应该是纯函数，不能产生副作用
+
+
+
+#### 13-1、Redux 的基本使用
+
+**安装：**
+
+```js
+npm install redux --save
+```
+
+**基本使用：**
+
+1. 创建一个对象，作为要保存的状态
+
+   ```js
+   import redux from 'redux';
+   
+   const initState = {
+     count: 0
+   }
+   ```
+
+2. 创建一个 store 来存储这个 state
+
+   - 创建 store 前必须创建 reducer
+   - 可以通过 store.getState 来获取当前 state
+
+   ```js
+   const reducer = (state = initState, action) => {
+     return state;
+   }
+   
+   const store = redux.createStore(reducer);
+   
+   // console.log(store.getState());
+   ```
+
+3. 通过 action 来修改 state
+
+   ```js
+   store.dispatch({
+     type: 'ADD_NUMBER',
+     number: 5
+   });
+   ```
+
+4. 修改 reducer 中的处理代码
+
+   - 这里一定要记住，reducer 是一个纯函数，不需要直接修改 state
+
+   ```js
+   const reducer = (state = initState, action) => {
+     switch (action.type) {
+       case 'ADD_NUMBER':
+         return {...state, count: state.count + action.number};
+       default:
+         return state;
+     }
+   }
+   ```
+
+5. 在派发 action 之前，监听 store 的变化
+
+   ```js
+   store.subscribe(() => {
+     console.log(store.getState());
+   });
+   ```
+
+完整代码：
+
+```js
+import redux from 'redux';
+
+// 1、创建一个 state
+const initState = {
+  count: 0
+}
+
+// 2、创建一个 reducer
+const reducer = (state = initState, action) => {
+  switch (action.type) {
+    case 'ADD_NUMBER':
+      return {...state, count: state.count + action.number};
+    default:
+      return state;
+  }
+}
+
+// 3、根据 reducer 创建一个 store 来存储 state
+const store = redux.createStore(reducer);
+
+// 可以通过 store.getState() 来获取当前 state
+// console.log(store.getState());
+
+// 可以在派发 action 之前，监听 store 变化
+// store.subscribe(() => {
+//   console.log(store.getState());
+// });
+
+// 4、通过 action 来修改 state
+store.dispatch({
+  type: 'ADD_NUMBER',
+  number: 5
+});
+```
 
 
 
