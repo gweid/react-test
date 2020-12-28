@@ -3656,6 +3656,68 @@ store.dispatch({
 
 
 
+#### 13-2、Redux 结构划分
+
+如果将所有的逻辑代码写到一起，那么当 redux 变得复杂时代码就难以维护；所依需要将 redux 按照 store、reducer、action、constants(常量) 拆分。
+
+1. 创建 store/index.js
+
+   ```js
+   import redux from 'redux';
+   import reducer from './reducer.js';
+   
+   const store = redux.createStore(reducer);
+   
+   export default store;
+   ```
+
+2. 创建 store/reducer.js
+
+   ```js
+   import { ADD_NUMBER } from './constants.js';
+   
+   const initState = {
+     count: 0
+   };
+   
+   const reducer = (state = initState, action) => {
+     switch (action.type) {
+       case ADD_NUMBER:
+         return {...state, count: state.count + number};
+       default:
+         return state;
+     }
+   };
+   
+   export default {
+     reducer
+   };
+   ```
+
+3. 创建 store/actionCreators.js
+
+   ```js
+   import { ADD_NUMBER } from './constants.js';
+   
+   const addNumber = (number) => ({type: ADD_NUMBER, number: number});
+   
+   export default {
+     addNumber
+   };
+   ```
+
+4. 创建 store/constants.js 常量
+
+   ```js
+   const ADD_NUMBER = 'ADD_NUMBER';
+   
+   export default {
+     ADD_NUMBER
+   };
+   ```
+
+
+
 ### 14、React Hook
 
 **为什么需要 Hook：**
