@@ -3608,7 +3608,7 @@ npm install redux --save
    }
    ```
 
-5. 在派发 action 之前，监听 store 的变化
+5. 在**派发 action 之前**，监听 store 的变化
 
    ```js
    store.subscribe(() => {
@@ -3696,12 +3696,14 @@ store.dispatch({
 
 3. 创建 store/actionCreators.js
 
+   - 使用函数返回 action 可以更方便地动态传参
+
    ```js
    import { ADD_NUMBER } from './actionTypes.js';
    
-   const addNumber = (number) => ({type: ADD_NUMBER, number: number});
+   const addNumber = number => ({type: ADD_NUMBER, number});
    
-   export default {
+   export {
      addNumber
    };
    ```
@@ -3711,10 +3713,77 @@ store.dispatch({
    ```js
    const ADD_NUMBER = 'ADD_NUMBER';
    
-   export default {
+   export {
      ADD_NUMBER
    };
    ```
+
+
+
+#### 13-3、执行流程
+
+![](/imgs/img7.png)
+
+1. 全局唯一的 Store 存储 state
+2. component 中会有些操作派发 action
+3. reducer 接收到 action，根据设置返回一个新的State
+4. State 发生更新之后会触发通知，告知订阅者数据发生了改变
+5. 订阅者拿到最新的数据，更新到界面
+
+
+
+#### 13-4、React 简单结合 Redux 使用
+
+```js
+import React, { PureComponent } from 'react';
+import store from '../../../store';
+import { addNumber } from '../../../store/actionCreators';
+
+export default class Test extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: store.getState().count,
+    };
+  }
+
+  // componentDidMount 中订阅变化重新 setState
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(() => {
+      this.setState({
+        count: store.getState().count,
+      });
+    });
+  }
+
+  // componentWillUnmount 中取消订阅
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  // dispatch 去更新 redux 状态
+  addCount = () => {
+    store.dispatch(addNumber(1));
+  };
+
+  render() {
+    return (
+      <div>
+        <h2>Test</h2>
+        <div>当前计数: {this.state.count}</div>
+        <button onClick={this.addCount}>+</button>
+      </div>
+    );
+  }
+}
+```
+
+主要就是：
+
+- 调用 store 的`dispatch`来派发对应的`action`
+
+- 在 `componentDidMount` 中订阅数据的变化，当数据发生变化时重新 setState
+- `componentWillUnmount` 中取消订阅
 
 
 

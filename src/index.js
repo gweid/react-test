@@ -24,6 +24,7 @@ import HOCLifeCycle from './components/HOCCom/HOCLifeCycle.js';
 import FragmentCom from './components/FragmentCom/index.js';
 import CSSAnimat from './components/AnimatCom/index';
 import SwitchAnimat from './components/AnimatCom/SwitchAnimat';
+import TestRedux from './components/ReduxCom/test1/index';
 
 import './index.css';
 
@@ -92,6 +93,7 @@ const jsx = (
     <FragmentCom />
     <CSSAnimat />
     <SwitchAnimat />
+    <TestRedux />
   </div>
 );
 

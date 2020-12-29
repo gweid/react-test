@@ -1,7 +1,7 @@
 import { ADD_NUMBER } from './actionTypes.js';
 
-const addNumber = (number) => ({type: ADD_NUMBER, number: number});
+const addNumber = number => ({type: ADD_NUMBER, number});
 
-export default {
+export {
   addNumber
 };
