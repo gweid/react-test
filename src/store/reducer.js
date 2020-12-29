@@ -1,4 +1,4 @@
-import { ADD_NUMBER } from './constants.js';
+import { ADD_NUMBER } from './actionTypes.js';
 
 const initState = {
   count: 0
