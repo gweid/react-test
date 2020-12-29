@@ -3595,7 +3595,7 @@ npm install redux --save
 
 4. 修改 reducer 中的处理代码
 
-   - 这里一定要记住，reducer 是一个纯函数，不需要直接修改 state
+   - 这里一定要记住，reducer 是一个纯函数，不需要直接修改 state；不要修改传入参数；不要执行有副作用的操作，如 API 请求和路由跳转；调用非纯函数，如 `Date.now()` 或 `Math.random()`
 
    ```js
    const reducer = (state = initState, action) => {
@@ -3658,7 +3658,7 @@ store.dispatch({
 
 #### 13-2、Redux 结构划分
 
-如果将所有的逻辑代码写到一起，那么当 redux 变得复杂时代码就难以维护；所依需要将 redux 按照 store、reducer、action、constants(常量) 拆分。
+如果将所有的逻辑代码写到一起，那么当 redux 变得复杂时代码就难以维护；所依需要将 redux 按照 store、reducer、action、actionTypes(常量) 拆分。
 
 1. 创建 store/index.js
 
@@ -3674,7 +3674,7 @@ store.dispatch({
 2. 创建 store/reducer.js
 
    ```js
-   import { ADD_NUMBER } from './constants.js';
+   import { ADD_NUMBER } from './actionTypes.js';
    
    const initState = {
      count: 0
@@ -3697,7 +3697,7 @@ store.dispatch({
 3. 创建 store/actionCreators.js
 
    ```js
-   import { ADD_NUMBER } from './constants.js';
+   import { ADD_NUMBER } from './actionTypes.js';
    
    const addNumber = (number) => ({type: ADD_NUMBER, number: number});
    
@@ -3706,7 +3706,7 @@ store.dispatch({
    };
    ```
 
-4. 创建 store/constants.js 常量
+4. 创建 store/actionTypes.js 
 
    ```js
    const ADD_NUMBER = 'ADD_NUMBER';
