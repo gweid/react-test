@@ -25,6 +25,10 @@ import FragmentCom from './components/FragmentCom/index.js';
 import CSSAnimat from './components/AnimatCom/index';
 import SwitchAnimat from './components/AnimatCom/SwitchAnimat';
 import TestRedux from './components/ReduxCom/test1/index';
+import ConnectRedux from './components/ReduxCom/test2/index';
+
+import store from './store';
+import { StoreContext } from './utils/context';
 
 import './index.css';
 
@@ -94,6 +98,10 @@ const jsx = (
     <CSSAnimat />
     <SwitchAnimat />
     <TestRedux />
+    {/* <ConnectRedux /> */}
+    <StoreContext.Provider value={store}>
+      <ConnectRedux />
+    </StoreContext.Provider>
   </div>
 );
 

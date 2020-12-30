@@ -3720,7 +3720,7 @@ store.dispatch({
 
 
 
-#### 13-3、执行流程
+#### 13-3、Redux 执行流程
 
 ![](/imgs/img7.png)
 
@@ -3784,6 +3784,206 @@ export default class Test extends PureComponent {
 
 - 在 `componentDidMount` 中订阅数据的变化，当数据发生变化时重新 setState
 - `componentWillUnmount` 中取消订阅
+
+
+
+#### 13-5、自定义 connect 抽离重复代码
+
+在上面的使用中，有一些重复的代码，比如：
+
+- 监听 store 数据改变的代码，都需要在 `componentDidMount` 中完成
+- 派发事件，都需要去先拿到 `store`， 在调用其 `dispatch`  
+
+基于以上，自定义一个 connect 函数将重复代码抽离：
+
+- connect 函数有两个参数
+  - 参数一：存放 component 需要使用的 state 属性
+  - 参数二：存放 component 需要使用的 dispatch 动作
+- connect 返回一个高阶组件
+  - 在 constructor 中的 state 中保存需要获取的状态
+  - 在 componentDidMount 中订阅 store中 数据的变化，并且执行 setState 操作
+  - 在 componentWillUnMount 中取消订阅
+  - 在 render 中返回一个组件，并将所有状态映射到 props 中
+
+在 test/connect.js 中：
+
+```js
+import React, { PureComponent } from 'react'
+
+import store from '../../../store';
+
+const connect = (mapStateToProps, mapDispatchToProps) => {
+  return function handleMapCpn(PageCom) {
+    return class extends PureComponent {
+
+      constructor(props) {
+        super(props);
+        this.state = {
+          storeState: mapStateToProps(store.getState())
+        }
+      }
+
+      componentDidMount() {
+        this.unsubscribe = store.subscribe(() => {
+          this.setState({
+            storeState: mapStateToProps(store.getState())
+          });
+        })
+      }
+
+      componentWillUnmount() {
+        this.unsubscribe();
+      }
+
+      render() {
+        return (
+          <PageCom
+            {...this.props}
+            {...mapStateToProps(store.getState())}
+            {...mapDispatchToProps(store.dispatch)}
+          />
+        );
+      }
+    }
+  }
+};
+
+export default connect;
+```
+
+test/index.js 中：
+
+- mapStateToProps：用于将 state 映射到一个对象中，对象中包含需要的属性
+- mapDispatchToProps：用于将 dispatch 映射到对象中，对象中包含在组件中可能操作的函数
+- 使用数据和操作函数都**通过 props 传入**
+
+```js
+import React, { PureComponent } from 'react';
+
+import connect from './connect';
+import { addNumber } from '../../../store/actionCreators';
+
+import Test from './test';
+
+class ConnectRedux extends PureComponent {
+
+  render() {
+    return (
+      <div>
+        <h2>自定义connect</h2>
+        <div>当前计数: {this.props.count}</div>
+        <button onClick={e => this.props.addCount(1)}>加1</button>
+        <Test />
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    count: state.count
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addCount: function(number) {
+      dispatch(addNumber(number));
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectRedux);
+```
+
+这样就完成了 connect 抽离公共代码
+
+但是，这样子的 connect 存在着一个问题，就是**依赖导入的 store**，如果想要将这个 connect 封装成一个独立的库，那么这个导入的 store 将无法处理，不可能让使用库的人直接修改源码，所以就**需要 context 来处理 store**
+
+所以，正确的做法是提供一个Provider，Provider来自于创建的 Context，让用户将 store 传入到 value 中即可
+
+创建一个 utils/context.js 文件：
+
+```js
+import { createContext } from 'react';
+
+const StoreContext = createContext();
+
+export {
+  StoreContext
+}
+```
+
+修改 test/connect.js 中部分代码：
+
+- import { StoreContext } from '../../../utils/context';
+- static contextType  = StoreContext
+- 组件传 props 改为 this.context.xxx
+
+```js
+import React, { PureComponent } from 'react'
+
+import store from '../../../store';
+
+import { StoreContext } from '../../../utils/context';
+
+const connect = (mapStateToProps, mapDispatchToProps) => {
+  return function handleMapCpn(PageCom) {
+    return class extends PureComponent {
+      static contextType  = StoreContext
+
+      constructor(props) {
+        super(props);
+        this.state = {
+          storeState: mapStateToProps(store.getState())
+        }
+      }
+
+      componentDidMount() {
+        this.unsubscribe = store.subscribe(() => {
+          this.setState({
+            storeState: mapStateToProps(store.getState())
+          });
+        })
+      }
+
+      componentWillUnmount() {
+        this.unsubscribe();
+      }
+
+      render() {
+        return (
+          // <PageCom
+          //   {...this.props}
+          //   {...mapStateToProps(store.getState())}
+          //   {...mapDispatchToProps(store.dispatch)}
+          // />
+          <PageCom
+            {...this.props}
+            {...mapStateToProps(this.context.getState())}
+            {...mapDispatchToProps(this.context.dispatch)}
+          />
+        );
+      }
+    }
+  }
+};
+
+export default connect;
+```
+
+在入口的 index.js 中：
+
+```js
+import store from './store';
+import { StoreContext } from './utils/context';
+
+<StoreContext.Provider value={store}>
+  <ConnectRedux />
+</StoreContext.Provider>
+```
+
+
 
 
 

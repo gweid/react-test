@@ -34,7 +34,7 @@ export default class Test extends PureComponent {
       <div>
         <h2>Test</h2>
         <div>当前计数: {this.state.count}</div>
-        <button onClick={this.reduceCount}>-</button>
+        <button onClick={this.reduceCount}>减1</button>
       </div>
     );
   }

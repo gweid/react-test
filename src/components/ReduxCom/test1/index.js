@@ -34,7 +34,7 @@ export default class TestRedux extends PureComponent {
       <div>
         <h2>react结合redux</h2>
         <div>当前计数: {this.state.count}</div>
-        <button onClick={this.addCount}>+</button>
+        <button onClick={this.addCount}>加1</button>
         <Test />
       </div>
     );
