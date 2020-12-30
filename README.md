@@ -3898,6 +3898,44 @@ export default connect(mapStateToProps, mapDispatchToProps)(ConnectRedux);
 
 这样就完成了 connect 抽离公共代码
 
+逻辑抽离后，实际上可以直接变成一个**函数组件**：
+
+```js
+import React from 'react';
+
+import connect from './connect';
+import { addNumber } from '../../../store/actionCreators';
+
+import Test from './test';
+
+function ConnectRedux(props) {
+  return (
+    <div>
+      <h2>自定义connect</h2>
+      <div>当前计数: {props.count}</div>
+      <button onClick={e => props.addCount(1)}>加1</button>
+      <Test />
+    </div>
+  );
+}
+
+const mapStateToProps = state => {
+  return {
+    count: state.count
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addCount: function(number) {
+      dispatch(addNumber(number));
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectRedux);
+```
+
 但是，这样子的 connect 存在着一个问题，就是**依赖导入的 store**，如果想要将这个 connect 封装成一个独立的库，那么这个导入的 store 将无法处理，不可能让使用库的人直接修改源码，所以就**需要 context 来处理 store**
 
 所以，正确的做法是提供一个Provider，Provider来自于创建的 Context，让用户将 store 传入到 value 中即可
