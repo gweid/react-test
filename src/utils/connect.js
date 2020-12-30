@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react'
 
-// import store from '../store';
-
 import { StoreContext } from './context';
 
 const connect = (mapStateToProps, mapDispatchToProps) => {
@@ -9,10 +7,10 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
     return class extends PureComponent {
       static contextType  = StoreContext
 
-      constructor(props) {
-        super(props);
+      constructor(props, context) {
+        super(props, context);
         this.state = {
-          storeState: mapStateToProps(this.context.getState())
+          storeState: mapStateToProps(context.getState())
         }
       }
 

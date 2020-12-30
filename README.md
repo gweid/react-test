@@ -3958,6 +3958,7 @@ export {
 - static contextType  = StoreContext
 - 组件传 props 改为 this.context.xxx
 - 凡是之前 store.xxx 的改为 this.context.xxx
+- 注意：在 constructor 必须 super 一下 context 才能在其中使用 context
 
 ```js
 import React, { PureComponent } from 'react'
@@ -3969,10 +3970,10 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
     return class extends PureComponent {
       static contextType  = StoreContext
 
-      constructor(props) {
-        super(props);
+      constructor(props, context) {
+        super(props, context);
         this.state = {
-          storeState: mapStateToProps(this.context.getState())
+          storeState: mapStateToProps(context.getState())
         }
       }
 
