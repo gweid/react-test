@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 
-import store from '../store';
+// import store from '../store';
 
 import { StoreContext } from './context';
 
@@ -12,14 +12,14 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
       constructor(props) {
         super(props);
         this.state = {
-          storeState: mapStateToProps(store.getState())
+          storeState: mapStateToProps(this.context.getState())
         }
       }
 
       componentDidMount() {
-        this.unsubscribe = store.subscribe(() => {
+        this.unsubscribe = this.context.subscribe(() => {
           this.setState({
-            storeState: mapStateToProps(store.getState())
+            storeState: mapStateToProps(this.context.getState())
           });
         })
       }

@@ -3957,13 +3957,12 @@ export {
 - import { StoreContext } from '../../../utils/context';
 - static contextType  = StoreContext
 - 组件传 props 改为 this.context.xxx
+- 凡是之前 store.xxx 的改为 this.context.xxx
 
 ```js
 import React, { PureComponent } from 'react'
 
-import store from '../../../store';
-
-import { StoreContext } from '../../../utils/context';
+import { StoreContext } from './context';
 
 const connect = (mapStateToProps, mapDispatchToProps) => {
   return function handleMapCpn(PageCom) {
@@ -3973,14 +3972,14 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
       constructor(props) {
         super(props);
         this.state = {
-          storeState: mapStateToProps(store.getState())
+          storeState: mapStateToProps(this.context.getState())
         }
       }
 
       componentDidMount() {
-        this.unsubscribe = store.subscribe(() => {
+        this.unsubscribe = this.context.subscribe(() => {
           this.setState({
-            storeState: mapStateToProps(store.getState())
+            storeState: mapStateToProps(this.context.getState())
           });
         })
       }
@@ -3991,11 +3990,6 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
 
       render() {
         return (
-          // <PageCom
-          //   {...this.props}
-          //   {...mapStateToProps(store.getState())}
-          //   {...mapDispatchToProps(store.dispatch)}
-          // />
           <PageCom
             {...this.props}
             {...mapStateToProps(this.context.getState())}
