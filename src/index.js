@@ -26,9 +26,12 @@ import CSSAnimat from './components/AnimatCom/index';
 import SwitchAnimat from './components/AnimatCom/SwitchAnimat';
 import TestRedux from './components/ReduxCom/test1/index';
 import ConnectRedux from './components/ReduxCom/test2/index';
+import ReactReduxCom from './components/ReduxCom/test3/index';
 
 import store from './store';
 import { StoreContext } from './utils/context';
+
+import { Provider } from 'react-redux';
 
 import './index.css';
 
@@ -102,6 +105,9 @@ const jsx = (
     <StoreContext.Provider value={store}>
       <ConnectRedux />
     </StoreContext.Provider>
+    <Provider store={store}>
+      <ReactReduxCom />
+    </Provider>
   </div>
 );
 

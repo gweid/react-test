@@ -3979,8 +3979,48 @@ import store from './store';
 import { StoreContext } from './utils/context';
 
 <StoreContext.Provider value={store}>
-  <ConnectRedux />
+  <App />
 </StoreContext.Provider>
+```
+
+其他的不变。
+
+
+
+#### 13-6、react-redux
+
+虽然手动实现了 connect、Provider 这些帮助完成连接 redux、react 的辅助工具，但是不建议这样做。实际上 redux 提供了 react-redux 库，可以直接在项目中使用，并且实现的逻辑会更加的严谨、而且享受 react-redux 带来的性能优化，更加高效。
+
+
+
+**1、react-redux 使用**
+
+安装：
+
+```js
+npm i react-redux -S
+```
+
+将之前使用的 connect 函数换成 react-redux 的：
+
+```js
+import { connect } from "react-redux";
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReactReduxCom);
+```
+
+使用 Provider：
+
+- 将之前创建的 Context 的 Provider，换成 react-redux 的 Provider 组件
+- 注意：这里传入的是 store 属性，而不是 value 属性
+
+```js
+import store from './store';
+import { Provider } from 'react-redux';
+
+<Provider store={store}>
+  <App />
+</Provider>
 ```
 
 
