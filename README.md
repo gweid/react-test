@@ -3805,7 +3805,7 @@ export default class Test extends PureComponent {
   - 在 componentWillUnMount 中取消订阅
   - 在 render 中返回一个组件，并将所有状态映射到 props 中
 
-在 test/connect.js 中：
+在 utils/connect.js 中：
 
 ```js
 import React, { PureComponent } from 'react'
@@ -3860,7 +3860,7 @@ test/index.js 中：
 ```js
 import React, { PureComponent } from 'react';
 
-import connect from './connect';
+import connect from '../../../utils/connect';
 import { addNumber } from '../../../store/actionCreators';
 
 import Test from './test';
