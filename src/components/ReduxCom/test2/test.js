@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { reduceNumber } from '../../../store/actionCreators';
 
-import connect from './connect'
+import connect from '../../../utils/connect'
 
 class Test extends PureComponent {
 

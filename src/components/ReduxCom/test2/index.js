@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import connect from './connect';
+import connect from '../../../utils/connect';
 import { addNumber } from '../../../store/actionCreators';
 
 import Test from './test';

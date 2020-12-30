@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 
-import store from '../../../store';
+import store from '../store';
 
-import { StoreContext } from '../../../utils/context';
+import { StoreContext } from './context';
 
 const connect = (mapStateToProps, mapDispatchToProps) => {
   return function handleMapCpn(PageCom) {
