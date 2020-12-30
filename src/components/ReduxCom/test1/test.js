@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import store from '../../../store';
-import { addNumber } from '../../../store/actionCreators';
+import { reduceNumber } from '../../../store/actionCreators';
 
 export default class Test extends PureComponent {
   constructor(props) {
@@ -25,8 +25,8 @@ export default class Test extends PureComponent {
   }
 
   // dispatch 去更新 redux 状态
-  addCount = () => {
-    store.dispatch(addNumber(1));
+  reduceCount = () => {
+    store.dispatch(reduceNumber(1));
   };
 
   render() {
@@ -34,7 +34,7 @@ export default class Test extends PureComponent {
       <div>
         <h2>Test</h2>
         <div>当前计数: {this.state.count}</div>
-        <button onClick={this.addCount}>+</button>
+        <button onClick={this.reduceCount}>-</button>
       </div>
     );
   }
