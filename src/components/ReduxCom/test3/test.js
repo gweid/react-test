@@ -4,13 +4,16 @@ import { reduceNumber } from '../../../store/actionCreators';
 import { connect } from 'react-redux'
 
 class Test extends PureComponent {
+  reduceCount = (number) => {
+    this.props.reduceCount(number);
+  }
 
   render() {
     return (
       <div>
         <h2>react-redux Test</h2>
         <div>当前计数: {this.props.count}</div>
-        <button onClick={e => this.props.reduceCount(1)}>减1</button>
+        <button onClick={e => this.reduceCount(1)}>减1</button>
       </div>
     );
   }
