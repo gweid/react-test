@@ -4058,6 +4058,27 @@ import { Provider } from 'react-redux';
 
 
 
+**2、简单了解 react-redux 的 Provider 和 connect 的源码**
+
+1. 首先是 Provider
+
+   在 Provider.js 中的：
+
+   ![](/imgs/img8.png)
+
+   - 首先返回一个 contextValue，使用了 useMemo 包裹，利于性能优化，在依赖的 store 不变的情况下，不会进行重新计算
+   - 在 Context 的 Provider 中就会将其赋值给 value 属性
+
+   Context 由 ReactReduxContext 生成：
+
+   ![](/imgs/img9.png)
+
+   
+
+2. 然后是 connect 函数
+
+   
+
 
 
 ### 14、React Hook
