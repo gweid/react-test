@@ -4024,8 +4024,6 @@ import { StoreContext } from './utils/context';
 
 虽然手动实现了 connect、Provider 这些帮助完成连接 redux、react 的辅助工具，但是不建议这样做。实际上 redux 提供了 react-redux 库，可以直接在项目中使用，并且实现的逻辑会更加的严谨、而且享受 react-redux 带来的性能优化，更加高效。
 
-
-
 **1、react-redux 使用**
 
 安装：
@@ -4056,8 +4054,6 @@ import { Provider } from 'react-redux';
 </Provider>
 ```
 
-
-
 **2、简单了解 react-redux 的 Provider 和 connect 的源码**
 
 1. 首先是 Provider
@@ -4077,7 +4073,35 @@ import { Provider } from 'react-redux';
 
 2. 然后是 connect 函数
 
+   ```js
+   export function createConnect() {
+     connectHOC = connectAdvanced,
+     ...
+     return function connect() {
+       ...
+       return connectHOC(selectorFactory, {
+           ...
+       })
+     }
+   }
    
+   export default /*#__PURE__*/ createConnect()
+   ```
+   
+   - 首先全局返回的是 createConnect() 执行的结果，就是 connect 这个函数
+   - connect 函数返回的是 connectHOC 这个函数的执行结果；`connectHOC = connectAdvanced` 可以看出实际上是 connectAdvanced
+   
+   ```js
+   export default function connectAdvanced() {
+     ...
+     return function wrapWithConnect(WrappedComponent) {
+       ...
+       return hoistStatics(Connect, WrappedComponent)
+     }
+   }
+   ```
+   
+   - connectAdvanced 实际上就是返回 wrapWithConnect 这个高阶组件
 
 
 
