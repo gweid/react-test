@@ -4105,6 +4105,33 @@ import { Provider } from 'react-redux';
 
 
 
+#### 13-7、redux 中间件
+
+**1、Redux 发送异步请求**
+
+![](/imgs/img10.png)
+
+在 redux 中，要进行异步操作，主要是使用中间件。
+
+- 中间件的目的：在 dispatch 的 action 和 reducer 之间扩展一些自己的代码，例如日记记录、调用异步接口、添加代码调试等
+
+而在 redux 中发送异步请求，官网推荐的中间件是 `redux-thunk`
+
+- 通常情况，dispatch(action) 的 action 是一个 js 对象
+- redux-thunk 可以让 dispatch(action) 的 action 是一个函数
+
+使用 redux-thunk：
+
+1. 安装
+
+   ```js
+   npm i redux-thunk -S
+   ```
+
+2. 
+
+
+
 ### 14、React Hook
 
 **为什么需要 Hook：**
