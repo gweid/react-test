@@ -1,14 +1,20 @@
 # React
 
-本文是一些 react 相关的基础知识。
+本文是一些 react 相关的基础知识总结记录。
+
+
 
 ### 1、基础
+
+
 
 #### 1-1、创建一个 React 项目并启动
 
 1. 创建：npx create-react-app my-app
 2. 启动：npm run start
 3. 暴露配置项：npm run eject
+
+
 
 #### 1-2、入口 src/index.js
 
@@ -78,6 +84,8 @@ jsx-->Babel 将 jsx 编译为相应 js 对象-->ReactElement 将这个 js 对象
 
 ![jsx 到页面流程](/imgs/img1.jpg)
 
+
+
 #### 2-1、基本使用，插值用 {}
 
 > jsx 的类不能使用 class，而要使用 className，因为 jsx 是 js 上运行的，不能使用 js 的关键字
@@ -88,6 +96,8 @@ const jsx = <div>hello, {name}!</div>;
 
 ReactDOM.render(jsx, document.getElementById('root'));
 ```
+
+
 
 #### 2-2、函数的使用
 
@@ -110,6 +120,8 @@ const jsx = (
 ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
+
+
 #### 2-3、jsx 对象
 
 ```js
@@ -118,6 +130,8 @@ const jsx = <div>{good}</div>;
 
 ReactDOM.render(jsx, document.getElementById('root'));
 ```
+
+
 
 #### 2-4、条件语句
 
@@ -159,7 +173,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
    ```js
    import React, { Component } from 'react';
-
+   
    class Login extends Component {
      constructor(props) {
        super(props);
@@ -167,13 +181,13 @@ ReactDOM.render(jsx, document.getElementById('root'));
          isShow: true,
        };
      }
-
+   
      isShowClick() {
        this.setState({
          isShow: !this.state.isShow,
        });
      }
-
+   
      render() {
        return (
          <div style={{ marginTop: '20px' }}>
@@ -183,9 +197,11 @@ ReactDOM.render(jsx, document.getElementById('root'));
        );
      }
    }
-
+   
    export default Login;
    ```
+
+
 
 #### 2-5、数组
 
@@ -241,7 +257,7 @@ ReactDOM.render(jsx, document.getElementById('root'));
 
    ```js
    const arr = [22, 33, 4, 55, 66, 77];
-
+   
    const jsx = (
      <div>
        <ul>
@@ -251,11 +267,13 @@ ReactDOM.render(jsx, document.getElementById('root'));
        </ul>
      </div>
    );
-
+   
    ReactDOM.render(jsx, document.getElementById('root'));
    ```
 
 > map 和 forEach 区别：forEach 没有返回值
+
+
 
 #### 2-6、属性使用
 
@@ -416,6 +434,8 @@ const App = () => {
 
 > 无论是类组件还是函数式组件，都需要首字母大写
 
+
+
 #### 3-1、类组件（class component）
 
 ```js
@@ -441,6 +461,8 @@ export default ClassComponent;
 
 1. 如果通过类的方式去定义组件，那么组件必须继承于 React.Component 这个类
 2. 必须定义一个 render 方法，render 里面返回一个 jsx
+
+
 
 #### 3-2、函数式组件（function component）
 
@@ -477,6 +499,8 @@ export default FunComponent;
 - 有自己的生命周期，在生命周期内完成特定的操作
 - class 组件更新时只会执行 render 函数或者 componentDidUpdate 这些；函数式组件在更新时，整个函数都会被重新执行
 
+
+
 #### 3-3、react 实现类似 vue 的插槽
 
 ```js
@@ -508,6 +532,8 @@ export default class NavBar extends Component {
   rightSlot={<span>右边</span>}
 />
 ```
+
+
 
 
 
@@ -1068,6 +1094,8 @@ export default class FragmentCom extends PureComponent {
 
 ### 4、props
 
+
+
 #### 4-1、props 值
 
 props 接收的是组件传过来的值。
@@ -1227,6 +1255,8 @@ class ClassComponent extends Component {
 }
 ```
 
+
+
 #### 4-3、props 默认值
 
 ```js
@@ -1289,6 +1319,8 @@ class ClassComponent extends Component {
 3. setState 是会更改组件的，会造成组件的重新渲染，如果短时间有很多 setState 去操作 state，那么就会造成组件不断地更行，影响性能；setState 的异步更新主要就是一个合并批量更新的操作，减少组件的更新次数，达到优化性能的目的。第二点就是如果同步更新 state，但是还没有执行 render 函数，那么可能会导致 state 和 props 的数据不同步，造成父组件和子组件相同的依赖但是结果不同。
 4. state 的更新会被合并，当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state
 
+
+
 #### 5-1、初始化一个 state
 
 ```js
@@ -1302,6 +1334,8 @@ class ClassComponent extends Component {
   }
 }
 ```
+
+
 
 #### 5-2、setState
 
@@ -1737,6 +1771,8 @@ fn() // 此时的 this 指向 undefind
 <div onClick={this.xxx}></div>
 ```
 
+
+
 #### 6-1、绑定事件
 
 1. 需要通过 bind 进行绑定
@@ -1890,6 +1926,7 @@ fn() // 此时的 this 指向 undefind
    ```
 
 
+
 #### 6-2、传参
 
 1. 通过 bind(this, arg1, arg2, ...)
@@ -1927,11 +1964,11 @@ fn() // 此时的 this 指向 undefind
        super(props);
        this.state = { date: new Date() };
      }
-
+   
      handleLog(arg1, arg2) {
        console.log(this.state.date, arg1, arg2);
      }
-
+   
      render() {
        return (
          <div>
@@ -1943,6 +1980,8 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
+
+
 #### 6-3、为什么 react 的事件是合成事件
 
 因为 react 不仅仅是只跑在浏览器中，还有 react-native；如果写死为浏览器原生事件，那么就需要分开浏览器和手机客户端分别写两套。而使用合成事件，则可以当跑在浏览器，就合成 dom 事件，跑在手机端，则合成手机app 事件。
@@ -1950,6 +1989,8 @@ fn() // 此时的 this 指向 undefind
 
 
 ### 7、组件通讯
+
+
 
 #### 7-1、父传子
 
@@ -1995,6 +2036,8 @@ class Parent extends Component {
   }
 }
 ```
+
+
 
 #### 7-2、子传父
 
@@ -2268,6 +2311,10 @@ export default class EventsCom extends Component {
 
 ### 8、生命周期
 
+react16.3 之前和之后的生命周期有所区别。
+
+
+
 #### 8-1、react16.3 之前的生命周期
 
 ![react16.3 之前的生命周期](/imgs/img3.jpg)
@@ -2381,6 +2428,8 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 > 对于类组件来说，最重要的几个生命周期是：constructor、render、componentDidMount、componentDidUpdate、componentWillUnmount。其他的是一些不常用或者用来优化的或者即将废弃的。
 
+
+
 #### 8-2、react16.4 之后的生命周期
 
 ![react16.4 之后的生命周期](/imgs/img2.jpg)
@@ -2405,6 +2454,8 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 > - componentWillMount
 > - componentWillReceiveProps
 > - componentWillUpdate
+
+
 
 #### 8-3、新引入的两个生命周期
 
@@ -2482,6 +2533,8 @@ class ScrollingList extends Component {
 
 
 ### 9、React 中的 Dom 操作
+
+
 
 #### 9-1、通过 ref 获取 Dom，然后通过 this.refs.xxx 操作
 
@@ -2653,6 +2706,8 @@ export default class DomCom extends PureComponent {
 
 
 ### 10、React 常见的性能优化手段
+
+
 
 #### 10-1、首先，需要了解 react 的更新机制
 
@@ -3426,10 +3481,14 @@ export default class GroupAnimation extends PureComponent {
 
 纯函数是函数式编程的一个概念。
 
+
+
 #### 12-1、纯函数的定义：
 
 - 确定的输入，一定会产生确定的输出
 - 函数在执行过程中，不能产生副作用
+
+
 
 #### 12-2、一些例子
 
@@ -4181,6 +4240,8 @@ Hook 是 React 16.8 的新增特性，它可以让我们在不编写 class 的�
 1. 不要在循环、条件判断或者子函数中使用 hook
 2. 不要在 React 函数组件以外的地方使用 hook
 
+
+
 #### 14-1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
@@ -4318,22 +4379,22 @@ type SetStateAction<S> = S | ((prevState: S) => S);
    // function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
    // type Dispatch<A> = (value: A) => void;
    // type SetStateAction<S> = S | ((prevState: S) => S);
-
+   
    const HookComponent = (id) => {
     const [count, setCount] = useState(() => 10);
-
+   
     const addCount = () => {
       // setCount(count + 10) 三次会被合并，最终结果是 20
       // setCount(count + 10);
       // setCount(count + 10);
       // setCount(count + 10);
-
+   
       // 三次操作不会被合并，最终结果是 40
       setCount((prevCount) => prevCount + 10);
       setCount((prevCount) => prevCount + 10);
       setCount((prevCount) => prevCount + 10);
     };
-
+   
     return (
       <div>
         <p>函数useState：{count}</p>
@@ -4344,6 +4405,8 @@ type SetStateAction<S> = S | ((prevState: S) => S);
    ```
 
    >　操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
+
+
 
 #### 14-2、useEffect
 
@@ -4467,15 +4530,17 @@ const WindowScrollListener = () => {
          console.log(e);
        };
        document.addEventListener('onClick', listener, false);
-
+   
        return () => {
          document.removeEventListener('onClick', listener, false);
        };
      }, []);
-
+   
      return <div></div>;
    }
    ```
+
+
 
 #### 14-3、useRef
 
@@ -4502,9 +4567,9 @@ const HookComponent = (id) => {
 
 > 注意：更新 ref 对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
 
+
+
 #### 14-4、useCallback
-
-
 
 
 
