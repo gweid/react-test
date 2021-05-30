@@ -535,8 +535,6 @@ export default class NavBar extends Component {
 
 
 
-
-
 #### 3-4、受控非受控组件
 
 **1、受控组件**
@@ -728,7 +726,6 @@ class AppComponent extends PureComponent {
     );
   }
 }
-
 export default hightOrderCom(AppComponent);
 ```
 
@@ -785,11 +782,9 @@ export default hightOrderCom(AppComponent);
    
    export default HOCProp;
    ```
-
-
-
+   
    1.2 利用高阶组件来共享Context
-
+   
    ```js
    import React, { PureComponent, createContext } from 'react';
    
@@ -923,7 +918,7 @@ export default hightOrderCom(AppComponent);
    export default HOCAuth;
    ```
 
-3. 生命周期劫持
+3. 生命周期劫持（相当于 vue 中的 mixin 混入）
 
    ```js
    import React, { PureComponent } from 'react';
@@ -3477,47 +3472,7 @@ export default class GroupAnimation extends PureComponent {
 
 
 
-### 12、纯函数
-
-纯函数是函数式编程的一个概念。
-
-
-
-#### 12-1、纯函数的定义：
-
-- 确定的输入，一定会产生确定的输出
-- 函数在执行过程中，不能产生副作用
-
-
-
-#### 12-2、一些例子
-
-```js
-// sum 是一个纯函数；因为输入输出确定，并且返回的值一定是 num1 与 num2 这两个参数的和
-function sum(num1, num2) {
-  return num1 + num2;
-}
-
-// add 不是一个纯函数；因为输入相同，但是输出受到 flag 的影响，并不能保证确定输出
-let flag = 10;
-function add(num) {
-  return num + flag;
-}
-// 将 add 改成纯函数：只需要将 let flag 改为 const flag，因为 const 决定了 flag 不可重新赋值，那么 flag 永远都是 10，那么输入输出可以确定
-
-// changeInfo 不是一个纯函数；因为这个函数存在副作用
-function changeInfo(info) {
-  info.name = 'jack';
-}
-```
-
-
-
-> 在 react 中，纯函数的一些意义：所有 react 组件必须像纯函数一样保护他的 props 不被修改
-
-
-
-### 13、Redux
+### 12、Redux
 
 **为什么需要 Redux：**
 
@@ -3608,7 +3563,41 @@ function reducer(state = initialState, action) {
 
 
 
-#### 13-1、Redux 的基本使用
+#### 12-1、前置知识：纯函数
+
+**纯函数定义：**
+
+- 确定的输入，一定会产生确定的输出
+- 函数在执行过程中，不能产生副作用
+
+
+
+**例子：**
+
+```js
+// sum 是一个纯函数；因为输入输出确定，并且返回的值一定是 num1 与 num2 这两个参数的和
+function sum(num1, num2) {
+  return num1 + num2;
+}
+
+// add 不是一个纯函数；因为输入相同，但是输出受到 flag 的影响，并不能保证确定输出
+let flag = 10;
+function add(num) {
+  return num + flag;
+}
+// 将 add 改成纯函数：只需要将 let flag 改为 const flag，因为 const 决定了 flag 不可重新赋值，那么 flag 永远都是 10，那么输入输出可以确定
+
+// changeInfo 不是一个纯函数；因为这个函数存在副作用
+function changeInfo(info) {
+  info.name = 'jack';
+}
+```
+
+> 在 react 中，纯函数的一些意义：所有 react 组件必须像纯函数一样保护他的 props 不被修改
+
+
+
+#### 12-2、Redux 的基本使用
 
 **安装：**
 
@@ -3715,7 +3704,7 @@ store.dispatch({
 
 
 
-#### 13-2、Redux 结构划分
+#### 12-3、Redux 结构划分
 
 如果将所有的逻辑代码写到一起，那么当 redux 变得复杂时代码就难以维护；所依需要将 redux 按照 store、reducer、action、actionTypes(常量) 拆分。
 
@@ -3779,7 +3768,7 @@ store.dispatch({
 
 
 
-#### 13-3、Redux 执行流程
+#### 12-4、Redux 执行流程
 
 ![](/imgs/img7.png)
 
@@ -3791,7 +3780,7 @@ store.dispatch({
 
 
 
-#### 13-4、React 简单结合 Redux 使用
+#### 12-5、React 简单结合 Redux 使用
 
 ```js
 import React, { PureComponent } from 'react';
@@ -3846,7 +3835,7 @@ export default class Test extends PureComponent {
 
 
 
-#### 13-5、自定义 connect 抽离重复代码
+#### 12-6、自定义 connect 抽离重复代码
 
 在上面的使用中，有一些重复的代码，比如：
 
@@ -4079,7 +4068,7 @@ import { StoreContext } from './utils/context';
 
 
 
-#### 13-6、react-redux
+#### 12-7、react-redux
 
 虽然手动实现了 connect、Provider 这些帮助完成连接 redux、react 的辅助工具，但是不建议这样做。实际上 redux 提供了 react-redux 库，可以直接在项目中使用，并且实现的逻辑会更加的严谨、而且享受 react-redux 带来的性能优化，更加高效。
 
@@ -4164,7 +4153,7 @@ import { Provider } from 'react-redux';
 
 
 
-#### 13-7、redux 中间件
+#### 12-8、redux 中间件
 
 **1、Redux 发送异步请求**
 
@@ -4191,7 +4180,7 @@ import { Provider } from 'react-redux';
 
 
 
-### 14、React Hook
+### 13、React Hook
 
 **为什么需要 Hook：**
 
@@ -4242,7 +4231,7 @@ Hook 是 React 16.8 的新增特性，它可以让我们在不编写 class 的�
 
 
 
-#### 14-1、useState
+#### 13-1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
 
@@ -4408,7 +4397,7 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 
 
 
-#### 14-2、useEffect
+#### 13-2、useEffect
 
 useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
 
@@ -4542,7 +4531,7 @@ const WindowScrollListener = () => {
 
 
 
-#### 14-3、useRef
+#### 13-3、useRef
 
 useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
 
@@ -4569,9 +4558,9 @@ const HookComponent = (id) => {
 
 
 
-#### 14-4、useCallback
+#### 13-4、useCallback
 
 
 
-### 15、react-router
+### 14、react-router
 
