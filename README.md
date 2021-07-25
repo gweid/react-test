@@ -78,6 +78,8 @@ ReactDOM.render(<Test />, document.getElementById('root'));
 
 > React.createElement 会通过 ReactElement 函数构建一个 JavaScript 对象（虚拟 DOM）来描述 HTML 结构的信息，包括标签名、属性、还有子元素等。这样的代码就是合法的 JavaScript 代码了
 
+
+
 **jsx 到页面的流程：**
 
 jsx-->Babel 将 jsx 编译为相应 js 对象-->ReactElement 将这个 js 对象生成虚拟 DOM-->ReactDOM.render 生成真实 DOM
@@ -88,7 +90,7 @@ jsx-->Babel 将 jsx 编译为相应 js 对象-->ReactElement 将这个 js 对象
 
 #### 2-1、基本使用，插值用 {}
 
-> jsx 的类不能使用 class，而要使用 className，因为 jsx 是 js 上运行的，不能使用 js 的关键字
+> jsx 的 css 类选择器不能使用 class，而要使用 className，因为 jsx 是 js 上运行的，不能使用 js 的关键字
 
 ```js
 const name = 'word';
@@ -310,7 +312,7 @@ class ClassComponent extends Component {
 }
 ```
 
-> 使用 className 是为了避免与 class 组件里面的 class 冲突  
+> 使用 className 是为了避免与 class 组件里面的 class 冲突
 > style 使用 {} 插值， 里面那层的 {} 代表的是一个对象
 
 对于动态的 class 属性，官方推荐使用 `classnames` 这个库，好处：
@@ -505,7 +507,6 @@ export default FunComponent;
 
 ```js
 import React, { Component } from 'react';
-import './index.css';
 
 export default class NavBar extends Component {
   constructor(props) {
@@ -514,7 +515,7 @@ export default class NavBar extends Component {
 
   render() {
     const { leftSlot, centerSlot, rightSlot } = this.props;
-  
+
     return (
       <div className="nav-bar">
         <div className="nav-left">{ leftSlot }</div>
@@ -1316,7 +1317,7 @@ class ClassComponent extends Component {
 
 
 
-#### 5-1、初始化一个 state
+#### 5-1、初始化 state
 
 ```js
 class ClassComponent extends Component {
@@ -1761,9 +1762,22 @@ obj.fn() // 此时的 this 指向 obj
 const fn = obj.fn
 fn() // 此时的 this 指向 undefind
 
-// 在 react 的事件中同理
 
-<div onClick={this.xxx}></div>
+// 在 react 的事件中同理
+class ClassComponent extends Component {
+
+  handleLog() {
+    console.log(this); // 打印出来的 this 是 undefined
+  }
+
+  render() {
+    return (
+      <div>
+        <h1 onClick={this.handleLog}>点击</h1>
+      </div>
+    )
+  }
+}
 ```
 
 
@@ -1786,7 +1800,7 @@ fn() // 此时的 this 指向 undefind
      render() {
        return (
          <div>
-           <h1 onClick={this.handleLog.bind(this)}>{this.props.title}</h1>
+           <h1 onClick={this.handleLog.bind(this)}>handleLog</h1>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
        );
@@ -1794,9 +1808,11 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-   但是上面那种在 jsx 中绑定可能存在多次绑定 this，例如多个点击事件都需要使用**同一个事件处理函数**，这样会造成一定的性能损耗。每一次调用的时候都会生成一个新的方法实例，因此对性能有影响，并且当这个函数作为属性值传入低阶组件的时候，这些组件可能会进行额外的重新渲染，因为每一次都是新的方法实例作为的新的属性传递
+   但是上面那种在 jsx 中绑定可能存在**多次绑定 this**，例如多个点击事件都需要使用**同一个事件处理函数**，这样会造成一定的性能损耗。每一次调用的时候都会生成一个新的方法实例，因此对性能有影响，并且当这个函数作为属性值传入低阶组件的时候，这些组件可能会进行额外的重新渲染，因为每一次都是新的方法实例作为的新的属性传递
 
-   改版：在 class 类执行 constructor 构造器的时候绑定，这样只需要绑定一次，因为构造器只会执行一次
+   
+
+   **改版：**在 class 类执行 constructor 构造器的时候绑定，这样只需要绑定一次，因为构造器只会执行一次
 
    ```js
    class ClassComponent extends Component {
@@ -1814,7 +1830,7 @@ fn() // 此时的 this 指向 undefind
      render() {
        return (
          <div>
-           <h1 onClick={this.handleLog}>{this.props.title}</h1>
+           <h1 onClick={this.handleLog}>handleLog</h1>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
        );
@@ -1822,7 +1838,7 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-2. 通过包一层箭头函数（如果需要传参数，推荐这种，既能传参，又能获取事件对象）；缺点：每一次调用的时候都会生成一个新的方法实例，因此对性能有影响，并且当这个函数作为属性值传入低阶组件的时候，这些组件可能会进行额外的重新渲染，因为每一次都是新的方法实例作为的新的属性传递
+2. 通过包一层箭头函数（如果需要传参数，推荐这种，既能传参，又能获取事件对象）；**缺点：**每一次调用的时候都会生成一个新的方法实例，因此对性能有影响，并且当这个函数作为属性值传入低阶组件的时候，这些组件可能会进行额外的重新渲染，因为每一次都是新的方法实例作为的新的属性传递
 
    ```js
    class ClassComponent extends Component {
@@ -1839,20 +1855,20 @@ fn() // 此时的 this 指向 undefind
        return (
          <div>
            {/* 这里面为 this.handleLog() 区别于 bind 的 this.handleLog */}
-           <h1
-             onClick={() => {
-               this.handleLog();
-             }}
-           >
-             {this.props.title}
-           </h1>
+           <h1 onClick={() => {this.handleLog()}}>handleLog</h1>
            <div>{this.state.date.toLocaleTimeString()}</div>
          </div>
        );
      }
    }
    ```
-
+   
+   > 为什么这种的 this 也能访问到当前组件？
+   >
+   > 1. 首先，() => {} 这是一个箭头函数，不绑定 this
+   >
+   > 2. () => {this.handleLog()} 此时的 this 就是当前组件，那么就可以认为 `组件.handleLog()`，所以 this 指向组件
+   
 3. 方法名为箭头函数（不需要传参数，推荐这种）
 
    ```js
@@ -1908,8 +1924,8 @@ fn() // 此时的 this 指向 undefind
            {
              this.state.dataList.map((item, index) => (
                <div key={item.id}>
-                 姓名：<span>{item.name}</span> ==== 
-                 年龄：<span>{item.age}</span> ====
+                 <span>姓名：{item.name}</span> ==== 
+                 <span>年龄：{item.age}</span> ====
                  <button onClick={this.addAge}>+1</button>
                </div>
              ))
@@ -1932,11 +1948,11 @@ fn() // 此时的 this 指向 undefind
        super(props);
        this.state = { date: new Date() };
      }
-
+   
      handleLog(arg1, arg2) {
        console.log(this.state.date, arg1, arg2);
      }
-
+   
      render() {
        return (
          <div>
@@ -1948,9 +1964,8 @@ fn() // 此时的 this 指向 undefind
    }
    ```
 
-   > 注意，此时通过构造器 constructor 绑定 this 传参不能用，因为在 constructor 绑定 this，使用
-   > this.xxx(arg1) 会直接执行
-
+   > 注意，此时通过构造器 constructor 绑定 this 传参不能用，因为在 constructor 绑定 this，使用 this.xxx(arg1) 会直接执行
+   
 2. 通过包一层箭头函数（推荐，既能传参，又能获取事件对象）
 
    ```js
@@ -2112,7 +2127,7 @@ const MyContext = React.createContext(defaultValue);
 
 创建一个需要共享的 Context
 
-- 如果一个组件订阅了 Context，那么这个组件会从离自身最近的那个匹配的  `Provider`  中读取到当前的context值
+- 如果一个组件订阅了 Context，那么这个组件会从离自身最近的那个匹配的  `Provider`  中读取到当前的 context 值
 - defaultValue：默认值，组件在顶层查找过程中没有找到对应的`Provider`，就会使用 defaultValue 这个默认值
 
 

@@ -43,7 +43,8 @@ class ClassComponent extends Component {
 
     btnClick3 = (e) => {
         console.log(e);
-        console.log(this.state);
+        console.log(this); // 箭头函数可以拿到兄弟元素同层的 this
+        // console.log(this.state);
     };
 
     isShowClick() {
