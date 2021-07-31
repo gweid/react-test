@@ -1528,7 +1528,7 @@ class ClassComponent extends Component {
            return { count: state.count + 1 };
          });
    
-         console.log(this.state);
+         console.log(this.state); // 2
        }, 0);
      }
    
@@ -1558,7 +1558,7 @@ class ClassComponent extends Component {
        this.setState((state, props) => {
          return { count: state.count + 1 };
        });
-       console.log(this.state); // 第一次点击的结果 count 还是 1，因为 setState 是异步的
+       console.log(this.state); // 2
      };
    
      componentDidMount() {
@@ -3235,6 +3235,7 @@ class ImmutableCom extends Component {
     //   dataList: this.state.dataList
     // })
 
+    // 正确做法
     const newData = [...this.state.dataList, {id: id, name: `people${id}`, age: 20 + id}];
     this.setState({
       dataList: newData
@@ -3263,6 +3264,63 @@ class ImmutableCom extends Component {
 使用 setState 修改数据，例如修改一个对象，**不要直接去修改 state 中的对象**，而是把 state 中的对象复制一份再操作。原因： 在 js 中，复杂数据类型，数据存在堆中，栈中存的是对于堆的一个引用指针；当往 state 的 dataList 中 push 一条数据，即往存数据的对中 push 一条数据，但是指针是不变的。在 shouldComponentUpdate(nextProps, nextState) 中比较 `nextState.dataList !== this.state.dataList`,实际上着**两者的 dataList 都是存在栈中的指针**，那么 肯定是相等的，所以返回 false，就会导致不进行 render。
 
 ![](/imgs/img6.png)
+
+正确的做法是：
+
+```js
+class ImmutableCom extends Component {
+  constructor(props) {
+    super();
+
+    this.state = {
+      dataList: [
+        { id: '1', name: 'jack', age: 20 },
+        { id: '2', name: 'mark', age: 21 },
+        { id: '3', name: 'lucy', age: 22 }
+      ]
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.dataList !== this.state.dataList;
+  }
+
+  addPeople = () => {
+    let id = String(+this.state.dataList[this.state.dataList.length-1].id + 1);
+
+    // 浅拷贝
+    const newData = [...this.state.dataList, {id: id, name: `people${id}`, age: 20 + id}];
+    this.setState({
+      dataList: newData
+    })
+  }
+  
+  addAge = () => {
+    const newData = [...this.state.dataList]
+    newData[index].age += 1
+    this.setData({
+      dataList: newData
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        {
+          this.state.dataList.map((item, index) => (
+            <div key={item.id}>
+              姓名：<span>{item.name}</span> ==== 
+              年龄：<span>{item.age}</span> ====
+              <button onClick={this.addAge(index)}>+1</button>
+            </div>
+          ))
+        }
+        <button onClick={this.addPeople}>添加一个</button>
+      </div>
+    );
+  }
+}
+```
 
 
 
