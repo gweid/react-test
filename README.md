@@ -1123,6 +1123,51 @@ export default class FragmentCom extends PureComponent {
 }
 ```
 
+Fragment 的短语法写法：
+
+```js
+import React, { PureComponent, Fragment } from 'react';
+
+export default class FragmentCom extends PureComponent {
+  render() {
+    return (
+      // 这种就是 Fragment 的短语法写法
+      <>
+        <h2>Fragment标签</h2>
+      </>
+    );
+  }
+}
+```
+
+> 短语法可以简略书写，但是，当 Fragment 需要绑定 key 的时候，就不能使用短语法了
+
+
+
+ **3、StrictMode 严格模式**
+
+```js
+ReactDom.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('#root')
+)
+```
+
+StrictMode 是一个用来突出显示应用程序中潜在问题的工具：
+
+- 它不会被渲染成一个标签
+- 它为后代元素触发额外的检查和警告
+- 严格模式仅仅在开发模式下运行，不会影响生产环境
+
+检查的内容：
+
+- 一些不安全的生命周期【例如不再建议使用的】
+- 识别过时的 ref API
+- 检查意外的副作用
+- ...
+
 
 
 ### 4、props
