@@ -8,7 +8,15 @@ export default class NavBar extends Component {
 
   render() {
     const { leftSlot, centerSlot, rightSlot } = this.props;
-  
+
+    // return (
+    //   <div className="nav-bar">
+    //     <div className="nav-left">{ this.props.children[0] }</div>
+    //     <div className="nav-center">{ this.props.children[0] }</div>
+    //     <div className="nav-right">{ this.props.children[0] }</div>
+    //   </div>
+    // );
+
     return (
       <div className="nav-bar">
         <div className="nav-left">{ leftSlot }</div>

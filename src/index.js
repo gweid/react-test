@@ -82,6 +82,11 @@ const jsx = (
     <Parent />
     <ContextCom />
     <EventsCom />
+    {/* <NavBar>
+      <div>左边</div>
+      <div>中间</div>
+      <div>右边</div>
+    </NavBar> */}
     <NavBar
       leftSlot={<span>左边</span>}
       centerSlot={<span>中间</span>}

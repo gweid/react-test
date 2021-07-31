@@ -505,6 +505,41 @@ export default FunComponent;
 
 #### 3-3、react 实现类似 vue 的插槽
 
+第一种：组件双标签【只有一个插槽可以使用这种】
+
+```js
+export default class NavBar extends Component {
+  constructor(props) {
+    super();
+  };
+
+  render() {
+    // const { leftSlot, centerSlot, rightSlot } = this.props;
+
+    return (
+      <div className="nav-bar">
+        <div className="nav-left">{ this.props.children[0] }</div>
+        <div className="nav-center">{ this.props.children[1] }</div>
+        <div className="nav-right">{ this.props.children[2] }</div>
+      </div>
+    );
+  }
+}
+
+// 使用
+<NavBar>
+  <div>左边</div>
+  <div>中间</div>
+  <div>右边</div>
+</NavBar>
+```
+
+> 缺点：里面的标签不能乱，不然顺序会匹配不上
+
+
+
+第二种：【推荐】
+
 ```js
 import React, { Component } from 'react';
 
@@ -533,6 +568,8 @@ export default class NavBar extends Component {
   rightSlot={<span>右边</span>}
 />
 ```
+
+> 解决了第一种的缺点
 
 
 
@@ -1204,7 +1241,7 @@ export default Child;
 }
 ```
 
-> 常见的类型：array、bool、func、number、object、string
+> 常见的类型：array、bool、func、number、object、string、symbol
 
 例子：
 
@@ -1337,6 +1374,8 @@ class ClassComponent extends Component {
 
 > 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新和使 state 和 props 数据一致
 
+
+
 **1、问题：在组件中没有实现 setState，怎么能通过 this.setState 调用**
 
 因为，setState 是从 Component 中继承过来的，源码中定义：
@@ -1354,6 +1393,8 @@ Component.prototype.setState = function(partialState, callback) {
 };
 ```
 
+
+
 **2、setState 是异步更新：**
 
 - `setState` 设计为异步，可以显著的提升性能
@@ -1362,12 +1403,16 @@ Component.prototype.setState = function(partialState, callback) {
 - 如果同步更新了state，但是还没有执行render函数，那么 state 和 props 不能保持同步
   - state 和 props 不能保持一致性，会在开发中产生很多的问题
 
+
+
 **3、setState(partialState, callback)**
 
 1. partialState: object | function(stete, props)
    - 用于产生与当前 state 合并的子集
 2. callback: function
    - state 更新后被调用
+
+
 
 **4、setState 第一个参数是对象时：**
 
@@ -1397,6 +1442,8 @@ class ClassComponent extends Component {
 }
 ```
 
+
+
 **5、setState 第一个参数是函数时：**
 
 ```js
@@ -1424,6 +1471,8 @@ class ClassComponent extends Component {
   }
 }
 ```
+
+
 
 **6、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state（在 ComponentDidUpdate 中也能获取更新后的 state）**
 
@@ -1457,6 +1506,8 @@ class ClassComponent extends Component {
   }
 }
 ```
+
+
 
 **7、setState 在原生事件和 setTimeout 中都是同步的**
 
@@ -1531,6 +1582,8 @@ class ClassComponent extends Component {
    
    - 在组件生命周期或 React 合成事件中，setState 是异步
    - 在 setTimeout 或者原生dom事件中，setState 是同步
+
+
 
 **8、setState 的合并**
 
@@ -2055,8 +2108,6 @@ class Parent extends Component {
 
 ```js
 // 子组件
-import React, { Component } from 'react';
-
 class Child extends Component {
   constructor(props) {
     super(props);
@@ -2078,22 +2129,13 @@ class Child extends Component {
 }
 
 // 父组件
-import React, { Component } from 'react';
-import Child from './Child';
-
 class Parent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      count: 1,
-    };
   }
 
   addCount(name) {
     console.log(name);
-    this.setState({
-      count: this.state.count + 1,
-    });
   }
 
   render() {
@@ -2102,7 +2144,6 @@ class Parent extends Component {
         <h2>父子组件传值</h2>
         {/* 这里也要对 this 做处理*/}
         <Child txt="传过来的值" addCount={(e, name) => this.addCount(name)} />
-        <div>当前计数值：{this.state.count}</div>
       </div>
     );
   }
@@ -2159,9 +2200,9 @@ class MyClass extends Component {
 MyClass.contextType = MyContext;
 ```
 
-挂载在 class 上的 `contextType` 属性会被重赋值为一个由 `React.createContext()` 创建的 Context 对象：
+挂载在 class 上的 `contextType` 属性**会被重赋值**为一个由 `React.createContext()` 创建的 Context 对象：
 
-- 使得可以使用 `this.context` 来消费最近 Context 上的那个值
+- 使得可以使用 `this.context` 来访问最近 Context 上的那个值
 - 可以在任何生命周期中访问到它，包括 render 函数中
 
 
@@ -2208,7 +2249,6 @@ export default class ContextCom extends Component {
     );
   }
 }
-
 ```
 
 
@@ -2221,6 +2261,8 @@ import React, { Component, createContext } from 'react';
 const MyContext = createContext({title: '标题'});
 
 class Head extends Component {
+  // 将 MyContext 赋值给 contextType【contentType 是 react 组件内部具有的属性】
+  // 这样后面就可以通过 this.context 获取
   static contextType = MyContext;
 
   render() {
@@ -2329,6 +2371,8 @@ react16.3 之前和之后的生命周期有所区别。
 
 ![react16.3 之前的生命周期](/imgs/img3.jpg)
 
+
+
 ![react16.3 之前的生命周期](/imgs/img4.png)
 
 **1、组件初始化阶段（Initialization）**
@@ -2344,10 +2388,14 @@ class Xxxx extends Component {
 }
 ```
 
-类继承于 React.Component，所以才有 render()，生命周期等方法可以使用，这也说明为什么函数组件不能使用这些方法的原因。但 react hook 出来后，函数也支持
+类继承于 React.Component，所以才有 render()，生命周期等方法可以使用，这也说明为什么函数组件不能使用这些方法的原因。但 react hook 出来后，函数组件也支持
 
 super(props) 用来调用基类的构造方法 constructor(), 也将父组件的 props 注入给子组件，供子组件读取 (组件
-中 props 属性只读不可写，state 可写) 。 而 constructor() 用来做一些组件的初始化工作，比如定义 this.state 的初始内容，或者绑定事件 this（bind(this)）
+中 props 属性只读不可写，state 可写) 。 而 constructor() 用来做一些组件的初始化工作，比如定义 this.state 的初始内容，或者绑定事件 this【 bind(this) 】
+
+> 如果不初始化 State 或者
+
+
 
 **2、组件挂载阶段（Mounting）**
 
@@ -2355,9 +2403,11 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 - componentWillMount：在组件挂载到 DOM 前调用，且只会被调用一次，在这里面调用 this.setState 不会引起组件的重新渲染，也可以把写在这里面的内容改写到 constructor() 中，所以在项目中很少这么使用。
 
-- render：根据组件的 props 和 state（无论两者是重传递或重赋值，无论值是否有变化，都可以引起组件重新 render） ，内部 return 一个 React 元素（描述组件，即 UI），该元素不负责组件的实际渲染工作，之后由 React 自身根据此元素去渲染出页面 DOM。render 是纯函数 （Pure function：函数的返回结果只依赖于它的参数；函数执行过程里面没有副作用），不能在 render()里面执行 this.setState 等操作，会有改变组件状态的副作用。
+- render：根据组件的 props 和 state（无论两者是重传递或重赋值，无论值是否有变化，都会o引起组件重新 render） ，内部 return 一个 React 元素（描述组件，即 UI），该元素不负责组件的实际渲染工作，之后由 React 自身根据此元素去渲染出页面 DOM。render 是纯函数 （Pure function：函数的返回结果只依赖于它的参数；函数执行过程里面没有副作用），不能在 render()里面执行 this.setState 等操作，会有改变组件状态的副作用。
 
 - componentDidMount：组件挂载到 DOM 后调用，且只会被调用一次。这个阶段一般可做：1、依赖 DOM 的操作；2、发送网络请求（官方推荐）；3、添加订阅（需要在 componentWillUnmount 中取消订阅，避免内存泄露）
+
+
 
 **3、组件更新阶段（Update）**
 
@@ -2373,12 +2423,14 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 - componentDidUpdate(prevProps, prevState)：此方法在组件更新后被调用，可以操作组件更新的 DOM，prevProps 和 prevState 这两个参数指的是组件更新前的 props 和 state
 
+
+
 **需要注意的是 react 组件的更新机制**：setState 引起的 state 更新，或父组件重新 render 引起的 props 更新，更新后的 state 和 props 相比较之前的结果，无论是否有变化，都将引起子组件的重新 render。造成组件更新有两类（三种）情况
 
 1. 父组件重新 render 引起子组件重新 render 的情况有两种
 
    ```js
-   直接使用，每当父组件重新 render 导致的重传 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通过 shouldComponentUpdate 方法控制优化
+   每当父组件重新 render 导致的重传的 props，子组件都将直接跟着重新渲染，无论 props 是否有变化。可通过 shouldComponentUpdate 方法控制优化
    
    class Child extends Component {
       // 应该使用这个方法，否则无论 props 是否有变化都将会导致组件跟着重新渲染
@@ -2431,6 +2483,8 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
      }
    }
    ```
+
+
 
 **4、组件卸载阶段（Unmount）**
 
