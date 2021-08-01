@@ -1142,7 +1142,7 @@ export default class FragmentCom extends PureComponent {
 
 > 短语法可以简略书写，但是，当 Fragment 需要绑定 key 的时候，就不能使用短语法了
 
-
+【
 
  **3、StrictMode 严格模式**
 
@@ -4734,5 +4734,278 @@ const HookComponent = (id) => {
 
 
 
-### 14、react-router
+### 14、react 中使用 css 的方式
+
+react 不像 vue，规定了 template 模板中写 style 的方式写 css；react 官方也没有说明该使用哪种方式编写 css，所以导致了 react 中编写 css 的方式特别多，可能造成同一个团队，不同项目的 css 编写方式都不一样。而且社区也对 css 的最佳方法争吵不断，下面就是一些常见的 react 中 编写 css 的方式。
+
+强烈建议阅读：https://juejin.cn/post/6844904021304541198
+
+
+
+#### 14-1、内联样式
+
+```js
+export default function LinkStyle() {
+  const pStyle = {
+    fontSize: '30px',
+    color: 'red'
+  }
+  return (
+    <div>
+      <h1 style={{ fontSize: '50px' }}>内联h1</h1>
+      <div style={pStyle}>内联p</div>
+    </div>
+  )
+}
+```
+
+内联样式特点：
+
+- style 接受一个采用**小驼峰**命名属性的 js 对象，而不是 css 字符串
+- 并且可以引用 state 中的状态来设置相关的样式
+
+优点：
+
+- 样式之间不会有冲突
+- 可以使用 state 属性
+
+缺点：
+
+- 大量样式耦合在标签内部，代码混乱
+- 代码提示问题
+- 某些样式没法编写，例如伪类
+
+
+
+#### 14-2、普通 css
+
+ <img src="./imgs/img11.png" style="zoom:50%;" />
+
+例如：
+
+> car
+
+```js
+// index.css
+.title {
+  color: red;
+}
+
+// index.js
+import React, { PureComponent } from 'react'
+import './index.css'
+
+export default class CarIndex extends PureComponent {
+  render() {
+    return (
+      <div>
+        <h1 class="title">汽车</h1>
+      </div>
+    )
+  }
+}
+```
+
+> user
+
+```js
+// index.css
+.title {
+  color: green;
+}
+
+// index.js
+import React, { PureComponent } from 'react'
+import CarIndex from '../car'
+
+import './index.css'
+
+export default class UserIndex extends PureComponent {
+  render() {
+    return (
+      <div>
+        <h1 class="title">user</h1>
+        <CarIndex />
+      </div>
+    )
+  }
+}
+```
+
+上面的例子就是 user 组件里面引用了 car 组件，并且两个组件都有一个 class: title
+
+造成的结果就是：
+
+ <img src="./imgs/img12.png" style="zoom:67%;" />
+
+明明 car 中给的颜色是`红色`，却导致被污染了。也就是说，普通 css 的写法不适合组件化的形式，它没有局部作用域。
+
+
+
+#### 14-3、css-module
+
+css-module 解决了普通 css 文件没有局部作用域的问题；
+
+css modules 并不是 Reac t特有的解决方案，而是所有使用了类似于 webpack 配置的环境下都可以使用的。但是，如果在其他项目中使用个，那么需要进行配置，比如配置 webpack.config.js 中的 modules: true 等。
+
+React 的脚手架已经内置了css modules 的配置，只需要将 `.css/.less/.scss` 等样式文件都修改成 `.module.css/.module.less/.module.scss` 这种形式即可
+
+css modules确实解决了局部作用域的问题，也是很多人喜欢在React中使用的一种方案。
+
+> cssModule.module.css
+
+```js
+.title {
+  color: skyblue;
+}
+
+.title-sub {
+  color: pink;
+}
+```
+
+> cssModule.js
+
+```js
+import React, { PureComponent } from 'react'
+import styleCss from './cssModule.module.css'
+
+export default class CssModule extends PureComponent {
+  render() {
+    return (
+      <div>
+        <h1 className={styleCss.title}>css Module</h1>
+        {/* 如果是连接符 - 形式，需要使用这种 */}
+        <h2 className={styleCss['title-sub']}>title-sub</h2>
+      </div>
+    )
+  }
+}
+```
+
+> 注意：如果是 title-sub 这种连接符形式，需要 styleCss['title-sub']，所以为了同一，一般都直接使用这种读对象的形式
+
+css-module 形式解决了局部作用域的问题，目前也有很多人在使用这种形式，但是，它不足的地方就是：
+
+- 所有的 className 都必须使用 {styleCss.className} 的形式来编写
+
+
+
+#### 14-4、CSS-in-JS
+
+“CSS-in-JS” 是指一种模式，其中 CSS 由 JavaScript 生成而不是在外部文件中定义；此功能**并不是 React 的一部分，而是由第三方库提供**；实际上，React 官方对样式如何定义并没有明确态度。
+
+事实上 CSS-in-JS 的模式就是一种将样式（CSS）也写入到 JavaScript 中的方式，并且可以方便的使用 JavaScript 的状态。所以，React 有时又被人称之为 All in JS。
+
+目前比较流行的 CSS-in-JS 的库是：
+
+- styled-components
+- reactCSS
+
+
+
+##### styled-components
+
+**1、安装 styled-components**
+
+```js
+yarn add styled-components
+```
+
+
+
+**2、ES6 模板标签字符串**
+
+ <img src="./imgs/img13.png" style="zoom: 50%;" />
+
+- ES6中增加了模板字符串的语法，但是模板字符串还有另外一种用法：标签模板字符串
+- 普通的 JavaScript 的函数，都是通过 `函数名()` 方式来进行调用的，其实函数还有另外一种调用方式
+- 在调用的时候插入其他的变量，模板字符串被拆分了，第一个元素是数组，是被模块字符串拆分的字符串组合，后面的元素是一个个模块字符串传入的内容
+- 在 styled component 中，就是通过这种方式来解析模块字符串，最终生成我们想要的样式的
+
+
+
+**3、基本使用**
+
+```js
+import React from 'react'
+import styled from 'styled-components'
+
+// 这实际上就是返回的一个组件，是一个 div 标签
+// 这里设置的就是这个 div 标签的 css 样式
+const DivCom = styled.div`
+  color: red;
+`
+
+// 这实际上就是返回的一个组件，是一个 h2 标签
+// 这里设置的就是这个 h2 标签的 css 样式
+const HCom = styled.h2`
+  font-size: 50px;
+  color: green;
+`
+
+export default function CssInJs() {
+  return (
+    <DivCom>
+      你好
+      <HCom>h2标签</HCom>
+    </DivCom>
+  )
+}
+```
+
+styled-components 的本质是通过函数的调用，最终创建出一个组件：
+
+- 这个组件会被自动添加上一个不重复的 class
+- styled-components 会给该 class 添加相关的样式
+
+ <img src="./imgs/img15.png" style="zoom:50%;" />
+
+
+
+注意：要想在 vscode 中写 styled-components 有提示，可以安装一个 vscode 插件
+
+![](./imgs/img14.png)
+
+
+
+**4、支持类似 less 的嵌套**
+
+```js
+import React from 'react'
+import styled from 'styled-components'
+
+// 这实际上就是返回的一个组件，是一个 div 标签
+// 这里设置的就是这个 div 标签的 css 样式
+const DivCom = styled.div`
+  color: red;
+  font-size: 30px;
+
+  .title {
+    font-size: 50px;
+    color: skyblue;
+  }
+`
+
+export default function CssInJs() {
+  return (
+    <DivCom>
+      哈哈哈
+      <div className="title">标题</div>
+    </DivCom>
+  )
+}
+```
+
+以上，就是在嵌套了 title 类。也就是说，平时在写的时候，大多数只需要创建一个最外层的 styled.div 即可，其他的都可以通过嵌套的写法。【类似 less】
+
+
+
+#### 14-5、CSS in JS 和 CSS Modules 谁优谁胜
+
+CSS Modules 会比 CSS in JS 的侵入性更小，CSS in JS 可以和 JS 共享变量，谁优谁胜无法武断。这个看个人喜好。
+
+
+
+### 15、react-router
 

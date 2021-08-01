@@ -27,6 +27,10 @@ import SwitchAnimat from './components/AnimatCom/SwitchAnimat';
 import TestRedux from './components/ReduxCom/test1/index';
 import ConnectRedux from './components/ReduxCom/test2/index';
 import ReactReduxCom from './components/ReduxCom/test3/index';
+import LinkStyle from './components/CssStyle/内联方式/index';
+import UserIndex from './components/CssStyle/普通css/user';
+import CssModule from './components/CssStyle/css-module/cssModule';
+import CssInJs from './components/CssStyle/css-in-js/CssInJs';
 
 import store from './store';
 import { StoreContext } from './utils/context';
@@ -113,6 +117,13 @@ const jsx = (
     <Provider store={store}>
       <ReactReduxCom />
     </Provider>
+
+    {/* css 样式 */}
+    <hr />
+    <LinkStyle />
+    <UserIndex />
+    <CssModule />
+    <CssInJs />
   </div>
 );
 
