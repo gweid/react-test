@@ -24,13 +24,14 @@ const store = redux.createStore(reducer);
 // 可以通过 store.getState() 来获取当前 state
 // console.log(store.getState());
 
-// 可以在派发 action 之前，监听 store 变化
+// 可以在派发 action 之前，订阅 store 变化
 // store.subscribe(() => {
 //   console.log(store.getState());
 // });
 
 // 4、通过 action 来修改 state
-store.dispatch({
+const actios = {
   type: 'ADD_NUMBER',
   number: 5
-});
+}
+store.dispatch(actios);

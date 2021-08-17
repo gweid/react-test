@@ -3876,10 +3876,11 @@ const store = redux.createStore(reducer);
 // });
 
 // 4、通过 action 来修改 state
-store.dispatch({
+const actios = {
   type: 'ADD_NUMBER',
   number: 5
-});
+}
+store.dispatch(actios);
 ```
 
 
@@ -4051,6 +4052,8 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
         }
       }
 
+      // 为什么需要这一步：
+      // 因为直接改变 redux 的数据，这边是不知道数据发生变化的，所以需要这一步来通知数据变化，重新渲染
       componentDidMount() {
         this.unsubscribe = store.subscribe(() => {
           this.setState({
@@ -4190,10 +4193,11 @@ export {
 
 ```js
 import React, { PureComponent } from 'react'
+import { createContext } from 'react';
 
-import { StoreContext } from './context';
+export const StoreContext = createContext();
 
-const connect = (mapStateToProps, mapDispatchToProps) => {
+export const connect = (mapStateToProps, mapDispatchToProps) => {
   return function handleMapCpn(PageCom) {
     return class extends PureComponent {
       static contextType  = StoreContext
@@ -4229,15 +4233,13 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
     }
   }
 };
-
-export default connect;
 ```
 
 在入口的 index.js 中：
 
 ```js
 import store from './store';
-import { StoreContext } from './utils/context';
+import { StoreContext } from './utils/connect'
 
 <StoreContext.Provider value={store}>
   <App />
@@ -4251,6 +4253,8 @@ import { StoreContext } from './utils/context';
 #### 12-7、react-redux
 
 虽然手动实现了 connect、Provider 这些帮助完成连接 redux、react 的辅助工具，但是不建议这样做。实际上 redux 提供了 react-redux 库，可以直接在项目中使用，并且实现的逻辑会更加的严谨、而且享受 react-redux 带来的性能优化，更加高效。
+
+
 
 **1、react-redux 使用**
 
@@ -4282,6 +4286,8 @@ import { Provider } from 'react-redux';
 </Provider>
 ```
 
+
+
 **2、简单了解 react-redux 的 Provider 和 connect 的源码**
 
 1. 首先是 Provider
@@ -4296,8 +4302,6 @@ import { Provider } from 'react-redux';
    Context 由 ReactReduxContext 生成：
 
    ![](/imgs/img9.png)
-
-   
 
 2. 然后是 connect 函数
 

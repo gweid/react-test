@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react'
+import { createContext } from 'react';
 
-import { StoreContext } from './context';
+export const StoreContext = createContext();
 
-const connect = (mapStateToProps, mapDispatchToProps) => {
+export const connect = (mapStateToProps, mapDispatchToProps) => {
   return function handleMapCpn(PageCom) {
     return class extends PureComponent {
-      static contextType  = StoreContext
+      // 创建一个 context，那么就可以通过 this.context 访问
+      static contextType = StoreContext
 
       constructor(props, context) {
         super(props, context);
@@ -14,6 +16,8 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
         }
       }
 
+      // 为什么需要这一步：
+      // 因为直接改变 redux 的数据，这边是不知道数据发生变化的，所以需要这一步来通知数据变化，重新渲染
       componentDidMount() {
         this.unsubscribe = this.context.subscribe(() => {
           this.setState({
@@ -43,5 +47,3 @@ const connect = (mapStateToProps, mapDispatchToProps) => {
     }
   }
 };
-
-export default connect;

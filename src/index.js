@@ -33,7 +33,7 @@ import CssModule from './components/CssStyle/css-module/cssModule';
 import CssInJs from './components/CssStyle/css-in-js/CssInJs';
 
 import store from './store';
-import { StoreContext } from './utils/context';
+import { StoreContext } from './utils/connect'
 
 import { Provider } from 'react-redux';
 
@@ -110,6 +110,8 @@ const jsx = (
     <CSSAnimat />
     <SwitchAnimat />
     <TestRedux />
+
+    {/* redux 的使用*/}
     {/* <ConnectRedux /> */}
     <StoreContext.Provider value={store}>
       <ConnectRedux />

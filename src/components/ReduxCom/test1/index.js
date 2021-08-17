@@ -3,7 +3,6 @@ import store from '../../../store';
 import { addNumber } from '../../../store/actionCreators';
 
 import Test from './test';
-
 export default class TestRedux extends PureComponent {
   constructor(props) {
     super(props);
