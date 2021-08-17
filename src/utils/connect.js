@@ -16,7 +16,7 @@ export const connect = (mapStateToProps, mapDispatchToProps) => {
         }
       }
 
-      // 为什么需要这一步：
+      // 为什么需要这一步?
       // 因为直接改变 redux 的数据，这边是不知道数据发生变化的，所以需要这一步来通知数据变化，重新渲染
       componentDidMount() {
         this.unsubscribe = this.context.subscribe(() => {
