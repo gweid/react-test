@@ -4482,6 +4482,58 @@ import { Provider } from 'react-redux';
 
 
 
+#### 12-10、redux-devtools 的使用
+
+redux 提供了 redux-devtools 插件来追踪 redux 的变化；需要在 谷歌浏览器安装一下这个插件。
+
+安装好后，打开控制台，会是这样子：什么都没有，需要点击 `the instructions` 进去，按照指引，进行配置
+
+ <img src="./imgs/img17.png" style="zoom:50%;" />
+
+地址：https://github.com/zalmoxisus/redux-devtools-extension#usage
+
+照着进行配置：
+
+```js
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunkMiddleware from 'redux-thunk'
+import reducer from './reducer.js';
+
+const composeEnhancers =
+  typeof window === 'object' &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+      // 开启 trace 可以追踪到具体源码位置
+      trace: true
+    }) : compose;
+
+// 使用 redux-thunk 中间件
+// applyMiddleware(中间件1, 中间件2, ...)
+const enhancer = applyMiddleware(thunkMiddleware)
+
+const store = createStore(reducer, composeEnhancers(enhancer));
+
+export default store;
+```
+
+如果是 typescript：
+
+```js
+const composeEnhancers =
+  typeof window === 'object' &&
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+      (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        // 开启 trace 可以追踪到具体源码位置
+      	trace: true
+      }) : compose
+```
+
+配置完后的结果：
+
+![](./imgs/img18.png)
+
+可以发现，追踪到了 redux；左边是所有处理过的 action，右边记录的是变化的 store
+
 
 
 ### 13、React Hook
