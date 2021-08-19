@@ -1,7 +1,3 @@
-const ADD_NUMBER = 'ADD_NUMBER';
-const REDUCE_NUMBER = 'REDUCE_NUMBER';
-
-export {
-  ADD_NUMBER,
-  REDUCE_NUMBER
-}
+export const ADD_NUMBER = 'ADD_NUMBER';
+export const REDUCE_NUMBER = 'REDUCE_NUMBER';
+export const CHANGE_INFO = 'CHANGE_INFO'

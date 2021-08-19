@@ -4337,20 +4337,42 @@ import { Provider } from 'react-redux';
 
 
 
-#### 12-8、redux 中间件
+#### 12-8、redux 进行异步操作
+
+存储到 redux 的数据，很多情况下都是通过接口拿到的，那么就会涉及到异步请求，常规的流程是：
+
+![](./imgs/img16.png)
+
+在 componentDidMount 生命周期中发送请求，然后再存储到 redux 中。这样做的一个缺陷是：必须将网络请求的异步代码放到组件的生命周期中来完成；事实上，网络请求到的数据也属于状态管理的一部分，更好的一种方式应该是将其也交给 redux 来管理。
+
+
 
 **1、Redux 发送异步请求**
 
 ![](/imgs/img10.png)
 
-在 redux 中，要进行异步操作，主要是使用中间件。
+在 redux 中，要进行异步操作，主要是使用**中间件**。
 
 - 中间件的目的：在 dispatch 的 action 和 reducer 之间扩展一些自己的代码，例如日记记录、调用异步接口、添加代码调试等
 
-而在 redux 中发送异步请求，官网推荐的中间件是 `redux-thunk`
+而在 redux 中发送异步请求，官方推荐的中间件是 `redux-thunk`，也可以使用 `redux-saga`
+
+
+
+#### 12-9、redux-thunk
 
 - 通常情况，dispatch(action) 的 action 是一个 js 对象
 - redux-thunk 可以让 dispatch(action) 的 action 是一个函数
+
+> redux-thunk 如何做到让我们可以发送异步的请求呢？
+>
+> - 默认情况下的 dispatch(action)，action 需要是一个对象
+> - redux-thunk 可以让 dispatch(action函数)，action 可以是一个函数
+> - 该函数会被调用，并且会传给这个函数一个 dispatch 函数和 getState 函数
+>   - dispatch 函数用于之后再次派发 action
+>   - getState 函数考虑到之后的一些操作需要依赖原来的状态，用于获取之前的一些状态
+
+
 
 使用 redux-thunk：
 
@@ -4360,7 +4382,105 @@ import { Provider } from 'react-redux';
    npm i redux-thunk -S
    ```
 
-2. 
+2. 应用 redux-thunk 中间件
+
+   ```js
+   import { createStore, applyMiddleware } from 'redux';
+   import thunkMiddleware from 'redux-thunk'
+   import reducer from './reducer.js';
+   
+   // 使用 redux-thunk 中间件
+   // applyMiddleware(中间件1, 中间件2, ...)
+   const enhancer = applyMiddleware(thunkMiddleware)
+   
+   const store = createStore(reducer, enhancer);
+   
+   export default store;
+   ```
+
+   - createStore 可以接受第二个参数
+
+3. > actionsCreators.js
+
+   ```js
+   import { CHANGE_INFO } from './actionTypes.js';
+   
+   export const changeInfo = info => ({type: CHANGE_INFO, info})
+   
+   // 用于 redux-thunk
+   export const getInfo = (dispatch, getState) => {
+     // 做异步操作
+     // axios.get('xxxxxxx').then(res => {
+     //   // 在这里调用 dispatch 执行相关操作
+     //   dispatch(reduceNumber(10))
+     // })
+     setTimeout(() => {
+       dispatch(changeInfo({name: 'lucy', age: 20}))
+     })
+   }
+   ```
+
+4. > reducer.js
+
+   ```js
+   import { CHANGE_INFO } from './actionTypes.js';
+   
+   const initState = {
+     info: {
+       name: '',
+       age: 10
+     }
+   };
+   
+   const reducer = (state = initState, action) => {
+     switch (action.type) {
+       case CHANGE_INFO:
+         return {...state, info: action.info}
+       default:
+         return state;
+     }
+   }
+   
+   export default reducer;
+   ```
+
+5. 调用
+
+   ```js
+   import React, { useEffect } from 'react'
+   import { connect } from 'react-redux'
+   import { getInfo } from '../../../store/actionCreators'
+   
+   function ReduxThunkCom (props) {
+     useEffect(() => {
+       props.getInfo()
+     }, [])
+   
+     return (
+       <div>
+         <h3>{props.info.age}</h3>
+       </div>
+     )
+   }
+   
+   const mapStateToProps = state => {
+     return {
+       info: state.info
+     }  
+   }
+   
+   const mapDispatchToProps = dispatch => {
+     return {
+       getInfo() {
+         dispatch(getInfo)
+       }
+     }
+   }
+   
+   export default connect(mapStateToProps, mapDispatchToProps)(ReduxThunkCom)
+   ```
+
+
 
 
 

@@ -26,7 +26,8 @@ import CSSAnimat from './components/AnimatCom/index';
 import SwitchAnimat from './components/AnimatCom/SwitchAnimat';
 import TestRedux from './components/ReduxCom/test1/index';
 import ConnectRedux from './components/ReduxCom/test2/index';
-import ReactReduxCom from './components/ReduxCom/test3/index';
+import ReactReduxCom from './components/ReduxCom/react-redux/index';
+import ReduxThunkCom from './components/ReduxCom/redux-thunk/index';
 import LinkStyle from './components/CssStyle/内联方式/index';
 import UserIndex from './components/CssStyle/普通css/user';
 import CssModule from './components/CssStyle/css-module/cssModule';
@@ -118,6 +119,9 @@ const jsx = (
     </StoreContext.Provider>
     <Provider store={store}>
       <ReactReduxCom />
+    </Provider>
+    <Provider store={store}>
+      <ReduxThunkCom />
     </Provider>
 
     {/* css 样式 */}
