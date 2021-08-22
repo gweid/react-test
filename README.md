@@ -4913,6 +4913,86 @@ store.dispatch(action)
 
 
 
+#### 13-12、reducer 的拆分
+
+在项目开始变得复杂的时候，如果还是所有的 reducer 都写在一个文件中，那么就会导致当前文件越来越臃肿，难以维护。此时，就需要将 reducer 根据模块或者页面功能进行拆分。
+
+而拆分之后，redux 提供了 combineReducers 函数可以方便的让我们对多个 reducer 进行合并。
+
+基本使用查看事例代码：`src/components/ReduxCom/split-reducer`
+
+实际上就是：
+
+```js
+import { combineReducers } from 'redux'
+
+function counterReducer(state = initialCounterState, action) {
+  switch (action.type) {
+    case ADD_NUMBER:
+      return { ...state, counter: state.counter + action.num }
+    default:
+      return state
+  }
+}
+
+function homeReducer(state = initialHomeState, action) {
+  switch (action.type) {
+    case CHANGE_BANNERS:
+      return { ...state, banners: action.banners }
+    default:
+      return state
+  }
+}
+
+const reducer = combineReducers({
+  counterInfo: counterReducer,
+  homeInfo: homeReducer
+})
+
+export default reducer
+```
+
+而在拿取值的时候，就需要：
+
+```js
+state.counterInfo.counter
+```
+
+
+
+#### 13-13、React 中的 state 如何进行管理
+
+目前，常见的：
+
+- 组件自己的 state（或者 hook）
+- Context 数据共享
+- redux 管理
+
+而在开发中，应该如何选择？
+
+这没有一个标准的答案：
+
+- 有些人，喜欢将所有的状态都放在 redux 中去管理，方便追踪和共享
+- 有些人，选择将某些组件自己的状态放到组件内部进行管理
+- 有些人，将类似主题、用户信息等数据放到 Context 中进行共享和管理
+
+这就需要开发者来进行衡量；其实这也是 react 做得比较失败的地方，官方没有统一的管理状态库，导致社区管理状态库混乱。
+
+
+
+而根据 redux 作者的观点：
+
+- 当状态需要共享，那么放在 redux 中
+- 在例如路由切换的时候，需要把状态缓存下来，而不是跟随组件销毁而销毁，那么放在 redux 中
+
+所以，会有一些方案：（当然，这不是绝对的）
+
+- UI 相关的组件内部可以维护的状态，在组件内部自己维护
+- 大部分需要共享的状态，交给  redux 来维护
+- 从服务器请求的数据（包括请求的操作），交给 redux 维护
+
+
+
 ### 14、React Hook
 
 **为什么需要 Hook：**
