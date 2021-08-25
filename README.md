@@ -4993,7 +4993,88 @@ state.counterInfo.counter
 
 
 
-### 14、React Hook
+### 14、react-router
+
+React 的路由实现依赖于 react-router。
+
+从 React Router 版本4开始，路由不再集中在一个包中进行管理：
+
+- react-router 是 router 的核心部分代码
+- react-router-dom 用于浏览器
+- react-router-native 用于原生应用
+
+基本原理与 vue-router 差不多，都是利用 hash 和 history 实现的。
+
+
+
+安装：安装 react-router-dom 会自动安装 react-router 依赖
+
+```js
+yarn add react-router-dom
+```
+
+
+
+#### 14-1、基本使用
+
+react-router 最主要就是提供了一些组件。
+
+
+
+**BrowserRouter  和 HashRouter ：**
+
+- BrowserRouter 组件：使用 history 模式
+- HashRouter 组件：使用 hash 模式
+
+**Link 和 NavLink：**
+
+- 路径的跳转一般使用 Link 组件，最终会被渲染成 a 元素
+- NavLink 是在 Link 基础之上增加了一些样式属性
+- to：Link 中最重要的属性，用于设置跳转到的路径
+
+**Route：**
+
+- Route 用于路径的匹配
+- path 属性：用于设置匹配到的路径
+- component 属性：设置匹配到路径后，渲染的组件
+- exact：精准匹配，只有精准匹配到完全一致的路径，才会渲染对应的组件
+
+例子：
+
+```js
+import React from 'react'; 
+
+import { BrowserRouter, Link, Route } from 'react-router-dom'
+
+import Index from './pages/index'
+import TestPage from './pages/testPage'
+import Mine from './pages/mine'
+
+import style from './index.module.css'
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <div className={style['router-link']}>
+        <Link className={style['link-item']} to="/">index</Link>
+        <Link className={style['link-item']} to="/testPage">testPage</Link>
+        <Link className={style['link-item']} to="/mine">mine</Link>
+      </div>
+      <div>
+        <Route exact path="/" component={Index}/>
+        <Route path="/testPage" component={TestPage}/>
+        <Route path="/mine" component={Mine}/>
+      </div>
+    </BrowserRouter>
+  )
+}
+```
+
+
+
+
+
+### 15、React Hook
 
 **为什么需要 Hook：**
 
@@ -5044,7 +5125,7 @@ Hook 是 React 16.8 的新增特性，它可以让我们在不编写 class 的�
 
 
 
-#### 14-1、useState
+#### 15-1、useState
 
 这就是一个 hook，可以在 function 组件定义 State。
 
@@ -5210,7 +5291,7 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 
 
 
-#### 14-2、useEffect
+#### 15-2、useEffect
 
 useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
 
@@ -5344,7 +5425,7 @@ const WindowScrollListener = () => {
 
 
 
-#### 14-3、useRef
+#### 15-3、useRef
 
 useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
 
@@ -5371,9 +5452,5 @@ const HookComponent = (id) => {
 
 
 
-#### 14-4、useCallback
-
-
-
-### 15、react-router
+#### 15-4、useCallback
 
