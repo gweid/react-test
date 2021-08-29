@@ -5037,7 +5037,9 @@ react-router 最主要就是提供了一些组件。
 - Route 用于路径的匹配
 - path 属性：用于设置匹配到的路径
 - component 属性：设置匹配到路径后，渲染的组件
-- exact：精准匹配，只有精准匹配到完全一致的路径，才会渲染对应的组件
+- exact：精准匹配，只有**匹配到完全一致的路径**，才会渲染对应的组件。
+  - 如果不加上 exact，采用的是模糊匹配，那么就会产生 `'/'` 与 `'/home'` 这两个因为都有 `/`，都会被匹配上。
+  - 那么，exact 在什么时候应该加上呢？当有嵌套路由的时候，不应该加上；一般情况下，是在 `/` 这个根路径需要加上
 
 例子：
 
@@ -5067,6 +5069,573 @@ const App = () => {
       </div>
     </BrowserRouter>
   )
+}
+```
+
+
+
+#### 14-2、NavLink
+
+NavLink 与 Link 都是进行路径跳转，而且最终都会被渲染成 a 元素。区别在与 NavLink 可以添加一些样式属性
+
+
+
+**需求：**在路径被选中的时候，对应的便签变成红色
+
+这时就可以使用 NavLink 来替代 Link：
+
+- activeStyle：活跃时（匹配时）的样式
+- activeClassName：活跃时添加的 class 类名
+- exact：是否精准匹配（只有精确匹配，才使用激活属性）【当有嵌套路由的时候，不应该加上】
+
+```js
+import { BrowserRouter, NavLink, Route } from 'react-router-dom'
+
+<BrowserRouter>
+      <div className={style['router-link']}>
+        <NavLink exact activeStyle={{ color: 'red' }} to="/">index</NavLink>
+        <NavLink exact activeClassName={style['link-active']} to="/testPage">testPage</NavLink>
+        <NavLink exact activeClassName={style['link-active']} to="/mine">mine</NavLink>
+      </div>
+      <div>
+        <Route exact path="/" component={Index}/>
+        <Route exact path="/testPage" component={TestPage}/>
+        <Route exact path="/mine" component={Mine}/>
+      </div>
+</BrowserRouter>
+```
+
+结果：
+
+![](./imgs/img20.png)
+
+
+
+#### 14-3、Switch
+
+在 react-router 中，只要是路径被匹配到的 Route 对应的组件都会被渲染。这样子对于一些特殊情况就不太好处理，比如 404 页面。
+
+一般情况下，都希望当用户输入不存在的路由时，显示 404 页面。在 Route 标签上，如果不写 path，那么就会默认匹配所有路径。
+
+```js
+<Route exact path="/" component={Index}/>
+<Route exact path="/testPage" component={TestPage}/>
+<Route exact path="/mine" component={Mine}/>
+
+<Route component={noMatch} />
+```
+
+如果这样子写，那么 `<Route component={noMatch} />` 这个每次都会被匹配到，就会导致每次都有 404 页面被渲染
+
+<img src="./imgs/img21.png" style="zoom:50%;" />
+
+所以，需要配合 Switch 使用，Switch 的作用：只要匹配到了第一个，那么后面的就不再继续匹配了
+
+```js
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+
+<Switch>
+   <Route exact path="/" component={Index}/>
+   <Route exact path="/testPage" component={TestPage}/>
+   <Route exact path="/mine" component={Mine}/>
+
+   <Route component={noMatch} />
+</Switch>
+```
+
+
+
+#### 14-4、路由嵌套
+
+在开发中，路由之间是存在嵌套关系的。
+
+例如，在 about 页面，还有两个页面内容。
+
+![](./imgs/img22.png)
+
+实现：
+
+在 index.js 中：
+
+```js
+<BrowserRouter>
+      <div className={style['router-link']}>
+        <NavLink exact className={style['link-item']} activeStyle={{ color: 'red' }} to="/">index</NavLink>
+        <NavLink className={style['link-item']} activeStyle={{ color: 'red' }} to="/about">about</NavLink>
+      </div>
+      <Switch>
+        <Route exact path="/" component={Index}/>
+        <Route path="/about" component={About}/>
+        <Route component={NoMatch} />
+      </Switch>
+</BrowserRouter>
+```
+
+> 注意：当有嵌套路由的时候，我晕是 NavLink 还是 Route 中都不应该再使 exact 进行精确匹配
+
+在 about.js 中：
+
+```js
+<div>
+      <NavLink exact activeClassName={style['navlink-active']} to="/about">理念</NavLink>
+      <NavLink exact activeClassName={style['navlink-active']} to="/about/culture">文化</NavLink>
+
+      <Switch>
+        <Route exact path="/about" component={Culture} />
+        <Route exact path="/about/culture" component={Idea} />
+        <Route component={NoMatch} />
+      </Switch>
+</div>
+```
+
+这就实现了路由的嵌套。
+
+
+
+#### 14-5、手动进行路由跳转
+
+在这之前，实现路由跳转都是通过 Link 或者 NavLink 标签进行跳转的，实际上也可以通过 JavaScript 代码进行跳转。
+
+而在 react-router 中，使用 js 代码进行跳转，就需要**获取到 history 对象**
+
+
+
+获取 history 对象的方式：
+
+- 如果该组件是**通过路由 Route 的 component 创建并渲染出来的**，那么可以直接通过 props 获取 history、location、match 对象
+
+  ```js
+  import React from 'react'
+  import { Button } from 'antd';
+  
+  export default function NoMatch(props) {
+    const goHome = () => {
+      // 通过路由跳转过来，可以直接在 props 中获取 history
+      console.log(props.history)
+      console.log(props.location)
+      console.log(props.match)
+      // props.history.push('/')
+    }
+  
+    return (
+      <div>
+        <Button type="primary" onClick={goHome}>Back Home</Button>
+      </div>
+    )
+  }
+  
+  ```
+
+  - props.history 得到的是：
+
+       <img src="./imgs/img23.png" style="zoom:50%;" />
+
+  - props.location 得到的是：
+
+      <img src="./imgs/img24.png" style="zoom:50%;" />
+
+  - props.match 得到的是：
+
+       <img src="./imgs/img25.png" style="zoom:50%;" />
+
+- 如果该组件是**一个普通渲染的组件**，那么不可以通过 props 获取 history、location、match 对象；需要**通过高阶组件**，在组件中添加想要的属性，react-router 也是通过高阶组件为我们的组件添加相关的属性的
+
+  使用 react-rout 提供的 withRouter 包裹，并且在渲染组件的时候需要包裹在 `<Router>` 里面，因为一些属性是通过 ``<Router>` ` c传递进来了
+
+  ```js
+  import { BrowserRouter, NavLink, Route, Switch, withRouter } from 'react-router-dom'
+  
+  const App = () => {
+    return (
+      <BrowserRouter>
+        <div className={style['router-link']}>
+          <NavLink exact to="/">index</NavLink>
+          <NavLink to="/about">about</NavLink>
+        </div>
+        <Switch>
+          <Route exact path="/" component={Index}/>
+          <Route path="/about" component={About}/>
+  
+          <Route component={NoMatch} />
+        </Switch>
+      </BrowserRouter>
+    )
+  }
+  
+  export default withRouter(App)
+  ```
+
+  在使用的时候：
+
+  ```js
+  <BrowserRouter>
+      <App />
+  </BrowserRouter>
+  ```
+
+  这样包裹了之后，其实 App 中就不需要包裹在 BrowserRouter 中了，最外层包裹就好了，可以改为：
+
+  ```js
+  import { NavLink, Route, Switch, withRouter } from 'react-router-dom'
+  
+  const App = () => {
+    return (
+      <>
+        <div className={style['router-link']}>
+          <NavLink exact to="/">index</NavLink>
+          <NavLink to="/about">about</NavLink>
+        </div>
+        <Switch>
+          <Route exact path="/" component={Index}/>
+          <Route path="/about" component={About}/>
+  
+          <Route component={NoMatch} />
+        </Switch>
+      </>
+    )
+  }
+  
+  export default withRouter(App)
+  ```
+
+- 还有一种方法，就是自己创建 history 对象
+
+  ```js
+  import createHistory from 'history/createBrowserHistory';
+  export default createHistory();
+  ```
+
+  然后就可以在使用的地方导入即可：
+
+  ```js
+  import history from './utils/history'
+  
+  history.push('/')
+  ```
+
+  为什么可以这样子创建呢？在 react-router-dom 源码中：
+
+  ```js
+  var history = require('history');
+  
+  var BrowserRouter = function (_React$Component) {
+  
+    function BrowserRouter() {
+      // ...
+  
+      _this.history = history.createBrowserHistory(_this.props);
+      return _this;
+    }
+  
+    // ...
+    
+    return BrowserRouter;
+  }(React.Component)
+  ```
+
+  BrowserRouter 的 history 实例也是通过 history 这个库的 createBrowserHistory 创建的。
+
+
+
+#### 14-6、路由传参
+
+在 react-router 中，传递参数的方式有三种：
+
+- 动态路由传参
+- search 方式
+- Link 中 to 传对象的方式
+
+
+
+**1、动态路由传参**
+
+- 在设置路由的时候
+
+  ```js
+  <Route exact path="/detail/:id" component={Detail} />
+  ```
+
+- 在跳转的时候
+
+  ```js
+  const Index = (props) => {
+  
+    const { history } = props
+  
+    const goToDetail = (id) => {
+      history.push(`/detail/${id}`)
+    }
+  
+    return (
+      <div>
+        <h1>首页</h1>
+        <br />
+        <ul style={{ paddingLeft: 30 }}>
+          {
+            arr.map(item => (
+              <li key={item.id} onClick={() => goToDetail(item.id)}>{item.text}</li>
+            ))
+          }
+        </ul>
+      </div>
+    )
+  }
+  ```
+
+- 然后就可以在详情页面通过 match 获取到参数
+
+  ```js
+  const Detail = (props) => {
+    const { match } = props
+  
+    return (
+      <div>
+        <p>详情：{match.params.id}</p>
+      </div>
+    )
+  }
+  ```
+
+   match 对象是：
+
+   <img src="./imgs/img27.png" style="zoom:50%;" />
+
+
+
+**2、search 方式**
+
+这种就是在 url 拼接成 `detail?name=jack&age=18` 这种形式
+
+> 其实， react-router 不太推荐这种做法
+
+- 声明路由
+
+  ```js
+  <Route path="/detail" component={Detail} />
+  ```
+
+- 跳转
+
+  ```js
+  history.push(`/detail?id=${id}`)
+  ```
+
+- 获取参数
+
+  ````js
+  const Detail = (props) => {
+    const { location } = props
+    console.log(location)
+  
+    return (
+      <div>
+        <p>详情：{location.search}</p>
+      </div>
+    )
+  }
+  ````
+
+   location 对象是：
+
+   <img src="./imgs/img28.png" style="zoom:50%;" />
+
+
+
+**3、Link 中 to 传对象的方式**
+
+- 传递参数
+
+  ```js
+  <Link to={{
+    pathname: 'detail',
+    search: '?id=123',
+    state: { name: 'jack', age: 18 }
+  }}>
+  </Link>
+  ```
+
+  to 如果传的是一个对象，那么可以有四个属性：
+
+  - pathname：路径
+  - search：search 参数
+  - hash
+  - state：参数对象，保留到 location 中，可以在 location 中获取
+
+  或者使用：
+
+  ```js
+  history.push('/detail', { name: 'jack', age: 18 })
+  ```
+
+- 获取参数
+
+  ```js
+  const Detail = (props) => {
+    const { location } = props
+    console.log(location)
+  
+    return (
+      <div>
+        <div>
+          详情：
+          <p>姓名：{location.state.name}</p>
+          <p>年龄：{location.state.age}</p>
+        </div>
+      </div>
+    )
+  }
+  ```
+
+  location 对象：
+
+   <img src="./imgs/img29.png" style="zoom:50%;" />
+
+
+
+#### 14-7、react-router-config
+
+就上面而言，所有的路由定义都是直接使用 Route 组件，并且添加属性来完成的；这样的方式会让路由变得非常混乱，理想的状态是所有的路由配置放到一个地方进行集中管理，这个时候可以使用 react-router-config 来完成
+
+安装：
+
+```js
+yarn add react-router-config
+```
+
+
+
+使用：
+
+- 配置路由映射表
+
+  > routes.js
+
+  ```js
+  import Index from '../pages/index'
+  import About from '../pages/about'
+  import Culture from '../pages/about/components/culture'
+  import Idea from '../pages/about/components/idea'
+  import TestPage from '../pages/testPage'
+  import Mine from '../pages/mine'
+  import NoMatch from '../pages/noMatch'
+  import Detail from '../pages/detail'
+  
+  const routes = [
+    {
+      path: '/',
+      exact: true,
+      component: Index
+    },
+    {
+      path: '/about',
+      component: About,
+      routes: [
+        {
+          path: '/about',
+          exact: true,
+          component: Idea
+        },
+        {
+          path: '/about/culture',
+          exact: true,
+          component: Culture
+        },
+        {
+          component: NoMatch
+        }
+      ]
+    },
+    {
+      path: '/testPage',
+      component: TestPage
+    },
+    {
+      path: '/mine',
+      component: Mine
+    },
+    {
+      path: '/detail',
+      component: Detail
+    },
+    {
+      component: NoMatch
+    }
+  ]
+  
+  export default routes
+  ```
+
+- 然后在使用的时候：
+
+  ```js
+  import { renderRoutes } from 'react-router-config'
+  
+  import routes from './router'
+  
+  const App = () => {
+    return (
+      <>
+        <div className={style['router-link']}>
+          <NavLink exact to="/">index</NavLink>
+          <NavLink to="/about">about</NavLink>
+          <NavLink to="/testPage">testPage</NavLink>
+          <NavLink to="/mine">mine</NavLink>
+        </div>
+  
+        {renderRoutes(routes)}
+      </>
+    )
+  }
+  ```
+
+  就可以通过 renderRoutes(routes) 的方式
+
+- 对于子路由，也是一样的
+
+  ```js
+  export default function About(props) {
+    return (
+      <div>
+        <NavLink exact to="/about">理念</NavLink>
+        <NavLink exact to="/about/culture">文化</NavLink>
+  
+        {renderRoutes(props.route.routes)}
+      </div>
+    )
+  }
+  ```
+
+  但是需要注意的是，子路由，不是直接使用一整个路由表，而是当前路由配置下的 routes，可以通过 props.route.routes 获取
+
+  > props.route：是只有使用了 react-router-config 这个库的 renderRoutes，才会添加这么一个属性
+
+
+
+简单阅读一下 renderRoutes 源码：
+
+```js
+function renderRoutes(routes, extraProps, switchProps) {
+
+  // 先判断，有没有传过来 routes，有就 React.createElement 创建 reactRouter 的 Switch 标签
+  return routes ? React.createElement(reactRouter.Switch, switchProps, routes.map(function (route, i) {
+    // 遍历 routes，创建 reactRouter.Route 标签
+    return React.createElement(reactRouter.Route, {
+      key: route.key || i,
+      path: route.path,
+      exact: route.exact,
+      strict: route.strict,
+      render: function render(props) {
+        // 如果传了 render，那么就调用传过来的 render，没有就根据 route.component 创建
+        // { path: '/about', component: About }
+        // 最后会使用 _extends 合并一个 route，这也就是为什么使用了 renderRoutes 之后，会挂载上一个 route 对象
+        return route.render ? route.render(_extends({}, props, {}, extraProps, {
+          route: route
+        })) : React.createElement(route.component, _extends({}, props, extraProps, {
+          route: route
+        }));
+      }
+    });
+  })) : null;
 }
 ```
 
