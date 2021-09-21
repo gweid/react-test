@@ -1150,7 +1150,7 @@ export default class FragmentCom extends PureComponent {
 
 > 短语法可以简略书写，但是，当 Fragment 需要绑定 key 的时候，就不能使用短语法了
 
-【
+
 
  **3、StrictMode 严格模式**
 
@@ -2818,7 +2818,7 @@ export default class DomCom extends PureComponent {
 }
 ```
 
-> ref 在类组件上，获取的是当前的组件实例。注意：不能再函数式组件上使用
+> ref 在类组件上，获取的是当前的组件实例。注意：不能在函数式组件上使用
 
 
 
@@ -5228,19 +5228,19 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
   - props.history 得到的是：
 
-       <img src="./imgs/img23.png" style="zoom:50%;" />
+        <img src="./imgs/img23.png" style="zoom:50%;" />
 
   - props.location 得到的是：
 
-      <img src="./imgs/img24.png" style="zoom:50%;" />
+        <img src="./imgs/img24.png" style="zoom:50%;" />
 
   - props.match 得到的是：
 
-       <img src="./imgs/img25.png" style="zoom:50%;" />
+        <img src="./imgs/img25.png" style="zoom:50%;" />
 
 - 如果该组件是**一个普通渲染的组件**，那么不可以通过 props 获取 history、location、match 对象；需要**通过高阶组件**，在组件中添加想要的属性，react-router 也是通过高阶组件为我们的组件添加相关的属性的
 
-  使用 react-rout 提供的 withRouter 包裹，并且在渲染组件的时候需要包裹在 `<Router>` 里面，因为一些属性是通过 ``<Router>` ` c传递进来了
+  使用 react-route 提供的 withRouter 包裹，并且在渲染组件的时候需要包裹在 `<Router>` 里面，因为一些属性是通过 ``<Router>` ` c传递进来了
 
   ```js
   import { BrowserRouter, NavLink, Route, Switch, withRouter } from 'react-router-dom'
@@ -5641,15 +5641,13 @@ function renderRoutes(routes, extraProps, switchProps) {
 
 
 
-
-
 ### 15、React Hook
 
 **为什么需要 Hook：**
 
 Hook 是 React 16.8 的新增特性，它可以让我们在不编写 class 的情况下使用 state 以及其他的 React 特性（比如生命周期）。
 
-我们先来思考一下 class 组件相对于函数式组件有什么优势？比较常见的是下面的优势：
+先来思考一下 class 组件相对于函数式组件有什么优势？比较常见的是下面的优势：
 
 1. class 组件可以定义自己的 state，用来保存组件自己内部的状态；
    - 函数式组件不可以，因为函数每次调用都会产生新的临时变量；
@@ -5664,19 +5662,18 @@ Hook 是 React 16.8 的新增特性，它可以让我们在不编写 class 的�
 **class 组件存在的问题：**
 
 1. 复杂组件变得难以理解：
-   - 我们在最初编写一个 class 组件时，往往逻辑比较简单，并不会非常复杂。但是随着业务的增多，我们的 class 组件会变得越来越复杂；
+   - 最初编写一个 class 组件时，往往逻辑比较简单，并不会非常复杂。但是随着业务的增多，我们的 class 组件会变得越来越复杂；
    - 比如 componentDidMount 中，可能就会包含大量的逻辑代码：包括网络请求、一些事件的监听（还需要在
      componentWillUnmount 中移除）；
    - 而对于这样的 class 实际上非常难以拆分：因为它们的逻辑往往混在一起，强行拆分反而会造成过度设计，增加代码的复杂度；
 2. 难以理解的 class：
    - 很多人发现学习 ES6 的 class 是学习 React 的一个障碍。
-   - 比如在 class 中，我们必须搞清楚 this 的指向到底是谁，所以需要花很多的精力去学习 this；
-   - 虽然我认为前端开发人员必须掌握 this，但是依然处理起来非常麻烦；
+   - 比如在 class 中，我们必须搞清楚 this 的指向到底是谁，所以需要花很多的精力去学习 this。
 3. 组件复用状态很难：
-   - 在前面为了一些状态的复用我们需要通过高阶组件或 render props；
+   - 在前面为了一些状态的复用需要通过高阶组件或 render props；
    - 像 redux 中 connect 或者 react-router 中的 withRouter，这些高阶组件设计的目的就是为了状态的复用；
-   - 或者类似于 Provider、Consumer 来共享一些状态，但是多次使用 Consumer 时，我们的代码就会存在很多嵌套；
-   - 这些代码让我们不管是编写和设计上来说，都变得非常困难；
+   - 或者类似于 Provider、Consumer 来共享一些状态，但是多次使用 Consumer 时，代码就会存在很多嵌套；
+   - 这些代码让我们不管是在编写还是设计上来说，都变得非常困难；
 
 **Hook 的出现，可以解决上面提到的这些问题：**
 
@@ -5696,7 +5693,7 @@ Hook 是 React 16.8 的新增特性，它可以让我们在不编写 class 的�
 
 #### 15-1、useState
 
-这就是一个 hook，可以在 function 组件定义 State。
+这就是一个 hook，可以在函数组件定义 State。
 
 在 React Hook 没出来之前，Function Component 也叫做 Functional Stateless Component（FSC），这是因为 Function Component 每次执行的时候都会生成新的函数作用域所以同一个组件的不同渲染（render）之间是不能够共用状态的，因此开发者一旦需要在组件中引入状态就需要将原来的 Function Component 改成 Class Component，这使得开发者的体验十分不好。useState 就是用来解决这个问题的，它允许 Function Component 将自己的状态持久化到 React 运行时（runtime）的某个地方（memory cell），这样在组件每次重新渲染的时候都可以从这个地方拿到该状态，而且当该状态被更新的时候，组件也会重渲染。
 
@@ -5726,10 +5723,14 @@ export default HookComponent;
 当然如果有多个 state，那么你只需调用多次 useState 即可
 
 > useState 的 setState 是全量替代，而 this.setState 是将当前设置的 state 浅归并（shallowly merge）到旧 state 的操作。所以在使用 useState 的 setState 时，应该避免将没有关系的状态放在一起管理
+>
+> 
+>
+> useState 每次调用都会使组件重新渲染
 
-**useState 对于复杂数据的添加：**
 
-源码内定义的 useState 
+
+**源码内定义的 useState：**
 
 ```js
 function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
@@ -5739,13 +5740,14 @@ type Dispatch<A> = (value: A) => void;
 type SetStateAction<S> = S | ((prevState: S) => S);
 ```
 
-1. useState
-  - 参数
-    - 一个值 | 带返回值的函数
-  - 返回值
-    - [state, 操作函数]
+- 参数：一个值或者带返回值的函数
+- 返回值：[state, 操作函数]
 
-2. 往数组中添加一项
+
+
+**useState 对于复杂数据的添加修改：**
+
+1. 往数组中添加一项
 
    ```js
    import React, { useState, useEffect, useRef } from 'react';
@@ -5766,10 +5768,19 @@ type SetStateAction<S> = S | ((prevState: S) => S);
    };
    ```
 
-3. 修改数组对象的某一个值
+   注意点：必须是通过 setArr 设置一个新的数组，不能直接通过  arr.push，即：
 
    ```js
-   import React, { useState, useEffect, useRef    } from 'react';
+   arr.push('nbba')
+   setArr(arr)
+   ```
+
+   这种做法是错误的，页面并不会进行重新渲染。因为：每次进行 setArr 的时候，就会触发页面重新渲染，但是会判断传入的 arr 是否是同一个，如果是同一个，不会返回新的 jsx。
+
+2. 修改数组对象的某一个值
+
+   ```js
+   import React, { useState, useEffect, useRef } from 'react';
    
    const HookComponent = (id) => {
      const [userList, setUserList] = useState([
@@ -5807,70 +5818,72 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 
    > 不要通过往数组 arr.push() 一项，然后用 setArr(arr) 设置上去，而是使用 setArr([...arr, xxx]) 这样。因为 react 内部优化了，如果是同一个数组，那么不进行重新渲染；setArr([...arr, xxx]) 这样等于传了一个新数组，所以会重新渲染
 
-4. useState 初始值也可以是一个有返回值的函数
 
-   ```js
-   // function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
 
-   const HookComponent = (id) => {
-    // useState 初始值也可以是一个有返回值的函数
-    const [count, setCount] = useState(() => 10);
+**useState 初始值也可以是一个有返回值的函数：**
 
-    return (
-      <div>
-        <p>函数useState：{count}</p>
-        <button onClick={() => setCount(count + 10)}>count+</button>
-      </div>
-    );
-   };
-   ```
+```JS
+// function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
 
-5. 接收的的操作函数的参数可以是函数
+const HookComponent = (id) => {
+ // useState 初始值也可以是一个有返回值的函数
+ const [count, setCount] = useState(() => 10);
 
-   ```js
-   // function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
-   // type Dispatch<A> = (value: A) => void;
-   // type SetStateAction<S> = S | ((prevState: S) => S);
-   
-   const HookComponent = (id) => {
-    const [count, setCount] = useState(() => 10);
-   
-    const addCount = () => {
-      // setCount(count + 10) 三次会被合并，最终结果是 20
-      // setCount(count + 10);
-      // setCount(count + 10);
-      // setCount(count + 10);
-   
-      // 三次操作不会被合并，最终结果是 40
-      setCount((prevCount) => prevCount + 10);
-      setCount((prevCount) => prevCount + 10);
-      setCount((prevCount) => prevCount + 10);
-    };
-   
-    return (
-      <div>
-        <p>函数useState：{count}</p>
-        <button onClick={addCount}>count+</button>
-      </div>
-    );
-   };
-   ```
+ return (
+   <div>
+     <p>函数useState：{count}</p>
+     <button onClick={() => setCount(count + 10)}>count+</button>
+   </div>
+ );
+};
+```
 
-   >　操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
+接收的的操作函数的参数可以是函数
+
+```js
+// function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
+// type Dispatch<A> = (value: A) => void;
+// type SetStateAction<S> = S | ((prevState: S) => S);
+
+const HookComponent = (id) => {
+ const [count, setCount] = useState(() => 10);
+
+ const addCount = () => {
+   // setCount(count + 10) 三次会被合并，最终结果是 20
+   // setCount(count + 10);
+   // setCount(count + 10);
+   // setCount(count + 10);
+
+   // 三次操作不会被合并，最终结果是 40
+   setCount((prevCount) => prevCount + 10);
+   setCount((prevCount) => prevCount + 10);
+   setCount((prevCount) => prevCount + 10);
+ };
+
+ return (
+   <div>
+     <p>函数useState：{count}</p>
+     <button onClick={addCount}>count+</button>
+   </div>
+ );
+};
+```
+
+> 操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
 
 
 
 #### 15-2、useEffect
 
-useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），并且在执行 DOM 更新之后调用它
+useEffect 这个 Hook 使你的 function 组件具有生命周期的能力！可以看做是 componentDidMount，componentDidUpdate，componentWillUnmount 这三个生命周期函数的组合。通过使用这个 Hook，你可以告诉 React 组件需要在**渲染后**执行某些操作。React 会保存你传递的函数（我们将它称之为“effect”），**并且在执行 DOM 更新之后调用它**
+
+
 
 **useEffect(effect, dependencies)**
 
-- effect: function  
-  要执行的副作用函数，它可以是任意的用户自定义函数，用户可以在这个函数里面操作一些浏览器的 API 或者和外部环境进行交互（例如：请求），这个函数会在**每次组件渲染完成之后**被调用
-
-- dependencies?: [prop, ...]
-  只有在 dependencies 数组里面的元素的值发生变化时才会执行 effect 副作用函数，优化性能，避免死循环
+- effect: function ，要执行的副作用函数，它可以是任意的用户自定义函数，用户可以在这个函数里面操作一些浏览器的 API 或者和外部环境进行交互（例如：请求），这个函数会在**每次组件渲染完成之后**被调用
+  
+- dependencies?: [prop, ...]，只有在 dependencies 数组里面的元素的值发生变化时才会执行 effect 副作用函数，优化性能，避免死循环
 
 ```js
 import React, { useState, useEffect } from 'react';
@@ -5940,6 +5953,8 @@ const WindowScrollListener = () => {
 
 上面的代码中我们会在 WindowScrollListener 组件首次渲染完成后注册一个监听页面滚动事件的函数，并在组件下一次渲染前移除该监听函数。由于我们指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次，而它的 cleanup 函数只会在组件 unmount 时才被执行，这就避免了频繁注册页面监听函数从而影响页面的性能
 
+
+
 **useEffect 比较常见的三种场景**
 
 1. 替代 componentDidMount，使用 useEffect，第二个参数传入空数组
@@ -5962,7 +5977,7 @@ const WindowScrollListener = () => {
    ```js
    function Example() {
      const [query, setQuery] = useState({});
-     const [dataSource, setDataSource] =    useState([]);
+     const [dataSource, setDataSource] = useState([]);
 
      useEffect(() => {
        const dataSource = await getSceneList();
@@ -5994,32 +6009,704 @@ const WindowScrollListener = () => {
 
 
 
-#### 15-3、useRef
+#### 15-3、useLayoutEffect
 
-useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
+useLayoutEffect 看起来和 useEffect 非常的相似，事实上两者也只有一点区别：
 
-- 获取子组件或者 dom 节点
-- 渲染周期之间共享数据的存储（不常用）
+- useEffect 会在渲染的内容更新到 DOM 上后执行，不会阻塞 DOM 的更新
+- useLayoutEffect 会在渲染的内容更新到 DOM 上之前执行，会阻塞 DOM 的更新
+
+例子：
 
 ```js
-const HookComponent = (id) => {
-  const iptRef = useRef();
+const DemoUseLayoutEffect = () => {
+  const target = useRef()
 
-  useEffect(() => {
-    iptRef.current.focus();
-  }, []); // 指定了一个空数组作为这个副作用的 dependencies，所以这个副作用只会在组件首次渲染时被执行一次
+  useLayoutEffect(() => {
+      // 我们需要在dom绘制之前，移动dom到制定位置
+    const { x ,y } = getPositon() // 获取要移动的 x,y坐标
+    animate(target.current,{ x,y })
+  }, [])
 
   return (
+    <div >
+      <span ref={ target } className="animate"></span>
+    </div>
+  )
+}
+```
+
+
+
+#### 15-4、useContext
+
+在之前，要在组件中使用共享的 Context，主要是：
+
+- 在类组件中，设置 `xxx.contextType = MyContext` 的形式
+- 在函数组件中，通过 `MyContext.Consumer` 方式共享 context
+
+而 useContext 这个 hook 可以直接获取某个 Context 的值
+
+> index.js
+
+```js
+import React, { createContext } from 'react'
+import UseContextHook from './useContextHook'
+
+export const UserContext = createContext()
+export const ThemeContext = createContext()
+
+const HookComponent = () => {
+  return (
     <div>
-      <input ref={iptRef} type="text" />
+      <UserContext.Provider value={{ name: 'jack', token: 'aabbcc'}}>
+        <ThemeContext.Provider value={{ color: '#f5f5f5' }}>
+          <UseContextHook />
+        </ThemeContext.Provider>
+      </UserContext.Provider>
     </div>
   );
 };
+
+export default HookComponent;
 ```
 
-> 注意：更新 ref 对象不会触发组件重渲染；即 useRef 返回的 ref object 被重新赋值的时候不会引起组件的重渲染
+> UseContextHook.js 中：
+
+```js
+import React, { useContext } from 'react'
+
+import { UserContext, ThemeContext } from './index'
+
+const UseContextHook = () => {
+  const user = useContext(UserContext)
+  const theme = useContext(ThemeContext)
+
+  console.log(user)
+  console.log(theme)
+
+  return (
+    <div>
+      <hr />
+      <h2>useContext</h2>
+      <p>name: {user.name}，token: {user.token}</p>
+      <p>color: {theme.color}</p>
+    </div>
+  )
+}
+
+export default UseContextHook
+```
+
+可以发现，可以直接拿取到 Context 的值，就不需要像之前的 函数组件 那么复杂
 
 
 
-#### 15-4、useCallback
+#### 15-5、userReducer
 
+useReducer 并不是 redux 的某个替代品，而是 useState 的一种替代方案
+
+
+
+**基本使用：**
+
+```js
+import React, { useReducer } from 'react'
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'add':
+      return {...state, count: state.count + action.payload}
+    case 'reduce':
+      return {...state, count: state.count - action.payload}
+    default:
+      return {...state}
+  }
+}
+
+const UseReducerHook = () => {
+  /**
+   * useReducer 参数：
+   *  第一个参数：reducer
+   *  第二个参数：state 初始值
+   */
+  const [state, dispatch] = useReducer(reducer, { count: 0 })
+
+  return (
+    <div>
+      <hr />
+      <h2>useReducer</h2>
+      <p>结果：{state.count}</p>
+      <button onClick={() => dispatch({ type: 'add', payload: 5 })}>加+</button>
+      <button onClick={() => dispatch({ type: 'reduce', payload: 5 })}>减-</button>
+    </div>
+  )
+}
+
+export default UseReducerHook
+```
+
+> useReducer 的参数：
+>
+>   第一个参数：reducer
+>
+>   第二个参数：state 初始值
+
+
+
+所以，如果将 reducer 抽离成单独的一个文件，那么其他地方也是可以使用的。
+
+但是，useReducer 的数据是不会共享的，只是使用了相同的 reducer 的函数而已，如下，两个组件都使用了相同的 reducer 函数，但是数据并没有同时改变：
+
+ <img src="./imgs/img30.png" style="zoom:50%;" />
+
+
+
+现在也有一些人使用 userReducer + userContext 实现状态管理
+
+
+
+#### 15-6、useCallback
+
+useCallback 主要是用来进行性能优化的：
+
+- useCallback  会返回一个函数的记忆值（memoized）
+- 在依赖不变的情况下，多次定义的时候，返回的值是相同的
+
+
+
+```js
+const memoizedCallback = useCallback(fn, deps)
+```
+
+useCallback 需要的参数：
+
+- fn：一个函数最终会返回该回调函数，该回调函数仅仅只在 `deps` 参数发生改变时才会更新
+- deps：用于触发 `fn` 回调函数改变的参数**数组**
+
+> 把内联回调函数及依赖项数组作为参数传入 `useCallback`，它将返回该回调函数的 memoized 版本，该回调函数仅在某个依赖项改变时才会更新。当你把回调函数传递给经过优化的并使用引用相等性去避免非必要渲染（例如 `shouldComponentUpdate`）的子组件时，它将非常有用
+
+
+
+**1、不要滥用 useCallback：**
+
+事例如下：
+
+```js
+import React from 'react'
+
+const UseCallbackHook = () => {
+
+  const handleClick = () => {
+    console.log('useCallback')
+  }
+
+  return (
+    <button onClick={handleClick}>
+      useCallback的使用
+    </button>
+  )
+}
+```
+
+当组件自身触发刷新或作为子组件跟随父组件刷新时，我们注意到 `onClick` 会被重新赋值。为了"提升性能"，使用 `useCallback` 包裹`onClick` 以达到缓存的目的：
+
+```js
+import React, { useCallback } from 'react'
+
+const UseCallbackHook = () => {
+
+  const handleClick = useCallback(() => {
+    console.log('useCallback')
+  }, [])
+
+  return (
+    <button onClick={handleClick}>
+      useCallback的使用
+    </button>
+  )
+}
+```
+
+这样做性能有没有提升呢？答案是没有，反倒是 useCallback 所制造的闭包将保持对回调函数和依赖项的引用，未被垃圾回收标记，造成内存损耗
+
+
+
+**2、useCallback 正确的使用方法：**
+
+产生误区的原因是 `useCallback` 的设计初衷并非解决组件内部函数多次创建的问题，而是减少子组件的不必要重复渲染。实际上在 React 体系下，优化思路主要有两种：
+
+- 减少重新 render 次数。React 最耗费性能的就是调和过程（reconciliation），只要不 render 就不会触发 reconciliation。
+- 减少计算量
+
+事例如下：
+
+```js
+const GButton = ({ title, addFunc }) => {
+  console.log(`${title}重新渲染了`)
+
+  return (
+    <button onClick={addFunc}>GButton</button>
+  )
+}
+
+const UseCallbackHook = () => {
+  const [count, setCount] = useState(0)
+  const add1 = () => {
+    setCount(count + 1)
+  }
+
+  const add2 = () => {
+    setCount(count + 1)
+  }
+
+  return (
+    <div>
+      <GButton title={'button1'} addFunc={add1} />
+      <GButton title={'button2'} addFunc={add2} />
+    </div>
+  )
+}
+```
+
+点击 button1 的时候，button2 也会重新渲染，即使 `count2` 并未发生改变。原因就是当执行 `add1` 的时候，UseCallbackHook 组件重新渲染， `add2` 被重新定义，导致 React 在 diff 新旧组件时，判定组件发生了变化。
+
+此时，就可以使用 useCallback 配合 memo：
+
+```js
+const GButton = memo(({ title, addFunc }) => {
+  console.log(`${title}重新渲染了`)
+
+  return (
+    <button onClick={addFunc}>GButton</button>
+  )
+})
+
+const UseCallbackHook = () => {
+  const [count1, setCount1] = useState(0)
+  const [count2, setCount2] = useState(0)
+  const add1 = () => {
+    setCount1(count1 + 1)
+  }
+
+  const add2 = useCallback(() => {
+    setCount2(count2 + 1)
+  }, [count2])
+
+  return (
+    <div>
+      <GButton title={'button1'} addFunc={add1} />
+      <GButton title={'button2'} addFunc={add2} />
+    </div>
+  )
+}
+```
+
+`memo` 作用于函数组件，会对传入组件的新旧数据进行浅比较，如果相同则不会触发渲染；而 `useCallback` 保证了 `add2` 函数不发生变化。所以，在实现减少不必要渲染的优化过程中，`useCallback`和`memo`是一对利器。
+
+
+
+**3、useCallback 源码：**
+
+```JS
+// 初始化阶段
+function mountCallback(callback, deps) {
+    const hook = mountWorkInProgressHook();
+    const nextDeps = deps === undefined ? null : deps;
+    hook.memoizedState = [callback, nextDeps];
+    return callback;
+}
+
+// 更新阶段
+function updateCallback(callback, deps) {
+    const hook = updateWorkInProgressHook();，
+    const nextDeps = deps === undefined ? null : deps;
+    const prevState = hook.memoizedState;
+    if (prevState !== null) {
+        if (nextDeps !== null) {
+            const prevDeps = prevState[1];
+            // 比较是否相等
+            if (areHookInputsEqual(nextDeps, prevDeps)) {
+                // 如果相等，返回旧的 callback
+                return prevState[0];
+            }
+        }
+    }
+  
+    hook.memoizedState = [callback, nextDeps];
+    return callback;
+}
+```
+
+核心就是比较`deps`是否发生变化，如果有变化则返回新的`callback`函数，否则返回原函数。
+
+
+
+#### 15-7、useMemo
+
+useMemo 的实际目的也是为了性能优化：
+
+- useCallback  也会返回一个记忆值（memoized），【与 useCallback 的区别是：useCallback 返回的是一个函数，而 useMemo 返回的可以是一个值，对象，函数 等】
+- 在依赖不变的情况下，多次定义的时候，返回的值是相同的
+
+
+
+**1、不要滥用 useMemo：**
+
+```js
+import React, { useMemo } from 'react'
+
+const useMemoHook = () => {
+  const total = 0
+
+  const resTotal = useMemo(() => total, [])
+
+  return (
+    <div>
+      <p>总量：{resTotal}</p>
+    </div>
+  )
+}
+```
+
+这种创建 resTotal 的开销是完全没有必要的，原因与 useCallback 一致,生成了闭包。
+
+
+
+**2、正确的 useMemo 使用方法：**
+
+只有当创建行为本身会产生高昂的开销（比如计算上千次才会生成变量值），才有必要使用`useMemo`，例如：
+
+```js
+import React, { useMemo, useState } from 'react'
+
+const calcTotal = (count) => {
+  console.log('重新计算了')
+
+  let total = 0
+  for(let i = 0; i < count; i++) {
+    total += count
+  }
+
+  return total
+}
+
+const useMemoHook = () => {
+  const [count, setCount] = useState(0)
+
+  // useMemo 第一个参数是返回一个值
+  const resTotal = useMemo(() => calcTotal(count), [count])
+
+  return (
+    <div>
+      <p>总量：{resTotal}</p>
+      <button onClick={e => setCount(count + 1)}>add total</button>
+    </div>
+  )
+}
+```
+
+
+
+还有一些场景就是：
+
+```js
+import React, { useState, memo } from 'react'
+
+const MemoTest = memo(({ info }) => {
+  console.log('MemoTest重新渲染')
+
+  return (
+    <div>name: {info.name}</div>
+  )
+})
+
+const useMemoHook = () => {
+  const [count, setCount] = useState(0)
+
+  const infoDetail = { name: 'jack' }
+
+  return (
+    <div>
+      <hr />
+      <h2>useMemo的使用</h2>
+      <MemoTest info={infoDetail} />
+      <button onClick={e => setCount(count + 1)}>add total</button>
+    </div>
+  )
+}
+```
+
+这种场景下，就算使用了 `memo`，在点击按钮的时候，MemoTest 组件也会重新渲染，因为，每次都生成了 infoDetail。此时就可以使用 useMemo 了：
+
+```js
+import React, { useMemo, useState, memo } from 'react'
+
+const MemoTest = memo(({ info }) => {
+  console.log('MemoTest重新渲染')
+
+  return (
+    <div>name: {info.name}</div>
+  )
+})
+
+const useMemoHook = () => {
+  const [count, setCount] = useState(0)
+
+  const infoDetail = useMemo(() => ({ name: 'jack' }), [])
+
+  return (
+    <div>
+      <hr />
+      <h2>useMemo的使用</h2>
+      <MemoTest info={infoDetail} />
+      <button onClick={e => setCount(count + 1)}>add total</button>
+    </div>
+  )
+}
+```
+
+
+
+#### 15-8、useRef
+
+useRef 返回一个可变的 ref 对象，其 current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
+
+最常见的 ref 的两种用法：
+
+- 获取子组件或者 dom 节点
+- 保存一个数据，这个对象在整个生命周期中可以保持不变
+
+
+
+**1、获取子组件或者 dom 节点：**
+
+```js
+import React, { useRef, Component } from 'react'
+
+class TestRef1 extends Component {
+  render() {
+    return (
+      <div>TestRef1</div>
+    )
+  }
+}
+
+const UseRefHook = () => {
+  const pRef = useRef()
+  const testRef1 = useRef()
+
+  const handleChangeP = () => {
+    pRef.current.innerHTML= 'hello, world'
+    console.log(testRef1.current)
+  }
+
+  return (
+    <div>
+      <p ref={pRef}>hello</p>
+      <TestRef1 ref={testRef1} />
+      <button onClick={handleChangeP}>handleChangeP</button>
+    </div>
+  )
+}
+```
+
+需要注意的是，ref 不能直接作用在函数组件上，会报错：
+
+```js
+import React, { useRef, Component } from 'react'
+
+const TestRef = () => {
+  return (
+    <div>TestRef</div>
+  )
+}
+
+const UseRefHook = () => {
+  const testRef = useRef()
+
+  const handleChange = () => {
+    console.log(testRef.current)
+  }
+
+  return (
+    <div>
+      <TestRef ref={testRef} />
+      <button onClick={handleChange}>点击</button>
+    </div>
+  )
+}
+```
+
+报错如下：提示，函数组件上使用 ref 需要包裹在 forwardRef 中
+
+![](./imgs/img31.png)
+
+改：
+
+```js
+import React, { useRef, forwardRef } from 'react'
+
+// 包裹在 forwardRef 中之后，除了接受 props 参数，还接受 ref
+const TestRef = forwardRef((props, ref) => {
+  return (
+    <div ref={ref}>TestRef2</div>
+  )
+})
+
+const UseRefHook = () => {
+  const testRef = useRef()
+
+  const handleChange = () => {
+    console.log(testRef.current)
+  }
+
+  return (
+    <div>
+      {/* 函数组件不能直接绑定 ref，要想绑定 ref，函数组件需要包裹在 forwardRef 中 */}
+      <TestRef ref={testRef} />
+      <button onClick={handleChange}>点击</button>
+    </div>
+  )
+}
+```
+
+
+
+**2、使用 ref 保存上一次的某一个值：**
+
+```js
+const UseRefHook = () => {
+  const [count, setCount] = useState(0)
+
+  const countRef = useRef(0)
+
+  // 谨记 useEffect 的执行时机：是在组件渲染完成之后，才执行
+  useEffect(() => {
+    countRef.current = count
+  }, [count])
+
+  return (
+    <div>
+      <hr />
+      <h2>useRef 的使用</h2>
+      <h3>count上一次的值：{countRef.current}</h3>
+      <h3>count当前值：{count}</h3>
+      <button onClick={() => setCount(count + 10)}>+10</button>
+    </div>
+  )
+}
+```
+
+ <img src="./imgs/img32.png" style="zoom:50%;" />
+
+
+
+#### 15-9、useImperativeHandle
+
+上面 useRef 那一节说过，ref 不能直接作用在函数组件上，需要结合 forwardRef 一起使用。
+
+forwardRef 的做法本身没有什么问题，但是这样会将子组件的 DOM 直接暴露给了父组件：
+
+- 直接暴露给父组件带来的问题是某些情况的不可控。
+- 父组件可以拿到 DOM 后进行任意的操作。
+- 更理想的是希望限制父组件可以做哪些操作，不可以做哪些操作
+
+而 useImperativeHandle 就是解决上面的问题的。
+
+
+
+**基本用法：**
+
+```js
+import React, { forwardRef, useRef, useImperativeHandle } from 'react'
+
+const TestCom = forwardRef((props, ref) => {
+
+  useImperativeHandle(ref, () => {
+    return {
+      focus: () => {
+        console.log('useImperativeHandle')
+      }
+    }
+  })
+
+  return (
+    <div>
+      <input />
+    </div>
+  )
+})
+
+const UseImperativeHandleHook = () => {
+  const testRef = useRef()
+
+  const handleClick = () => {
+    console.log(testRef)
+    testRef.current.focus()
+  }
+
+  return (
+    <div>
+      <hr />
+      <h2>useImperativeHandle的使用</h2>
+      <TestCom ref={testRef} />
+      <button onClick={handleClick}>点击</button>
+    </div>
+  )
+}
+```
+
+useImperativeHandle：
+
+- 第一个参数：就是 ref 对象
+
+- 第二个参数：是一个回调函数，这个回调函数返回一个对象，**这个返回的对象会被绑定到 ref 上。也就是说，在父组件通过 `testRef.current.innerHTML()` 调用的 innerHTML 方法，就是这个回调函数返回对象中定义的**
+
+   <img src="./imgs/img33.png" style="zoom:50%;" />
+
+
+
+此时想要父组件操作子组件的 focus 事件：需要子组件自身的 useRef 
+
+```js
+import React, { forwardRef, useRef, useImperativeHandle } from 'react'
+
+const TestCom = forwardRef((props, ref) => {
+
+  const inputRef = useRef()
+
+  useImperativeHandle(ref, () => {
+    return {
+      focus: () => {
+        // 使用子组件本身的 ref
+        inputRef.current.focus()
+      }
+    }
+  })
+
+  return (
+    <div>
+      <input ref={inputRef} />
+    </div>
+  )
+})
+
+const UseImperativeHandleHook = () => {
+  const testRef = useRef()
+
+  const handleClick = () => {
+    console.log(testRef)
+    testRef.current.focus()
+  }
+
+  return (
+    <div>
+      <hr />
+      <h2>useImperativeHandle的使用</h2>
+      <TestCom ref={testRef} />
+      <button onClick={handleClick}>点击</button>
+    </div>
+  )
+}
+```

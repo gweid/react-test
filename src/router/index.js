@@ -3,7 +3,7 @@ import About from '../pages/about'
 import Culture from '../pages/about/components/culture'
 import Idea from '../pages/about/components/idea'
 import TestPage from '../pages/testPage'
-import Mine from '../pages/mine'
+import testHooks from '../pages/testHooks'
 import NoMatch from '../pages/noMatch'
 import Detail from '../pages/detail'
 
@@ -37,8 +37,8 @@ const routes = [
     component: TestPage
   },
   {
-    path: '/mine',
-    component: Mine
+    path: '/hooks',
+    component: testHooks
   },
   {
     path: '/detail',
