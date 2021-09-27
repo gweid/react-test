@@ -6710,3 +6710,105 @@ const UseImperativeHandleHook = () => {
   )
 }
 ```
+
+
+
+#### 15-10、自定义 Hook
+
+自定义 Hook 本质上只是一种函数代码逻辑的抽取。它在内部使用了React 内置的 Hook 或者其它的自定义 Hook。虽然可以任意命名自定义 Hook，可是为了让其它开发者更容易理解我们的代码以及方便一些开发工具例如 `eslint-plugin-react-hooks` 来更好地提示，所以需要将自定义 Hook 以 `use` 作为开头，并且使用驼峰发进行命名，例如 `useLocation`
+
+
+
+例子：
+
+```js
+import React, { createContext } from 'react';
+import CustomHook from './customHooks';
+
+export const UserContext = createContext()
+export const TokenContext = createContext()
+
+const HookComponent = (id) => {
+  return (
+    <div>
+      {/* 自定义 hooks */}
+      <UserContext.Provider value={{name: 'jack', age: 24}}>
+        <TokenContext.Provider value={{token: 'aahhhshdh'}}>
+          <CustomHook />
+        </TokenContext.Provider>
+      </UserContext.Provider>
+    </div>
+  );
+};
+
+```
+
+在没有使用自定义 hook 的时候，要想正在 CustomHook 组件中拿到这些 context，常规的做法是：
+
+```js
+import React, { useContext } from 'react'
+import { UserContext, TokenContext } from './index'
+
+const CustomHook = () => {
+  const user = useContext(UserContext)
+  const token = useContext(TokenContext)
+
+  console.log(user)
+  console.log(token)
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default CustomHook
+```
+
+但是如果有多个组件都需要这些 context，那么久需要写很多重复代码
+
+
+
+使用自定义 hook 改造：
+
+> userInfoHook.js
+
+```js
+import { useContext } from 'react'
+import { TokenContext, UserContext } from "../pages/testHooks"
+
+const useInfoHook = () => {
+  const user = useContext(UserContext)
+  const token = useContext(TokenContext)
+
+  return [user, token]
+}
+
+export default useInfoHook
+```
+
+使用：这样自定义 hook 可以在多处组件使用
+
+```js
+import React from 'react'
+import userInfoHook from '../../hooks/useInfoHooks'
+
+const CustomHook = () => {
+  const [user, token] = userInfoHook()
+
+  console.log('\n--------------自定义hook---------------------')
+  console.log(user)
+  console.log(token)
+
+  return (
+    <div>
+      
+    </div>
+  )
+}
+```
+
+
+
+
+

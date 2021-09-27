@@ -5,8 +5,10 @@ import UseCallbackHook from './useCallbackHook'
 import UseMemoHook from './useMemoHook'
 import UseRefHook from './useRefHook'
 import UseImperativeHandleHook from './useImperativeHandleHook'
+import CustomHook from './customHooks';
 
 export const UserContext = createContext()
+export const TokenContext = createContext()
 export const ThemeContext = createContext()
 
 const HookComponent = (id) => {
@@ -110,6 +112,13 @@ const HookComponent = (id) => {
 
       {/* useImperativeHandle 的使用 */}
       <UseImperativeHandleHook />
+
+      {/* 自定义 hooks */}
+      <UserContext.Provider value={{name: 'jack', age: 24}}>
+        <TokenContext.Provider value={{token: 'aahhhshdh'}}>
+          <CustomHook />
+        </TokenContext.Provider>
+      </UserContext.Provider>
     </div>
   );
 };
