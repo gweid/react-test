@@ -5641,6 +5641,69 @@ function renderRoutes(routes, extraProps, switchProps) {
 
 
 
+#### 14-8、hook 形式处理路由
+
+在 React Router v5 版本之后，更加推荐在函数组件中使用 hook 操作路由
+
+- 通过 `history.push({pathname: '/home', state: {id: id}}) ` 方式跳转
+
+  ```js
+  // 路由跳转
+  import { useHistory } from "react-router";
+  
+  function HomeButton() {  
+    const history = useHistory();  
+    let id = 1;
+    function handleClick() {    
+      history.push({pathname: '/home', state: {id: id}}) 
+    }  
+  
+    return (
+      <button type="button" onClick={handleClick}>      Go home    </button>  
+    );
+  }
+  
+  
+  // 获取路由参数
+  import { useLocation } from 'react-router';
+  
+  function Test() {  
+    const location = useLocation()
+    console.log(location.state.id)
+  }
+  ```
+
+- 通过 `history.push(`/home/${id}`)`
+
+  ```js
+  // 跳转
+  import { useHistory } from "react-router";
+  
+  function HomeButton() {  
+    const history = useHistory();  
+    let id = 1;
+    function handleClick() {
+      const id = '110'
+      history.push(`/home/${id}`)
+    }  
+  
+    return (
+      <button type="button" onClick={handleClick}>      Go home    </button>  
+    );
+  }
+  
+  
+  // 获取参数
+  import { useParams } from 'react-router';
+  
+  function Test() {  
+    const { id } = useParams()
+    console.log(id)
+  }
+  ```
+
+
+
 ### 15、React Hook
 
 **为什么需要 Hook：**
