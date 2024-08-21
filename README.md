@@ -92,7 +92,7 @@ ReactDOM.render(<Test />, document.getElementById('root'));
 
 jsx-->Babel 将 jsx 编译为相应 js 对象-->ReactElement 将这个 js 对象生成虚拟 DOM-->ReactDOM.render 生成真实 DOM
 
-![jsx 到页面流程](/imgs/img1.jpg)
+![jsx 到页面流程](./imgs/img1.jpg)
 
 
 
@@ -2422,11 +2422,11 @@ react16.3 之前和之后的生命周期有所区别。
 
 #### 8-1、react16.3 之前的生命周期
 
-![react16.3 之前的生命周期](/imgs/img3.jpg)
+![react16.3 之前的生命周期](./imgs/img3.jpg)
 
 
 
-![react16.3 之前的生命周期](/imgs/img4.png)
+![react16.3 之前的生命周期](./imgs/img4.png)
 
 **1、组件初始化阶段（Initialization）**
 
@@ -2549,7 +2549,7 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 #### 8-2、react16.4 之后的生命周期
 
-![react16.4 之后的生命周期](/imgs/img2.jpg)
+![react16.4 之后的生命周期](./imgs/img2.jpg)
 
 原来（React v16.3 前）的生命周期在 React v16.4 推出的 Fiber 之后就不合适了，因为如果要开启 async rendering，在 render 函数之前的所有函数，都有可能被执行多次
 
@@ -2830,13 +2830,13 @@ export default class DomCom extends PureComponent {
 
 渲染流程：
 
-![](/imgs/img1.jpg)
+![](./imgs/img1.jpg)
 
 更新流程：
 
 React 在内存中维护一颗虚拟 DOM 树，当数据发生改变时（state & props），会自动的更新虚拟 DOM，获得一个新的虚拟 DOM 树，然后通过 Diff 算法，比较新旧虚拟 DOM 树，找出最小的有变化的部分，将这个变化的部分（Patch）加入队列，最终批量的更新这些 Patch 到实际的 DOM 中。
 
-![](/imgs/img5.png)
+![](./imgs/img5.png)
 
 当 props 或者 state 发生改变，会调用 render 函数去生成新的 Dom 树，然后基于新旧两颗不同的树之间的差别来判断如何有效的更新视图。
 
@@ -3316,7 +3316,7 @@ class ImmutableCom extends Component {
 
 使用 setState 修改数据，例如修改一个对象，**不要直接去修改 state 中的对象**，而是把 state 中的对象复制一份再操作。原因： 在 js 中，复杂数据类型，数据存在堆中，栈中存的是对于堆的一个引用指针；当往 state 的 dataList 中 push 一条数据，即往存数据的对中 push 一条数据，但是指针是不变的。在 shouldComponentUpdate(nextProps, nextState) 中比较 `nextState.dataList !== this.state.dataList`,实际上着**两者的 dataList 都是存在栈中的指针**，那么 肯定是相等的，所以返回 false，就会导致不进行 render。
 
-![](/imgs/img6.png)
+![](./imgs/img6.png)
 
 正确的做法是：
 
@@ -3697,7 +3697,7 @@ export default function LinkStyle() {
 
 #### 12-2、普通 css
 
- <img src="./imgs/img11.png" style="zoom:50%;" />
+ <img src="../imgs/img11.png" style="zoom:50%;" />
 
 例如：
 
@@ -3754,7 +3754,7 @@ export default class UserIndex extends PureComponent {
 
 造成的结果就是：
 
- <img src="./imgs/img12.png" style="zoom:67%;" />
+ <img src="../imgs/img12.png" style="zoom:67%;" />
 
 明明 car 中给的颜色是`红色`，却导致被污染了。也就是说，普通 css 的写法不适合组件化的形式，它没有局部作用域。
 
@@ -3834,7 +3834,7 @@ yarn add styled-components
 
 **2、ES6 模板标签字符串**
 
- <img src="./imgs/img13.png" style="zoom: 50%;" />
+ <img src="../imgs/img13.png" style="zoom: 50%;" />
 
 - ES6中增加了模板字符串的语法，但是模板字符串还有另外一种用法：标签模板字符串
 - 普通的 JavaScript 的函数，都是通过 `函数名()` 方式来进行调用的，其实函数还有另外一种调用方式
@@ -3877,13 +3877,13 @@ styled-components 的本质是通过函数的调用，最终创建出一个组�
 - 这个组件会被自动添加上一个不重复的 class
 - styled-components 会给该 class 添加相关的样式
 
- <img src="./imgs/img15.png" style="zoom:50%;" />
+ <img src="../imgs/img15.png" style="zoom:50%;" />
 
 
 
 注意：要想在 vscode 中写 styled-components 有提示，可以安装一个 vscode 插件
 
-![](./imgs/img14.png)
+![](../imgs/img14.png)
 
 
 
@@ -4224,7 +4224,7 @@ store.dispatch(actios);
 
 #### 13-4、Redux 执行流程
 
-![](/imgs/img7.png)
+![](./imgs/img7.png)
 
 1. 全局唯一的 Store 存储 state
 2. component 中会有些操作派发 action
@@ -4567,14 +4567,14 @@ import { Provider } from 'react-redux';
 
    在 Provider.js 中的：
 
-   ![](/imgs/img8.png)
+   ![](./imgs/img8.png)
 
    - 首先返回一个 contextValue，使用了 useMemo 包裹，利于性能优化，在依赖的 store 不变的情况下，不会进行重新计算
    - 在 Context 的 Provider 中就会将其赋值给 value 属性
 
    Context 由 ReactReduxContext 生成：
 
-   ![](/imgs/img9.png)
+   ![](./imgs/img9.png)
 
 2. 然后是 connect 函数
 
@@ -4614,7 +4614,7 @@ import { Provider } from 'react-redux';
 
 存储到 redux 的数据，很多情况下都是通过接口拿到的，那么就会涉及到异步请求，常规的流程是：
 
-![](./imgs/img16.png)
+![](../imgs/img16.png)
 
 在 componentDidMount 生命周期中发送请求，然后再存储到 redux 中。这样做的一个缺陷是：必须将网络请求的异步代码放到组件的生命周期中来完成；事实上，网络请求到的数据也属于状态管理的一部分，更好的一种方式应该是将其也交给 redux 来管理。
 
@@ -4622,7 +4622,7 @@ import { Provider } from 'react-redux';
 
 **1、Redux 发送异步请求**
 
-![](/imgs/img10.png)
+![](./imgs/img10.png)
 
 在 redux 中，要进行异步操作，主要是使用**中间件**。
 
@@ -4761,7 +4761,7 @@ redux 提供了 redux-devtools 插件来追踪 redux 的变化；需要在 谷�
 
 安装好后，打开控制台，会是这样子：什么都没有，需要点击 `the instructions` 进去，按照指引，进行配置
 
- <img src="./imgs/img17.png" style="zoom:50%;" />
+ <img src="../imgs/img17.png" style="zoom:50%;" />
 
 地址：https://github.com/zalmoxisus/redux-devtools-extension#usage
 
@@ -4803,7 +4803,7 @@ const composeEnhancers =
 
 配置完后的结果：
 
-![](./imgs/img18.png)
+![](../imgs/img18.png)
 
 可以发现，追踪到了 redux；左边是所有处理过的 action，右边记录的是变化的 store
 
@@ -5107,7 +5107,7 @@ import { BrowserRouter, NavLink, Route } from 'react-router-dom'
 
 结果：
 
-![](./imgs/img20.png)
+![](../imgs/img20.png)
 
 
 
@@ -5127,7 +5127,7 @@ import { BrowserRouter, NavLink, Route } from 'react-router-dom'
 
 如果这样子写，那么 `<Route component={noMatch} />` 这个每次都会被匹配到，就会导致每次都有 404 页面被渲染
 
-<img src="./imgs/img21.png" style="zoom:50%;" />
+<img src="../imgs/img21.png" style="zoom:50%;" />
 
 所以，需要配合 Switch 使用，Switch 的作用：只要匹配到了第一个，那么后面的就不再继续匹配了
 
@@ -5151,7 +5151,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 例如，在 about 页面，还有两个页面内容。
 
-![](./imgs/img22.png)
+![](../imgs/img22.png)
 
 实现：
 
@@ -5228,15 +5228,15 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
   - props.history 得到的是：
 
-        <img src="./imgs/img23.png" style="zoom:50%;" />
+        <img src="../imgs/img23.png" style="zoom:50%;" />
 
   - props.location 得到的是：
 
-        <img src="./imgs/img24.png" style="zoom:50%;" />
+        <img src="../imgs/img24.png" style="zoom:50%;" />
 
   - props.match 得到的是：
 
-        <img src="./imgs/img25.png" style="zoom:50%;" />
+        <img src="../imgs/img25.png" style="zoom:50%;" />
 
 - 如果该组件是**一个普通渲染的组件**，那么不可以通过 props 获取 history、location、match 对象；需要**通过高阶组件**，在组件中添加想要的属性，react-router 也是通过高阶组件为我们的组件添加相关的属性的
 
@@ -5398,7 +5398,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
    match 对象是：
 
-   <img src="./imgs/img27.png" style="zoom:50%;" />
+   <img src="../imgs/img27.png" style="zoom:50%;" />
 
 
 
@@ -5437,7 +5437,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
    location 对象是：
 
-   <img src="./imgs/img28.png" style="zoom:50%;" />
+   <img src="../imgs/img28.png" style="zoom:50%;" />
 
 
 
@@ -5488,7 +5488,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
   location 对象：
 
-   <img src="./imgs/img29.png" style="zoom:50%;" />
+   <img src="../imgs/img29.png" style="zoom:50%;" />
 
 
 
@@ -6221,7 +6221,7 @@ export default UseReducerHook
 
 但是，useReducer 的数据是不会共享的，只是使用了相同的 reducer 的函数而已，如下，两个组件都使用了相同的 reducer 函数，但是数据并没有同时改变：
 
- <img src="./imgs/img30.png" style="zoom:50%;" />
+ <img src="../imgs/img30.png" style="zoom:50%;" />
 
 
 
@@ -6603,7 +6603,7 @@ const UseRefHook = () => {
 
 报错如下：提示，函数组件上使用 ref 需要包裹在 forwardRef 中
 
-![](./imgs/img31.png)
+![](../imgs/img31.png)
 
 改：
 
@@ -6661,7 +6661,7 @@ const UseRefHook = () => {
 }
 ```
 
- <img src="./imgs/img32.png" style="zoom:50%;" />
+ <img src="../imgs/img32.png" style="zoom:50%;" />
 
 
 
@@ -6726,7 +6726,7 @@ useImperativeHandle：
 
 - 第二个参数：是一个回调函数，这个回调函数返回一个对象，**这个返回的对象会被绑定到 ref 上。也就是说，在父组件通过 `testRef.current.innerHTML()` 调用的 innerHTML 方法，就是这个回调函数返回对象中定义的**
 
-   <img src="./imgs/img33.png" style="zoom:50%;" />
+   <img src="../imgs/img33.png" style="zoom:50%;" />
 
 
 
