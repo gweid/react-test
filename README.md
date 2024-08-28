@@ -56,7 +56,7 @@ jsx 是 js 语法的扩展，表面上像 HTML，本质上还是通过 babel 转
 
 > jsx 主要就是通过 React.createElement 在 React 内部构建虚拟 Dom，最终渲染出页面，也可以说 jsx 是 React.createElement 的语法糖
 
-```js
+```jsx
 // jsx 代码
 class Test extends React.Component {
   constructor(props) {
@@ -522,8 +522,6 @@ export default class NavBar extends Component {
   };
 
   render() {
-    // const { leftSlot, centerSlot, rightSlot } = this.props;
-
     return (
       <div className="nav-bar">
         <div className="nav-left">{ this.props.children[0] }</div>
@@ -1525,6 +1523,8 @@ class ClassComponent extends Component {
 }
 ```
 
+对于传入函数的方式，在调用 `setState` 进行更新 `state` 时，React 会按照各个 `setState` 的调用顺序，将它们依次放入一个队列，然后，在进行状态更新时，则按照队列中的先后顺序依次调用，并将上一个调用结束时产生的 `state` 传入到下一个调用的函数中，第一个 `setState` 调用时，传入的 `prevState` 则是当前的 `state` 。这样，便解决了传入对象式调用 `setState` 方法所存在的 不能依赖上一次的 `state` 去计算本次 `state` 的问题。
+
 
 
 **6、setState 第二个参数是回调函数，因为 setState 设置 state 是一个异步操作，所以设置完 state 后的操作可以放在回调中执行，在回调中也能获取到更新后的 state（在 ComponentDidUpdate 中也能获取更新后的 state）**
@@ -1607,17 +1607,17 @@ class ClassComponent extends Component {
        };
      }
    
+     componentDidMount() {
+       // setState 在原生事件是同步的
+       document.querySelector('.class-component-event').addEventListener('click', this.handleLog, false);
+     }
+   
      handleLog = (arg1, arg2) => {
        this.setState((state, props) => {
          return { count: state.count + 1 };
        });
        console.log(this.state); // 2
      };
-   
-     componentDidMount() {
-       // setState 在原生事件是同步的
-       document.querySelector('.class-component-event').addEventListener('click', this.handleLog, false);
-     }
    
      render() {
        return (
@@ -1844,6 +1844,17 @@ class ClassComponent extends Component {
      Object.assign({}, {times: 0}, {times: 1});
      // 执行这个，所以会一直是 1
      ```
+
+
+
+#### 5-3、setState 基本流程
+
+- 首先，setState 会产生当前更新的优先级（老版本用 expirationTime ，新版本用 lane ）。
+- 接下来 React 会从 fiber Root 根部 fiber 向下调和子节点，调和阶段将对比发生更新的地方，更新对比 expirationTime ，找到发生更新的组件，合并 state，然后触发 render 函数，得到新的 UI 视图层，完成 render 阶段。
+- 接下来到 commit 阶段，commit 阶段，替换真实 DOM ，完成此次更新流程。
+- 此时仍然在 commit 阶段，会执行 setState 中 callback 函数,如上的`()=>{ console.log(this.state.number) }`，到此为止完成了一次 setState 全过程。
+
+![](./imgs/img34.png)
 
 
 
@@ -2443,8 +2454,7 @@ class Xxxx extends Component {
 
 类继承于 React.Component，所以才有 render()，生命周期等方法可以使用，这也说明为什么函数组件不能使用这些方法的原因。但 react hook 出来后，函数组件也支持
 
-super(props) 用来调用基类的构造方法 constructor(), 也将父组件的 props 注入给子组件，供子组件读取 (组件
-中 props 属性只读不可写，state 可写) 。 而 constructor() 用来做一些组件的初始化工作，比如定义 this.state 的初始内容，或者绑定事件 this【 bind(this) 】
+super(props) 用来调用基类的构造方法 constructor(), 也将父组件的 props 注入给子组件，供子组件读取 (组件中 props 属性只读不可写，state 可写) 。 而 constructor() 用来做一些组件的初始化工作，比如定义 this.state 的初始内容，或者绑定事件 this【 bind(this) 】
 
 > 如果不初始化 State 或者
 
