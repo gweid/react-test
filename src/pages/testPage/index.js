@@ -30,6 +30,7 @@ import LinkStyle from '../../components/CssStyle/内联方式/index';
 import UserIndex from '../../components/CssStyle/普通css/user';
 import CssModule from '../../components/CssStyle/css-module/cssModule';
 import CssInJs from '../../components/CssStyle/css-in-js/CssInJs';
+import CustomForm from '../../components/CustomForm'
 
 import store from '../../store';
 import { StoreContext } from '../../utils/connect'
@@ -120,6 +121,7 @@ const TestPage = () => {
       <UserIndex />
       <CssModule />
       <CssInJs />
+      <CustomForm />
     </div>
   )
 }
