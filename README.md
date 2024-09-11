@@ -2492,7 +2492,7 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 
 - componentWillReceiveProps(nextProps)：此方法只调用于 props 引起的组件更新过程中，参数 nextProps 是父组件传给当前组件的新 props。但父组件 render 方法的调用不能保证重传给当前组件的 props 是有变化的，所以在此方法中根据 nextProps 和 this.props 来查明重传的 props 是否改变，以及如果改变了要执行啥，比如根据新的 props 调用 this.setState 触发当前组件的重新 render
 
-- shouldComponentUpdate(nextProps,nextState)：此方法通过比较 nextProps，nextState 及当前组件的 this.props，this.state，返回 true 时当前组件将继续执行更新过程，返回 false 则当前组件更新停止，以此可用来减少组件的不必要渲染，优化组件性能
+- shouldComponentUpdate(nextProps,nextState)：此方法通过比较 nextProps，nextState 及当前组件的 this.props，this.state，返回 true 表示组件需要重新渲染，返回 false 表示组件不需要重新渲染，以此可用来减少组件的不必要渲染，优化组件性能
 
 - componentWillUpdate(nextProps, nextState)：此方法在调用 render 方法前执行，在这边可执行一些组件更新发生前的工作，一般较少用
 
@@ -2606,10 +2606,13 @@ super(props) 用来调用基类的构造方法 constructor(), 也将父组件的
 **1、getDerivedStateFromProps**
 
 ```js
-static getDerivedStateFromProps(props, state)
+static getDerivedStateFromProps(nextProps, preState)
 ```
 
-> static getDerivedStateFromProps(props, state) 在组件初始化和更新时的 render 方法之前调用，父组件传入的 newProps 和当前组件的 prevState 进行比较，判断是否需要更新 state，返回值为对象用作更新 state，如果不需要则返回 null。不管什么原因，都会在每次 render 之前触发这个方法。与 componentWillReceiveProps 形成对比，componentWillReceiveProps 仅仅在父组件重新渲染时触发，而在调用 setState 时不触发
+- `nextProps`: 即将接收的新的属性。
+- `prevState`: 组件之前的状态。
+
+> static getDerivedStateFromProps(nextProps, preState) 在组件初始化和更新时的 render 方法之前调用，父组件传入的 newProps 和当前组件的 prevState 进行比较，判断是否需要更新 state，返回值为对象用作更新 state，如果不需要则返回 null。不管什么原因，都会在每次 render 之前触发这个方法。与 componentWillReceiveProps 形成对比，componentWillReceiveProps 仅仅在父组件重新渲染时触发，而在调用 setState 时不触发
 
 ```js
 class App extends Component {
