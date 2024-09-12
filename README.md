@@ -1562,7 +1562,7 @@ class ClassComponent extends Component {
 
 
 
-**7、setState 在原生事件和 setTimeout 中都是同步的**
+**7、setState 在原生事件和 setTimeout 内部都是同步的**
 
 1. 在 setTimeout 中
 
@@ -1634,7 +1634,7 @@ class ClassComponent extends Component {
    setState 是同步还是异步主要分两种情况：
    
    - 在组件生命周期或 React 合成事件中，setState 是异步
-   - 在 setTimeout 或者原生dom事件中，setState 是同步
+   - 在 setTimeout 内部或者原生dom事件中，setState 是同步
 
 
 
@@ -6730,7 +6730,16 @@ const useMemoHook = () => {
 
 #### 15-8、useRef
 
-useRef 返回一个可变的 ref 对象，其 current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变
+useRef 返回一个可变的 ref 对象，其 current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变。
+
+需要 useRef 的主要原因有两个：
+
+1. **持久性**：`useRef`的返回对象在组件的整个生命周期中都是持久的，而不是每次渲染都重新创建。
+2. **不会触发渲染**：当`useState`中的状态改变时，组件会重新渲染。而当`useRef`的`.current`属性改变时，组件不会重新渲染。
+
+总结来说，`useRef`既能保存状态，还不会在更新时触发渲染
+
+
 
 最常见的 ref 的两种用法：
 
