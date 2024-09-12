@@ -2676,6 +2676,176 @@ class ScrollingList extends Component {
 
 
 
+三个阶段生命周期+无状态组件总览图：
+
+![](./imgs/img35.png)
+
+
+
+#### 8-4、React 各阶段生命周期能做些什么
+
+#####8-4-1、constructor
+
+constructor 在类组件创建实例时调用，而且初始化的时候执行一次，所以可以在 constructor 做一些初始化的工作。比如：
+
+- 初始化 state ，比如可以用来截取路由中的参数，赋值给 state 。
+- 对类组件的事件做一些处理，比如绑定 this 、节流、防抖等。
+- 对类组件进行一些必要生命周期的劫持、渲染劫持，这个功能更适合反向继承的HOC ，在 HOC 环节，会详细讲解反向继承这种模式。
+
+```jsx
+constructor(props){
+    super(props)        // 执行 super ，别忘了传递props,才能在接下来的上下文中，获取到props。
+    this.state = {       //① 可以用来初始化state，比如可以用来获取路由中的
+      name:'alien'
+    }
+
+    this.handleClick = this.handleClick.bind(this) /* ② 绑定 this */
+
+    this.handleInputChange = debounce(this.handleInputChange , 500) /* ③ 绑定防抖函数，防抖 500 毫秒 */
+
+    const _render = this.render
+
+    this.render = function(){
+      return _render.bind(this)  /* ④ 劫持修改类组件上的一些生命周期 */
+    }
+}
+
+/* 点击事件 */
+handleClick(){ /* ... */ }
+
+/* 表单输入 */
+handleInputChange(){ /* ... */ }
+```
+
+
+
+##### 8-4-2、getDerivedStateFromProps
+
+只要组件更新，就会执行 `getDerivedStateFromProps`，不管是 props 改变，还是 setState ，或是 forceUpdate 。
+
+在初始化和更新阶段，接受父组件的 props 数据， 可以对 props 进行格式化，过滤等操作，返回值将作为新的 state 合并到 state 中，供给视图渲染层消费。
+
+```jsx
+static getDerivedStateFromProps(newProps){
+    const { type } = newProps
+    switch(type){
+      case 'fruit' : 
+        return { list:['苹果','香蕉','葡萄' ] } /* ① 接受 props 变化 ， 返回值将作为新的 state ，用于 渲染 或 传递给s houldComponentUpdate */
+      case 'vegetables':
+        return { list:['菠菜','西红柿','土豆']}
+    }
+}
+render(){
+    return <div>{ this.state.list.map((item)=><li key={item} >{ item  }</li>) }</div>
+}
+```
+
+
+
+##### 8-4-3、componentWillMount
+
+componentWillMount 的作用还是做一些初始化操作
+
+
+
+##### 8-4-3、componentWillReceiveProps
+
+componentWillReceiveProps 函数的执行是在更新组件阶段，该生命周期执行驱动是因为父组件更新带来的 props 修改，但是只要父组件触发 render 函数，调用 React.createElement 方法，那么 props 就会被重新创建，生命周期 componentWillReceiveProps 就会执行了
+
+- componentWillReceiveProps 可以用来监听父组件是否执行 render 。
+- componentWillReceiveProps 可以用来接受 props 改变，组件可以根据props改变，来决定是否更新 state ，因为可以访问到 this ， 所以可以在异步成功回调(接口请求数据)改变 state 。这个是 getDerivedStateFromProps 不能实现的。
+
+
+
+> 问题：当 props 不变的前提下， PureComponent 组件能否阻止 componentWillReceiveProps 执行？
+>
+> 
+>
+> 答案：答案是否定的，PureComponent 是在 componentWillReceiveProps 执行之后浅比较 props 是否发生变化
+
+
+
+##### 8-4-5、componentWillUpdate
+
+componentWillUpdate 可以意味着在更新之前，此时的 DOM 还没有更新。在这里可以做一些获取 DOM 的操作。就比如说在一次更新中，保存 DOM 之前的信息(记录上一次位置)、获取 DOM 元素位置等。
+
+但是 React 已经出了新的生命周期 getSnapshotBeforeUpdate 来代替 componentWillUpdate。
+
+
+
+##### 8-4-6、render
+
+render 函数，就是 jsx 的各个元素被 React.createElement 创建成 React element 对象的形式。一次 render 的过程，就是创建 React.element 元素的过程。
+
+那么可以在render里面做一些,**createElement创建元素** , **cloneElement 克隆元素** ，**React.children 遍历 children** 的操作。
+
+
+
+##### 8-4-7、getSnapshotBeforeUpdate
+
+**获取更新前的快照**，可以进一步理解为 获取更新前 DOM 的状态。该生命周期是在 commit 阶段的before Mutation ( DOM 修改前)，此时 DOM 还没有更新，但是在接下来的 Mutation 阶段会被替换成真实 DOM 。此时是获取 DOM 信息的最佳时期，getSnapshotBeforeUpdate 将返回一个值作为一个`snapShot`(快照)，传递给 componentDidUpdate作为第三个参数。
+
+作用：
+
+- getSnapshotBeforeUpdate 这个生命周期意义就是配合componentDidUpdate 一起使用，计算形成一个 snapShot 传递给 componentDidUpdate 。保存一次更新前的信息。
+
+```jsx
+getSnapshotBeforeUpdate(prevProps,preState){
+    const style = getComputedStyle(this.node) 
+    return { /* 传递更新前的元素位置 */
+        cx:style.cx,
+        cy:style.cy
+    }
+}
+componentDidUpdate(prevProps, prevState, snapshot){
+    /* 获取元素绘制之前的位置 */
+    console.log(snapshot)
+}
+```
+
+> 注意：getSnapshotBeforeUpdate 如果没有返回值会给予警告⚠️，如果没有 `componentDidUpdate`也会给予警告。
+
+
+
+##### 8-4-8、componentDidUpdate
+
+作用
+
+- componentDidUpdate 生命周期执行，此时 DOM 已经更新，可以直接获取 DOM 最新状态。这个函数里面如果想要使用 setState ，一定要加以限制，否则会引起无限循环。
+- 接受 getSnapshotBeforeUpdate 保存的快照信息。
+
+
+
+##### 8-4-9、componentDidMount
+
+componentDidMount 生命周期执行时机和 componentDidUpdate 一样，一个是在**初始化**，一个是**组件更新**。此时 DOM 已经创建完，既然 DOM 已经创建挂载，就可以做一些基于 DOM 操作，DOM 事件监听器。
+
+作用：
+
+- 可以做一些关于 DOM 操作，比如基于 DOM 的事件监听器。
+- 对于初始化向服务器请求数据，渲染视图，这个生命周期也是蛮合适的。
+
+
+
+##### 8-4-10、shouldComponentUpdate
+
+shouldComponentUpdate 三个参数，第一个参数新的 props ，第二个参数新的 state ，第三个参数新的 context。
+
+这个生命周期，一般用于性能优化，shouldComponentUpdate 返回值决定是否重新渲染的类组件。需要重点关注的是第二个参数 newState ，如果有 getDerivedStateFromProps 生命周期 ，它的返回值将合并到 newState ，供 shouldComponentUpdate 使用。
+
+
+
+##### 8-4-11、componentWillUnmount
+
+componentWillUnmount 是组件销毁阶段唯一执行的生命周期，主要做一些收尾工作，比如清除一些可能造成内存泄漏的定时器，延时器，或者是一些事件监听器。
+
+作用
+
+- 清除延时器，定时器。
+- 一些基于 DOM 的操作，比如事件监听器。
+
+
+
 ### 9、React 中的 Dom 操作
 
 
