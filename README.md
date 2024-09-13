@@ -3015,7 +3015,7 @@ export default class DomCom extends PureComponent {
 }
 ```
 
-> ref 在类组件上，获取的是当前的组件实例。注意：不能在函数式组件上使用
+> ref 在类组件上，获取的是当前的组件实例。注意：在函数式组件上使用，需要包裹在 forwardRef 中
 
 
 

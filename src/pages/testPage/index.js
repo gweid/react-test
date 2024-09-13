@@ -32,6 +32,7 @@ import CssModule from '../../components/CssStyle/css-module/cssModule';
 import CssInJs from '../../components/CssStyle/css-in-js/CssInJs';
 import CustomForm from '../../components/CustomForm'
 import TestClassState from '../../components/TestClassState'
+import RefCom from '../../components/RefCom'
 
 import store from '../../store';
 import { StoreContext } from '../../utils/connect'
@@ -124,6 +125,7 @@ const TestPage = () => {
       <CssInJs />
       <CustomForm />
       <TestClassState />
+      <RefCom />
     </div>
   )
 }
