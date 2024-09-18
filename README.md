@@ -2287,7 +2287,7 @@ MyClass.contextType = MyContext;
 
 **Context.Consumer**
 
-这个主要是在函数组件中使用
+这个主要是在函数组件中使用，但是函数组件更加推荐使用 useContext 这个 hook 
 
 ```js
 import React, { Component, createContext } from 'react';
@@ -3961,7 +3961,7 @@ export default class UserIndex extends PureComponent {
 
 css-module 解决了普通 css 文件没有局部作用域的问题；
 
-css modules 并不是 Reac t特有的解决方案，而是所有使用了类似于 webpack 配置的环境下都可以使用的。但是，如果在其他项目中使用个，那么需要进行配置，比如配置 webpack.config.js 中的 modules: true 等。
+css modules 并不是 React 特有的解决方案，而是所有使用了类似于 webpack 配置的环境下都可以使用的。但是，如果在其他项目中使用个，那么需要进行配置，比如配置 webpack.config.js 中的 modules: true 等。
 
 React 的脚手架已经内置了css modules 的配置，只需要将 `.css/.less/.scss` 等样式文件都修改成 `.module.css/.module.less/.module.scss` 这种形式即可
 

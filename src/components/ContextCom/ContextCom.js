@@ -6,7 +6,7 @@ function FunHead() {
   return (
     <MyContext.Consumer>
       {
-        value => {
+        (value) => {
           return <h1>{value.title}</h1>
         }
       }
