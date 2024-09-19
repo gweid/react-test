@@ -337,7 +337,7 @@ module.exports = function(webpackEnv) {
                 formatter: require.resolve('react-dev-utils/eslintFormatter'),
                 eslintPath: require.resolve('eslint'),
                 resolvePluginsRelativeTo: __dirname,
-                
+
               },
               loader: require.resolve('eslint-loader'),
             },
@@ -383,6 +383,11 @@ module.exports = function(webpackEnv) {
                       },
                     },
                   ],
+                  // react 中支持装饰器
+                  [
+                    require.resolve('@babel/plugin-proposal-decorators'),
+                    { "legacy": true }
+                  ]
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/

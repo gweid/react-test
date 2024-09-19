@@ -19,6 +19,7 @@ const ClickHoc = (Component) => {
   }
 }
 
+// 类组件的高阶组件，可以使用装饰器
 @ClickHoc
 class Index extends React.Component {
   render() {

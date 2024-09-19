@@ -33,6 +33,7 @@ import CssInJs from '../../components/CssStyle/css-in-js/CssInJs';
 import CustomForm from '../../components/CustomForm'
 import TestClassState from '../../components/TestClassState'
 import RefCom from '../../components/RefCom'
+import { AuthPageClassCom, AuthPageFunCom } from '../../components/HOCCom/HOCAuthPage'
 
 import store from '../../store';
 import { StoreContext } from '../../utils/connect'
@@ -126,6 +127,8 @@ const TestPage = () => {
       <CustomForm />
       <TestClassState />
       <RefCom />
+      <AuthPageClassCom />
+      <AuthPageFunCom />
     </div>
   )
 }
