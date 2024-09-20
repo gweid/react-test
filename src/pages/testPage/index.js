@@ -34,6 +34,7 @@ import CustomForm from '../../components/CustomForm'
 import TestClassState from '../../components/TestClassState'
 import RefCom from '../../components/RefCom'
 import { AuthPageClassCom, AuthPageFunCom } from '../../components/HOCCom/HOCAuthPage'
+import RenderFather from '../../components/RenderControl/RenderFather.jsx';
 
 import store from '../../store';
 import { StoreContext } from '../../utils/connect'
@@ -129,6 +130,7 @@ const TestPage = () => {
       <RefCom />
       <AuthPageClassCom />
       <AuthPageFunCom />
+      <RenderFather />
     </div>
   )
 }
