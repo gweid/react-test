@@ -35,6 +35,9 @@ import TestClassState from '../../components/TestClassState'
 import RefCom from '../../components/RefCom'
 import { AuthPageClassCom, AuthPageFunCom } from '../../components/HOCCom/HOCAuthPage'
 import RenderFather from '../../components/RenderControl/RenderFather.jsx';
+import SuspenseCom from '../../components/SuspenseCom';
+import LazyCom from '../../components/LazyCom';
+import LazySuspense from '../../components/LazySuspense';
 
 import store from '../../store';
 import { StoreContext } from '../../utils/connect'
@@ -131,6 +134,9 @@ const TestPage = () => {
       <AuthPageClassCom />
       <AuthPageFunCom />
       <RenderFather />
+      <SuspenseCom />
+      <LazyCom />
+      <LazySuspense />
     </div>
   )
 }
