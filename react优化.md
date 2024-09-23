@@ -1022,6 +1022,16 @@ componentDidCatch 作用：
 
 
 
+然后，可以将子组件（支持类组件和函数组件）包裹在 ErrorBoundary 中进行错误处理 
+
+```jsx
+<ErrorBoundary>
+  <MyChild />
+</ErrorBoundary>
+```
+
+
+
 ####getDerivedStateFromError
 
 React 更推荐用 getDerivedStateFromError 代替 componentDidCatch 用于处理渲染异常的情况。getDerivedStateFromError 是静态方法，内部不能调用 setState。getDerivedStateFromError 返回的值可以合并到 state，作为渲染使用。比如上面的可以改为
