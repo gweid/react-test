@@ -1072,6 +1072,243 @@ class ErrorBoundary extends React.Component{
 
 
 
+### 时间分片
+
+
+
+#### 什么是时间分片
+
+时间分片主要解决：初次加载，一次性渲染大量数据造成的卡顿现象。**浏览器执行 js 速度要比渲染 DOM 速度快的多。**时间分片，并没有本质减少浏览器的工作量，而是把一次性任务分割开来，给用户一种流畅的体验效果。就像造一个房子，如果一口气完成，那么会把人累死，所以可以设置任务，每次完成任务一部分，这样就能有效合理地解决问题。
+
+
+
+#### 时间分片实践
+
+例子：一次性加载 20000 个元素块，元素块的位置和颜色是随机的。没有优化的版本如下：
+
+色块组件：
+
+```jsx
+import React, { useMemo } from "react"
+
+const ColorCircle = ({ position }) => {
+  // 随机颜色
+  const getColor = () => {
+    const r = Math.floor(Math.random() * 255)
+    const g = Math.floor(Math.random() * 255)
+    const b = Math.floor(Math.random() * 255)
+
+    return `rgba(${r}, ${g}, ${b}, 0.8)`
+  }
+
+  // 随机位置
+  const getPostion = (position) => {
+    const { width , height } = position
+
+    const top = Math.ceil(Math.random() * height)
+    const left = Math.ceil(Math.random() * width)
+
+    return { top: `${top}px`, left: `${left}px` }
+  }
+
+  const style = useMemo(() => ({
+    width: '10px',
+    height: '10px',
+    background : getColor(),
+    position: 'absolute',
+    ...getPostion(position)
+  }), [])
+
+  return (
+    <div style={style}></div>
+  )
+}
+
+export default ColorCircle
+```
+
+
+
+使用：
+
+```jsx
+import React, { useEffect, useRef, useState } from "react"
+import ColorCircle from './ColorCircle'
+
+const WrapCom = () => {
+  const [position, setPosition] = useState({ width: 0, height: 0 })
+  const [dataList, setDataList] = useState([])
+  const [renderList, setRenderList] = useState([])
+
+  const warpRef = useRef()
+
+  useEffect(() => {
+    const { offsetHeight, offsetWidth } = warpRef.current
+    const originList = new Array(20000).fill(1)
+
+    setPosition({
+      width: offsetWidth,
+      height: offsetHeight
+    })
+    setDataList(originList)
+    setRenderList(originList)
+  }, [])
+
+  return (
+    <div ref={warpRef} style={{ width: '90%', height: '500px', position: 'relative' }}>
+      {
+        renderList.map((item, index) => <ColorCircle position={position} key={index} />)
+      }
+    </div>
+  )
+}
+
+const TimeSlice = () => {
+  const [show, setShow] = useState(false)
+  const [btnShow, setBtnShow] = useState(true)
+
+  const handleClick = () => {
+    setBtnShow(false)
+    setTimeout(() => {
+      setShow(true)
+    })
+  }
+
+  return (
+    <div>
+      {btnShow && <button onClick={handleClick} style={{ margin: '30px' }}>show</button>}
+      {show && <WrapCom />}
+    </div>
+  )
+}
+
+export default TimeSlice
+```
+
+
+
+这样的效果类似：
+
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/185fabe653144598a892332eaa812ecd~tplv-k3u1fbpfcp-jj-mark:3024:0:0:0:q75.awebp)
+
+这种方式渲染的速度特别慢，而且是一次性突然出现，体验不好
+
+
+
+下面是时间分片优化版本
+
+```jsx
+const WrapCom = () => {
+  const [position, setPosition] = useState({ width: 0, height: 0 })
+  const [renderList, setRenderList] = useState([])
+
+  // 每次渲染 500 个
+  const renderParam = useRef({
+    totalNum: 20000, // 总数
+    renderNum: 500, // 每次渲染数
+    renderTimes: 0, // 渲染次数
+    dataList: [], // 原始数组
+    currentIndex: 1, // 当前渲染到第几次
+  })
+
+  const warpRef = useRef()
+
+  useEffect(() => {
+    const { totalNum, renderNum, currentIndex } = renderParam.current
+    const originList = new Array(totalNum).fill(1)
+    renderParam.current.dataList = originList
+
+    // 计算出需要渲染多少次
+    const renderTimes = Math.ceil(totalNum / renderNum)
+    renderParam.current.renderTimes = renderTimes
+
+    const currentList = originList.slice(0, currentIndex * renderNum)
+
+    const { offsetHeight, offsetWidth } = warpRef.current
+    setPosition({
+      width: offsetWidth,
+      height: offsetHeight
+    })
+
+    setRenderList(currentList)
+  }, [])
+
+  useEffect(() => {
+    if (renderList.length > 0) {
+      requestIdleCallback(() => {
+        handleRender()
+      })
+    }
+  }, [renderList])
+
+  const handleRender = () => {
+    const { currentIndex, renderTimes, renderNum, dataList } = renderParam.current
+    if (currentIndex <= renderTimes) {
+      const currentList = dataList.slice((currentIndex - 1) * renderNum, currentIndex * renderNum)
+      setRenderList([...renderList, ...currentList])
+      renderParam.current.currentIndex = currentIndex + 1
+    }
+  }
+
+  return (
+    <div ref={warpRef} style={{ width: '90%', height: '500px', position: 'relative', margin: '0 auto' }}>
+      {
+        renderList.map((item, index) => <ColorCircle position={position} key={index} />)
+      }
+    </div>
+  )
+}
+```
+
+- 计算时间片，首先用 renderNum 代表一次渲染多少个，那么除以总数据就能得到渲染多少次。
+- 开始渲染数据，通过 `currentIndex <= renderTimes` 判断渲染完成，如果没有渲染完成，那么通过 requestIdleCallback 代替 setTimeout 浏览器空闲执行下一帧渲染。
+
+> PS：如果要进一步优化，还可以缓存 element
+
+
+
+效果如下：
+
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/31b871920902477380879805a066f61d~tplv-k3u1fbpfcp-jj-mark:3024:0:0:0:q75.awebp)
+
+
+
+### 虚拟列表
+
+
+
+#### 什么是虚拟列表
+
+虚拟列表是一种长列表的解决方案，现在滑动加载是 M 端和 PC 端一种常见的数据请求加载场景，这种数据交互有一个问题就是，如果没经过处理，加载完成后数据展示的元素，都显示在页面上，如果伴随着数据量越来越大，会使页面中的 DOM 元素越来越多，即便是像 React 可以良好运用 diff 来复用老节点，但也不能保证大量的 diff 带来的性能开销。所以虚拟列表的出现，就是解决大量 DOM 存在，带来的性能问题。
+
+何为虚拟列表，就是在长列表滚动过程中，只有视图区域显示的是真实 DOM ，滚动过程中，不断截取视图的有效区域，让人视觉上感觉列表是在滚动。达到无限滚动的效果。
+
+虚拟列表划分可以分为三个区域：视图区 + 缓冲区 + 虚拟区。
+
+![](./imgs/img39.png)
+
+- 视图区：视图区就是能够直观看到的列表区，此时的元素都是真实的 DOM 元素。
+- 缓冲区：缓冲区是为了防止用户上滑或者下滑过程中，出现白屏等效果。（缓冲区和视图区为渲染真实的 DOM ）
+- 虚拟区：对于用户看不见的区域（除了缓冲区），剩下的区域，不需要渲染真实的 DOM 元素。虚拟列表就是通过这个方式来减少页面上 DOM 元素的数量。
+
+
+
+#### 虚拟列表实践
+
+**实现思路：**
+
+- 通过 useRef 获取元素，缓存变量。
+- useEffect 初始化计算容器的高度。截取初始化列表长度。这里需要 div 占位，撑起滚动条。
+- 通过监听滚动容器的 onScroll 事件，根据 scrollTop 来计算渲染区域向上偏移量, 这里需要注意的是，当用户向下滑动的时候，为了渲染区域，能在可视区域内，可视区域要向上滚动；当用户向上滑动的时候，可视区域要向下滚动。
+- 通过重新计算 end 和 start 来重新渲染列表。
+
+
+
+**实现代码：**
+
+```jsx
+```
+
 
 
 

@@ -38,6 +38,7 @@ import RenderFather from '../../components/RenderControl/RenderFather.jsx';
 import SuspenseCom from '../../components/SuspenseCom';
 import LazyCom from '../../components/LazyCom';
 import LazySuspense from '../../components/LazySuspense';
+import TimeSlice from '../../components/TimeSlice';
 
 import store from '../../store';
 import { StoreContext } from '../../utils/connect'
@@ -137,6 +138,7 @@ const TestPage = () => {
       <SuspenseCom />
       <LazyCom />
       <LazySuspense />
+      <TimeSlice />
     </div>
   )
 }
