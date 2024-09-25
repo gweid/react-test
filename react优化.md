@@ -1450,7 +1450,11 @@ export default VirtualList
 
 ## 其它细节
 
-
+- 防抖节流
+- 按需引入
+- React动画
+- 及时清除定时器等
+- 合理使用 state
 
 
 
