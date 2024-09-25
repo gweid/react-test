@@ -6,6 +6,7 @@ import TestPage from '../pages/testPage'
 import testHooks from '../pages/testHooks'
 import NoMatch from '../pages/noMatch'
 import Detail from '../pages/detail'
+import VirtualList from '../pages/virtualList'
 
 const routes = [
   {
@@ -39,6 +40,10 @@ const routes = [
   {
     path: '/hooks',
     component: testHooks
+  },
+  {
+    path: '/virtualList',
+    component: VirtualList
   },
   {
     path: '/detail',

@@ -1,0 +1,30 @@
+.box {
+  width: 375px;
+  height: 700px;
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: scroll;
+  border: 1px solid #ccc;
+}
+
+.box::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-box {
+  width: 100%;
+  position: relative;
+  overflow: scroll;
+}
+
+.scroll-box::-webkit-scrollbar {
+  display: none;
+}
+
+.item-box {
+  width: 100%;
+  margin: 10px 0;
+  background: pink;
+}

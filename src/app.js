@@ -19,6 +19,7 @@ const App = () => {
         <NavLink className={style['link-item']} activeStyle={{ color: 'red' }} to="/about">about</NavLink>
         <NavLink exact className={style['link-item']} activeClassName={style['link-active']} to="/testPage">testPage</NavLink>
         <NavLink exact className={style['link-item']} activeClassName={style['link-active']} to="/hooks">hooks</NavLink>
+        <NavLink exact className={style['link-item']} activeClassName={style['link-active']} to="/virtualList">virtualList</NavLink>
       </div>
 
       {renderRoutes(routes)}
