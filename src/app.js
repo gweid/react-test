@@ -16,6 +16,7 @@ const App = () => {
         <Link className={style['link-item']} to="/mine">mine</Link> */}
 
         <NavLink exact className={style['link-item']} activeStyle={{ color: 'red' }} to="/">index</NavLink>
+        <NavLink exact className={style['link-item']} activeStyle={{ color: 'red' }} to="/event">event</NavLink>
         <NavLink className={style['link-item']} activeStyle={{ color: 'red' }} to="/about">about</NavLink>
         <NavLink exact className={style['link-item']} activeClassName={style['link-active']} to="/testPage">testPage</NavLink>
         <NavLink exact className={style['link-item']} activeClassName={style['link-active']} to="/hooks">hooks</NavLink>

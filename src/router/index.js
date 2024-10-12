@@ -1,4 +1,5 @@
 import Index from '../pages/index'
+import EventPage from '../pages/eventPage'
 import About from '../pages/about'
 import Culture from '../pages/about/components/culture'
 import Idea from '../pages/about/components/idea'
@@ -13,6 +14,11 @@ const routes = [
     path: '/',
     exact: true,
     component: Index
+  },
+  {
+    path: '/event',
+    exact: true,
+    component: EventPage
   },
   {
     path: '/about',
