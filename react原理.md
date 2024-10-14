@@ -349,7 +349,7 @@ export function batchedEventUpdates(fn,a){
 
 - 首先第一次收集是在 button 上，handleClick1 冒泡事件 push 处理，handleClick2 捕获事件 unshift 处理。形成结构 [ handleClick2 , handleClick1 ]
 
-- 然后接着向上收集，遇到父级，收集父级 div 上的事件，handleClick3 冒泡事件 push 处理，handleClick4 捕获事件 unshift 处理。[handleClick4, handleClick2 , handleClick1,handleClick3 ]
+- 然后接着向上收集，遇到父级，收集父级 div 上的事件，handleClick3 冒泡事件 push 处理，handleClick4 捕获事件 unshift 处理。[handleClick4, handleClick2 , handleClick1,handleClick3]
 
 - 依次执行数组里面的事件，所以打印 4 2 1 3
 
@@ -384,3 +384,226 @@ function runEventsInBatch(){
 比如有事件队列：[handleClick4, handleClick2, handleClick1, handleClick3]
 
 假设在上述队列中，handleClick2 中调用 e.stopPropagation()，那么事件源里将有状态证明此次事件已经停止冒泡，那么下次遍历的时候，event.isPropagationStopped() 就会返回 true，所以跳出循环，handleClick1, handleClick3 将不再执行，模拟了阻止事件冒泡的过程
+
+
+
+### v18 版本事件原理
+
+
+
+老版本的事件原理有一个问题：捕获阶段和冒泡阶段的事件都是模拟的，本质上都是在冒泡阶段执行的
+
+```jsx
+const EventPage = () => {
+  const refObj = React.useRef(null)
+  useEffect(()=>{
+    const handler = ()=>{
+      console.log('事件监听')
+    }
+
+    refObj.current.addEventListener('click',handler)
+
+    return () => {
+      refObj.current.removeEventListener('click',handler)
+    }
+  },[])
+
+  const handleClick = ()=>{
+    console.log('冒泡阶段执行')
+  }
+  const handleCaptureClick = ()=>{
+    console.log('捕获阶段执行')
+  }
+
+  return (
+    <button
+      ref={refObj}
+      onClick={handleClick}
+      onClickCapture={handleCaptureClick}
+    >
+      点击
+    </button>
+  )
+}
+```
+
+如上代码，当触发一次点击事件的时候，处理函数的执行，老版本打印顺序为：事件监听 -> 捕获阶段执行 -> 冒泡阶段执行；所以老版本的事件系统，一定程度上，不符合事件流的执行时机
+
+新版本事件系统可以做到：捕获阶段执行 -> 事件监听 -> 冒泡阶段执行
+
+React 事件原理挖掘，主要体现在两个方面，那就是**事件绑定**和**事件触发**。下面就从这两方面探究新版本的事件系统有哪些改变
+
+
+
+#### 新版事件绑定（初始化事件）
+
+
+
+在新版的事件系统中，在 createRoot 就会向外层容器上注册完全部事件
+
+> react-dom/client.js
+
+```js
+function createRoot(container, options) {
+  ...
+
+  // 注册事件
+  listenToAllSupportedEvents(rootContainerElement);
+}
+```
+
+> react-dom/src/events/DOMPluginEventSystem.js
+
+```js
+function listenToAllSupportedEvents(rootContainerElement) {
+  // allNativeEvents 是一个 set 集合，保存了大多数的浏览器事件
+  allNativeEvents.forEach(function (domEventName) {
+    if (domEventName !== 'selectionchange') {
+      // nonDelegatedEvents 保存了 js 中，不冒泡的事件
+      if (!nonDelegatedEvents.has(domEventName)) {
+        // 在冒泡阶段绑定事件
+        listenToNativeEvent(domEventName, false, rootContainerElement);
+      }
+      // 在捕获阶段绑定事件
+      listenToNativeEvent(domEventName, true, rootContainerElement);
+    }
+  });
+}
+```
+
+listenToAllSupportedEvents 主要目的就是通过 listenToNativeEvent 绑定浏览器事件，这里有两个常量，allNativeEvents 和 nonDelegatedEvents：
+
+- allNativeEvents：一个 set 集合，保存了 81 个浏览器常用事件
+
+- nonDelegatedEvents：也是一个 set 集合，保存了浏览器中不会冒泡的事件，一般指的是媒体事件，比如 pause，play，playing 等，还有一些特殊事件，比如 cancel、close、invalid、load、scroll 等
+
+
+
+接下来，如果事件是不冒泡的，那么会执行一次 listenToNativeEvent，第二个参数为 true 。 如果是常规的事件，那么会执行两次 listenToNativeEvent，分别在冒泡和捕获阶段绑定事件
+
+
+
+listenToNativeEvent 就是事件监听，精简后主要逻辑：
+
+```js
+var listener = dispatchEvent.bind(null, domEventName, ...)
+
+if (isCapturePhaseListener) {
+  target.addEventListener(eventType, dispatchEvent, true);
+} else {
+  target.addEventListener(eventType, dispatchEvent, false);
+}
+```
+
+- isCapturePhaseListener 就是 listenToNativeEvent 的第二个参数
+
+- target 为 DOM 对象
+
+- dispatchEvent 为统一的事件监听函数
+
+基于以上，可知 listenToNativeEvent 本质上就是向原生 DOM 中去注册事件，上面还有一个细节，就是 dispatchEvent 已经通过 bind 的方式将事件名称等信息保存下来了。经过这第一步，在初始化阶段，就已经注册了很多的事件监听器。
+
+此时如果发生一次点击事件，就会触发两次 dispatchEvent
+
+- 第一次捕获阶段的点击事件
+
+- 第二次冒泡阶段的点击事件
+
+
+
+#### 新版本事件触发
+
+
+
+当触发一次点击事件，首先执行 dispatchEvent 事件
+
+```js
+batchedUpdates(function () {
+  ...
+
+  return dispatchEventsForPlugins(domEventName, eventSystemFlags, nativeEvent, ancestorInst);
+});
+```
+
+dispatchEvent 如果是正常的事件，就会通过 batchedUpdates 调用 dispatchEventsForPlugins，batchedUpdates 其它代码是批量更新的逻辑，事件处理由 dispatchEventsForPlugins 来触发
+
+```js
+function dispatchEventsForPlugins(domEventName, eventSystemFlags, nativeEvent, targetInst, targetContainer) {
+  // 找到发生事件的元素——事件源
+  var nativeEventTarget = getEventTarget(nativeEvent);
+
+  // 创建待更新队列
+  var dispatchQueue = [];
+
+  // 找到待执行的事件
+  extractEvents(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags);
+
+  // 执行事件
+  processDispatchQueue(dispatchQueue, eventSystemFlags);
+}
+```
+
+dispatchEventsForPlugins 函数的逻辑主要是四步：
+
+1. 通过 getEventTarget 找到发生事件的元素，即事件源
+2. 创建一个待更新的事件队列 dispatchQueue
+3. 通过 extractEvents 找到待更新的事件
+4. 通过 processDispatchQueue 执行事件
+
+
+
+**当发生一次点击事件，React 会根据事件源对应的 fiber 对象，根据 return 指针向上遍历，收集所有相同的事件**，比如是 onClick，那就收集父级元素的所有 onClick 事件，比如是 onClickCapture，那就收集父级的所有 onClickCapture。
+
+得到了 dispatchQueue 之后，就需要 processDispatchQueue 执行事件了，这个函数的内部会经历两次遍历：
+- 第一次遍历 dispatchQueue，通常情况下，只有一个事件类型，所有 dispatchQueue 中只有一个元素
+
+- 接下来会遍历每一个元素的 listener，执行 listener 的时候有一个特点
+  ```js
+  /* 如果在捕获阶段执行。 */
+  if (inCapturePhase) {
+    for (var i = dispatchListeners.length - 1; i >= 0; i--) {
+      var _dispatchListeners$i = dispatchListeners[i],
+          instance = _dispatchListeners$i.instance,
+          currentTarget = _dispatchListeners$i.currentTarget,
+          listener = _dispatchListeners$i.listener;
+     
+      
+      if (instance !== previousInstance && event.isPropagationStopped()) {
+        return;
+      }
+      
+      /* 执行事件 */
+      executeDispatch(event, listener, currentTarget);
+      previousInstance = instance;
+    }
+  } else {
+    for (var _i = 0; _i < dispatchListeners.length; _i++) {
+      var _dispatchListeners$_i = dispatchListeners[_i],
+          _instance = _dispatchListeners$_i.instance,
+          _currentTarget = _dispatchListeners$_i.currentTarget,
+          _listener = _dispatchListeners$_i.listener;
+      
+      if (_instance !== previousInstance && event.isPropagationStopped()) {
+        return;
+      }
+      /* 执行事件 */
+      executeDispatch(event, _listener, _currentTarget);
+      previousInstance = _instance;
+    }
+  }
+  ```
+
+在 executeDispatch 会负责执行事件处理函数，也就是自定义的 handleClick ，handleParentClick 等
+
+这个有一个区别就是，如果是捕获阶段执行的函数，那么 listener 数组中函数，会从后往前执行，如果是冒泡阶段执行的函数，会从前往后执行，用这个模拟出冒泡阶段先子后父，捕获阶段先父后子
+
+
+
+还有一个细节就是如果触发了阻止冒泡事件，事件源是 React 内部自己创建的，所以如果一个事件中执行了 e.stopPropagation ，那么事件源中就能感知得到，接下来就可以通过 event.isPropagationStopped 来判断是否阻止冒泡，如果阻止，那么就退出，这样就模拟了事件流的执行过程，以及阻止事件冒泡
+
+
+
+总体新版的事件原理以及和旧版本的对比
+
+![](./imgs/img48.png)
+
