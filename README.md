@@ -1,6 +1,6 @@
 # React
 
-本项目是一些 react 相关的基础知识总结记录。
+react 学习笔记。
 
 - [react基础](./react基础.md)
 
