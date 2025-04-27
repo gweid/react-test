@@ -1020,7 +1020,7 @@ HOC 没有上面的一些问题，但也带来了另外的问题：
 
 
 
-#### 3-6、更多的组件相关
+#### 3-6、其它组件相关（Portal、Fragment等）
 
 **1、Portal**
 
@@ -2222,7 +2222,7 @@ export default Parent;
 
 
 
-#### 7-3、跨组件数据共享
+#### 7-3、跨组件数据共享（Context）
 
 对于跨组件之间的通信，如果用 props 一层一层去传递，那是非常麻烦的。在 react 中提供了 Context 进行跨组价的数据传递。
 
@@ -2361,7 +2361,7 @@ export default class ContextCom extends Component {
 
 
 
-#### 7-4、跨组件事件共享
+#### 7-4、跨组件事件共享（eventbus）
 
 Context 实现的是数据的跨组件共享，而需要实现事件的跨组件共享，需要依赖 `events` 这个第三方库。
 
