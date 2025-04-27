@@ -1417,7 +1417,9 @@ class ClassComponent extends Component {
 
 
 
-**1、问题：在组件中没有实现 setState，怎么能通过 this.setState 调用**
+**1、问题**
+
+**1.1、在组件中没有实现 setState，怎么能通过 this.setState 调用**
 
 因为，setState 是从 Component 中继承过来的，源码中定义：
 
@@ -1433,6 +1435,12 @@ Component.prototype.setState = function(partialState, callback) {
   this.updater.enqueueSetState(this, partialState, callback, 'setState');
 };
 ```
+
+
+
+**1.2、为什么需要使用 setState 呢**
+
+因为 react 中不像 vue 一样做了数据劫持，那么数据变化，就需要通过一个方法告诉 react 进行重新渲染
 
 
 
