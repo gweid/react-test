@@ -1436,7 +1436,7 @@ Component.prototype.setState = function(partialState, callback) {
 };
 ```
 
-
+  
 
 **1.2、为什么需要使用 setState 呢**
 
@@ -1449,8 +1449,10 @@ Component.prototype.setState = function(partialState, callback) {
 - `setState` 设计为异步，可以显著的提升性能
   - 如果每次调用 setState 都进行一次更新，那么意味着 render 函数会被频繁调用，界面重新渲染，这样效率是很低的
   - 最好的办法应该是获取到多个更新，之后进行批量更新
-- 如果同步更新了state，但是还没有执行render函数，那么 state 和 props 不能保持同步
-  - state 和 props 不能保持一致性，会在开发中产生很多的问题
+- 保持状态一致性
+  - 如果同步更新了state，但是还没有执行render函数，那么 state 和 props 不能保持同步。state 和 props 不能保持一致性，会在开发中产生很多的问题
+- react 调度机制，fiber架构
+  - **可中断渲染**：React Fiber 架构允许中断低优先级的状态更新，优先处理用户交互等高优先级任务。异步设计使得这种调度成为可能
 
 
 
@@ -1560,7 +1562,7 @@ class ClassComponent extends Component {
 
 
 
-**7、setState 在原生事件和 setTimeout 内部都是同步的**
+**7、React 18 之前，setState 在原生事件和异步代码（setTimeout、promise）内部都是同步的**
 
 1. 在 setTimeout 中
 
@@ -1629,7 +1631,7 @@ class ClassComponent extends Component {
    }
    ```
    
-   setState 是同步还是异步主要分两种情况：
+   **react 18 之前**，setState 是同步还是异步主要分两种情况：
    
    - 在组件生命周期或 React 合成事件中，setState 是异步
    - 在 setTimeout 内部或者原生dom事件中，setState 是同步
