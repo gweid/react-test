@@ -1649,10 +1649,9 @@ setTimeout(() => {
     this.setState((state, props) => {
       return { count: state.count + 1 };
     });
-    
-    console.log(this.state);
   })
 
+  console.log(this.state);
 }, 0);
 ```
 
