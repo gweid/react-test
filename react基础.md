@@ -1638,6 +1638,28 @@ class ClassComponent extends Component {
 
 
 
+React 18 之后，在原生事件和异步中，setState 默认是异步批处理，如果此时还想要同步，可以使用 flushSync：
+
+```jsx
+import { flushSync } from 'react-dom'
+
+
+setTimeout(() => {
+  flushSync(() => {
+    this.setState((state, props) => {
+      return { count: state.count + 1 };
+    });
+    
+    console.log(this.state);
+  })
+
+}, 0);
+```
+
+
+
+
+
 **8、setState 的合并**
 
 1. 数据的合并
