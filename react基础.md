@@ -1413,7 +1413,7 @@ class ClassComponent extends Component {
 
 #### 5-2、setState
 
-> 注意：setState 只有在合成事件和生命周期函数中是异步的，在原生事件和 setTimeout 中都是同步的；异步其实是为了批量更新和使 state 和 props 数据一致
+> 注意：setState 只有在合成事件和生命周期函数中是异步的，react 18 之前，在原生事件和 setTimeout 中都是同步的，react18之后，在在原生事件和 setTimeout 中也是异步的；异步其实是为了批量更新和使 state 和 props 数据一致
 
 
 
