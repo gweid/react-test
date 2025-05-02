@@ -11,9 +11,20 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === proto
 }
 
-function createStore(reducer, preloadedState) {
+function createStore(reducer, preloadedState, enhancer) {
   // 约束 reducer 参数类型
   if (typeof reducer !== 'function') throw new Error('reducer 必须是一个函数')
+
+  // 判断 enhancer 有没有传，并且是不是一个函数
+  if (typeof enhancer !== 'undefined') {
+    if (typeof enhancer !== 'function') {
+      throw new Error('enhancer 必须是一个函数')
+    }
+
+    // 调用 enhancer 函数, 并且把 createStore 作为参数传递给 enhancer
+    // 返回一个新的经过增强的 store
+    return enhancer(createStore)(reducer, preloadedState)
+  }
 
   let currentState = preloadedState
   const listeners = []
