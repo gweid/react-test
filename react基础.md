@@ -4765,7 +4765,7 @@ import { StoreContext } from './utils/connect'
 
 
 
-**1、react-redux 使用**
+**1、react-redux 结合 redux 的使用**
 
 安装：
 
@@ -4794,6 +4794,97 @@ import { Provider } from 'react-redux';
   <App />
 </Provider>
 ```
+
+
+
+完整代码：
+
+> store/index.js
+
+```js
+import { createStore } from 'redux'
+import reducer from './reducer'
+
+const store = createStore(reducer)
+
+export default store
+```
+
+
+
+> store/reducer.js
+
+```js
+import { CHANGE_NAME } from './constants'
+
+const initState = {
+  name: 'zhangsan',
+}
+
+const reducer = (state = initState, action) => {
+  switch (action.type) {
+    case CHANGE_NAME:
+      return { ...state, name: action.payload }
+    default:
+      return state;
+  }
+}
+
+export default reducer
+```
+
+
+
+> store/actions.js
+
+```js
+export const changeName = (name) => ({ type: 'CHANGE_NAME', payload: name })
+```
+
+
+
+> store/constants.js
+
+```js
+export const CHANGE_NAME = 'CHANGE_NAME';
+```
+
+
+
+使用
+
+```jsx
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { changeName } from '../store/actions';
+
+export class Home extends PureComponent {
+  render() {
+    const { name, changeName } = this.props;
+
+    return (
+      <div>
+        <h1>{name}</h1>
+        <button onClick={() => changeName('wangwu')}>改变name</button>
+      </div>
+    )
+  }
+}
+
+// 代表需要从 redux 的 state 中取出什么数据，放到组件的 props 中，就是高阶组件的 props 增强的使用
+const mapStateToProps = (state) => {
+  return {
+    name: state.name
+  }
+}
+
+// 将 redux 的 changeName 方法，映射到 props
+const mapDispatchToProps = { changeName }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
+```
+
+
 
 
 
