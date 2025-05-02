@@ -4879,7 +4879,16 @@ const mapStateToProps = (state) => {
 }
 
 // 将 redux 的 changeName 方法，映射到 props
-const mapDispatchToProps = { changeName }
+// const mapDispatchToProps = { changeName }
+
+// 当需要在使用 Action 之前自定义逻辑或者需要调用多个 Action 时，可硬通过 dispatch 来分发 Action
+const mapDispatchToProps = (dispatch) => {
+  return {
+    changeName: (name) => {
+      dispatch(changeName(name))
+    }
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
 ```
