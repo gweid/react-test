@@ -5329,6 +5329,12 @@ state.counterInfo.counter
 
 
 
+#### 13-14、实现 redux
+
+[实现一个redux](./cRedux/readme.md)
+
+
+
 ### 14、react-router
 
 React 的路由实现依赖于 react-router。
