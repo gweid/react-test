@@ -1885,3 +1885,49 @@ function renderRoutes(routes, extraProps, switchProps) {
   ```
 
 
+
+#### 2-9、页面懒加载和 suspense
+
+这不是 react-router 的功能，而是 react 本身支持异步加载组件，本质是 webpack 的 import 异步加载特性
+
+需要配合 suspense 使用：
+
+```js
+import React from 'react'
+import Index from '../pages/index'
+
+
+const About = React.lazy(() => import('../pages/about'))
+
+const routes = [
+  {
+    path: '/',
+    exact: true,
+    component: Index
+  },
+  {
+    path: '/about',
+    component: About,
+  }
+]
+
+export default routes
+```
+
+
+
+在入口文件：包裹一个 Suspense
+
+```jsx
+import React, { Suspense } from 'react'; 
+
+ReactDOM.render(
+  <BrowserRouter>
+    <Suspense fallback={<>组件加载中...</>}>
+      <App />
+    </Suspense>
+  </BrowserRouter>,
+  document.getElementById('root')
+);
+```
+

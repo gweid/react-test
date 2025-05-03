@@ -1,6 +1,7 @@
+import React from 'react'
+
 import Index from '../pages/index'
 import EventPage from '../pages/eventPage'
-import About from '../pages/about'
 import Culture from '../pages/about/components/culture'
 import Idea from '../pages/about/components/idea'
 import TestPage from '../pages/testPage'
@@ -8,6 +9,8 @@ import testHooks from '../pages/testHooks'
 import NoMatch from '../pages/noMatch'
 import Detail from '../pages/detail'
 import VirtualList from '../pages/virtualList'
+
+const About = React.lazy(() => import('../pages/about'))
 
 const routes = [
   {
