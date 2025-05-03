@@ -6,7 +6,7 @@ const initState = {
 
 const reducer = (state = initState, action) => {
   switch (action.type) {
-    case 'chnage_name':
+    case 'change_name':
       return {
         ...state,
         name: action.payload,
@@ -45,7 +45,7 @@ store.subscribe(() => {
 })
 
 // const action = {
-//   type: 'chnage_name',
+//   type: 'change_name',
 //   payload: 'lisi',
 // }
 
@@ -53,7 +53,7 @@ store.subscribe(() => {
 const action = (dispatch) => {
   setTimeout(() => {
     dispatch({
-      type: 'chnage_name',
+      type: 'change_name',
       payload: 'lisi',
     })
   }, 1000)

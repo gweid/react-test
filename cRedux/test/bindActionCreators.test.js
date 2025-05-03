@@ -1,4 +1,4 @@
-const { createStore } = require('../cRedux.js')
+const { createStore, bindActionCreators } = require('../cRedux.js')
 
 const initState = {
   name: 'zhangsan',
@@ -22,9 +22,13 @@ store.subscribe(() => {
   console.log(store.getState());
 })
 
-const action = {
-  type: 'change_name',
-  payload: 'lisi',
+const changeName = (payload) => {
+  return {
+    type: 'change_name',
+    payload,
+  }
 }
 
-store.dispatch(action)
+const action = bindActionCreators({ changeName }, store.dispatch)
+
+action.changeName('lisi')

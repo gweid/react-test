@@ -45,6 +45,17 @@ function applyMiddleware(...middlewares) {
   }
 }
 
+function bindActionCreators(creators, dispatch) {
+  const boundCreators = {}
+  for (const key in creators) {
+    boundCreators[key] = function(...args) {
+      dispatch(creators[key](...args))
+    }
+  }
+
+  return boundCreators
+}
+
 function createStore(reducer, preloadedState, enhancer) {
   // 约束 reducer 参数类型
   if (typeof reducer !== 'function') throw new Error('reducer 必须是一个函数')
@@ -100,5 +111,6 @@ function createStore(reducer, preloadedState, enhancer) {
 
 module.exports = {
   createStore,
-  applyMiddleware
+  applyMiddleware,
+  bindActionCreators
 }

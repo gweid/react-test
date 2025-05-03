@@ -2,7 +2,7 @@
 
 
 
-### redux 的核心 createStore
+#### redux 的核心 createStore
 
 
 
@@ -26,7 +26,7 @@ createStore 接收三个参数：
 
 
 
-#### 实现简单版 createStore
+#### 实现 createStore
 
 实现：
 
@@ -80,7 +80,7 @@ module.exports = {
 
 
 
-#### 参数类型约束
+#### 约束参数类型
 
 - 约束 reducer 必须是一个函数
 - 约束 dispatch 的参数
@@ -158,7 +158,7 @@ module.exports = {
 
 
 
-**enhancer的使用：**
+**enhancer 的使用：**
 
 ```js
 function enhancer(createStore) {
@@ -268,7 +268,7 @@ const initState = {
 
 const reducer = (state = initState, action) => {
   switch (action.type) {
-    case 'chnage_name':
+    case 'change_name':
       return {
         ...state,
         name: action.payload,
@@ -310,7 +310,7 @@ store.subscribe(() => {
 const action = (dispatch) => {
   setTimeout(() => {
     dispatch({
-      type: 'chnage_name',
+      type: 'change_name',
       payload: 'lisi',
     })
   }, 1000)
@@ -329,7 +329,7 @@ store.dispatch(action)
 
 
 
-首先，来看看 applymiddleware 的使用：
+**applymiddleware 的使用：**
 
 ```js
 const enhancer = applyMiddleware(logger, thunk)
@@ -450,4 +450,65 @@ function applyMiddleware(...middlewares) {
 - 对于最后一个中间件，next 表示 dispatch
 
 
+
+#### 实现 bindActionCreators
+
+`bindActionCreators` 是 Redux 提供的一个工具函数，用于将 **Action Creators**（创建 Action 的函数）自动绑定到 `dispatch` 方法上，避免手动调用 `dispatch`。它的主要作用是简化组件中 Action 的分发逻辑，尤其在需要将多个 Action Creators 传递给子组件时非常有用。
+
+
+
+**bindActionCreators 的使用对比：**
+
+```jsx
+// 未使用 bindActionCreators：每次调用 Action 都需要手动写 dispatch
+import { increment, decrement } from './actions';
+import { useDispatch } from 'react-redux';
+
+function Counter() {
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <button onClick={() => dispatch(increment())}>+</button>
+      <button onClick={() => dispatch(decrement())}>-</button>
+    </div>
+  );
+}
+
+
+
+// 使用了 bindActionCreators：直接调用 actions.increment()，无需显式写 dispatch
+import { bindActionCreators } from 'redux';
+import { increment, decrement } from './actions';
+import { useDispatch } from 'react-redux';
+
+function Counter() {
+  const dispatch = useDispatch();
+  const actions = bindActionCreators({ increment, decrement }, dispatch);
+  // actions.increment() 等价于 dispatch(increment())
+
+  return (
+    <div>
+      <button onClick={actions.increment}>+</button>
+      <button onClick={actions.decrement}>-</button>
+    </div>
+  );
+}
+```
+
+
+
+**实现bindActionCreators：**
+
+```js
+function bindActionCreators(creators, dispatch) {
+  const boundCreators = {}
+  for (const key in creators) {
+    boundCreators[key] = function(...args) {
+      dispatch(creators[key](...args))
+    }
+  }
+
+  return boundCreators
+}
+```
 
