@@ -2,9 +2,7 @@
 
 
 
-#### redux 的核心 createStore
-
-
+#### 实现 createStore
 
 ```js
 createStore(reducer, preloadedState, enhancer)
@@ -25,8 +23,6 @@ createStore 接收三个参数：
 - subscribe：订阅 store 变更
 
 
-
-#### 实现 createStore
 
 **createStore 的使用：**
 
