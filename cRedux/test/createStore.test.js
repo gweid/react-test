@@ -4,7 +4,7 @@ const initState = {
   name: 'zhangsan',
 }
 
-const reducer = (state = initState, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case 'change_name':
       return {
@@ -17,6 +17,8 @@ const reducer = (state = initState, action) => {
 }
 
 const store = createStore(reducer, initState)
+
+console.log(store.getState());
 
 store.subscribe(() => {
   console.log(store.getState());

@@ -28,7 +28,44 @@ createStore 接收三个参数：
 
 #### 实现 createStore
 
-实现：
+**createStore 的使用：**
+
+```js
+import { createStore } from 'redux'
+
+const initState = {
+  name: 'zhangsan'
+}
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'change_name':
+      return {
+        ...state,
+        name: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+const store = createStore(reducer, initState)
+
+store.subscribe(() => {
+  console.log(store.getState())
+})
+
+const action = {
+  type: 'change_name',
+  playlod: 'lisi'
+}
+
+store.dispatch(action)
+```
+
+
+
+**实现 createStore：**
 
 - reducer：根据 action 类型对 store 状态进行派发更新
 - preloadedState：预存储的 store 状态
@@ -266,7 +303,7 @@ const initState = {
   name: 'zhangsan',
 }
 
-const reducer = (state = initState, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case 'change_name':
       return {
@@ -509,6 +546,108 @@ function bindActionCreators(creators, dispatch) {
   }
 
   return boundCreators
+}
+```
+
+
+
+#### 实现 combineReducers
+
+`combineReducers` 是 Redux 提供的一个核心工具函数，用于将多个 **独立的 Reducer 函数** 合并成一个统一的 Reducer，从而管理 **模块化的全局状态树**。它的主要作用是解决大型应用中状态逻辑拆分和组合的问题。
+
+
+
+核心作用：
+
+- **模块化管理状态**：将不同业务模块的 Reducer 拆分为独立文件，避免单个巨型 Reducer。
+- **自动分配 Action**：根据 Action 的 `type`，自动将状态更新分发给对应的子 Reducer。
+- **生成单一状态树**：合并后的 Reducer 会生成一个嵌套的状态对象，键名由 `combineReducers` 的参数决定。
+
+
+
+**combineReducers 的使用：**
+
+定义多个 reducer
+
+```js
+const initUserState = {
+  name: 'zhangsan',
+}
+
+const userReducer = (state, action) => {
+  switch (action.type) {
+    case 'change_name':
+      return {
+        ...state,
+        name: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+
+
+
+const initCountState = {
+  count: 0,
+}
+
+const countReducer = (state, action) => {
+  switch (action.type) {
+    case 'add':
+      return {
+       ...state,
+        count: state.count + 1,
+      }
+    default:
+      return state
+  }
+}
+```
+
+
+
+合并多个 reducer
+
+```js
+const rootReducer = combineReducers({
+  user: userReducer,
+  count: countReducer,
+})
+
+
+const store = createStore(rootReducer, {
+  user: initUserState,
+  count: initCountState,
+})
+```
+
+
+
+**实现 combineReducers：**
+
+```js
+function combineReducers(reducers) {
+  const reducerKeys = Object.keys(reducers)
+  reducerKeys.forEach(key => {
+    // 检查 reducer 类型，必须是函数
+    if (typeof reducers[key]!== 'function') throw new Error('reducer 必须是一个函数')
+  })
+
+  // 调用每个 reducer，将每个 reducer 的返回状态放到一个新的大对象中
+  // 这个返回函数，就相当于一个 reducer
+  return function(state, action) {
+    const nextState = {}
+
+    reducerKeys.forEach(key => {
+      const reducer = reducers[key]
+      nextState[key] = reducer(state[key], action)
+    })
+
+    // reducer 执行，返回新状态 state
+    return nextState
+  }
 }
 ```
 

@@ -11,51 +11,6 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === proto
 }
 
-function compose(...funcs) {
-  return function (dispatch) {
-    // 逆序遍历，这里[logger, thunk] 两个中间件，最后返回的 dispatch 就是 logger 中间件，logger 中间件中执行的 next 就是 thunk 中间件，这就符合洋葱模型了
-    for (let i = funcs.length - 1; i >= 0; i--) {
-      dispatch = funcs[i](dispatch)
-    }
-    return dispatch
-  }
-}
-
-function applyMiddleware(...middlewares) {
-  // 这个函数就相当于 enhancer 了
-  return function(createStore) {
-    return function(reducer, preloadedState) {
-      const store = createStore(reducer, preloadedState)
-
-      // 传给中间件的 store 阉割版的 store
-      const middlewareAPI = {
-        getState: store.getState,
-        dispatch: store.dispatch,
-      }
-
-      const chain = middlewares.map(middleware => middleware(middlewareAPI))
-
-      const dispatch = compose(...chain)(store.dispatch)
-
-      return {
-        ...store,
-        dispatch,
-      }
-    }
-  }
-}
-
-function bindActionCreators(creators, dispatch) {
-  const boundCreators = {}
-  for (const key in creators) {
-    boundCreators[key] = function(...args) {
-      dispatch(creators[key](...args))
-    }
-  }
-
-  return boundCreators
-}
-
 function createStore(reducer, preloadedState, enhancer) {
   // 约束 reducer 参数类型
   if (typeof reducer !== 'function') throw new Error('reducer 必须是一个函数')
@@ -109,8 +64,76 @@ function createStore(reducer, preloadedState, enhancer) {
   }
 }
 
+function compose(...funcs) {
+  return function (dispatch) {
+    // 逆序遍历，这里[logger, thunk] 两个中间件，最后返回的 dispatch 就是 logger 中间件，logger 中间件中执行的 next 就是 thunk 中间件，这就符合洋葱模型了
+    for (let i = funcs.length - 1; i >= 0; i--) {
+      dispatch = funcs[i](dispatch)
+    }
+    return dispatch
+  }
+}
+
+function applyMiddleware(...middlewares) {
+  // 这个函数就相当于 enhancer 了
+  return function(createStore) {
+    return function(reducer, preloadedState) {
+      const store = createStore(reducer, preloadedState)
+
+      // 传给中间件的 store 阉割版的 store
+      const middlewareAPI = {
+        getState: store.getState,
+        dispatch: store.dispatch,
+      }
+
+      const chain = middlewares.map(middleware => middleware(middlewareAPI))
+
+      const dispatch = compose(...chain)(store.dispatch)
+
+      return {
+        ...store,
+        dispatch,
+      }
+    }
+  }
+}
+
+function bindActionCreators(creators, dispatch) {
+  const boundCreators = {}
+  for (const key in creators) {
+    boundCreators[key] = function(...args) {
+      dispatch(creators[key](...args))
+    }
+  }
+
+  return boundCreators
+}
+
+function combineReducers(reducers) {
+  const reducerKeys = Object.keys(reducers)
+  reducerKeys.forEach(key => {
+    // 检查 reducer 类型，必须是函数
+    if (typeof reducers[key]!== 'function') throw new Error('reducer 必须是一个函数')
+  })
+
+  // 调用每个 reducer，将每个 reducer 的返回状态放到一个新的大对象中
+  // 这个返回函数，就相当于一个 reducer
+  return function(state, action) {
+    const nextState = {}
+
+    reducerKeys.forEach(key => {
+      const reducer = reducers[key]
+      nextState[key] = reducer(state[key], action)
+    })
+
+    // reducer 执行，返回新状态 state
+    return nextState
+  }
+}
+
 module.exports = {
   createStore,
   applyMiddleware,
-  bindActionCreators
+  bindActionCreators,
+  combineReducers
 }

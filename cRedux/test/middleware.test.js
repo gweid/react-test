@@ -6,7 +6,7 @@ const initState = {
   name: 'zhangsan',
 }
 
-const reducer = (state = initState, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case 'change_name':
       return {
