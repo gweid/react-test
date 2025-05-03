@@ -4215,7 +4215,9 @@ Hook 是 React 16.8 的新增特性，它可以让我们在不编写 class 的�
 
 这就是一个 hook，可以在函数组件定义 State。
 
-在 React Hook 没出来之前，Function Component 也叫做 Functional Stateless Component（FSC），这是因为 Function Component 每次执行的时候都会生成新的函数作用域所以同一个组件的不同渲染（render）之间是不能够共用状态的，因此开发者一旦需要在组件中引入状态就需要将原来的 Function Component 改成 Class Component，这使得开发者的体验十分不好。useState 就是用来解决这个问题的，它允许 Function Component 将自己的状态持久化到 React 运行时（runtime）的某个地方（memory cell），这样在组件每次重新渲染的时候都可以从这个地方拿到该状态，而且当该状态被更新的时候，组件也会重渲染。
+在 React Hook 没出来之前，Function Component 也叫做 Functional Stateless Component（FSC），这是因为 Function Component 每次执行的时候都会生成新的函数作用域所以同一个组件的不同渲染（render）之间是不能够共用状态的，因此开发者一旦需要在组件中引入状态就需要将原来的 Function Component 改成 Class Component，这使得开发者的体验十分不好。
+
+useState 就是用来解决这个问题的，它允许 Function Component 将自己的状态持久化到 React 运行时（runtime）的某个地方（memory cell），这样在组件每次重新渲染的时候都可以从这个地方拿到该状态，而且当该状态被更新的时候，组件也会重新渲染。
 
 ```js
 import React, { useState } from 'react';
@@ -4358,6 +4360,8 @@ const HookComponent = (id) => {
 };
 ```
 
+
+
 接收的的操作函数的参数可以是函数
 
 ```js
@@ -4389,7 +4393,14 @@ const HookComponent = (id) => {
 };
 ```
 
-> 操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；etCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
+> 操作函数参数是函数的好处：直接 setCount(count + 10) 这样三次会被合并，最终结果是 20；setCount((prevCount) => prevCount + 10) 三次操作不会被合并，最终结果是 40。这与 setState 使用函数和直接设置值是一样的
+
+
+
+为什么能累加呢？
+
+- **更新函数的参数**：`prevCount` 是 React 内部计算出的 **最新状态值**（即使之前的更新尚未渲染到界面上）
+- **队列机制**：React 会将多个更新函数按顺序放入队列，依次执行，每次执行时传入最新的状态
 
 
 
