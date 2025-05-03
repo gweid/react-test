@@ -11,6 +11,40 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === proto
 }
 
+function compose(...funcs) {
+  return function (dispatch) {
+    // 逆序遍历，这里[logger, thunk] 两个中间件，最后返回的 dispatch 就是 logger 中间件，logger 中间件中执行的 next 就是 thunk 中间件，这就符合洋葱模型了
+    for (let i = funcs.length - 1; i >= 0; i--) {
+      dispatch = funcs[i](dispatch)
+    }
+    return dispatch
+  }
+}
+
+function applyMiddleware(...middlewares) {
+  // 这个函数就相当于 enhancer 了
+  return function(createStore) {
+    return function(reducer, preloadedState) {
+      const store = createStore(reducer, preloadedState)
+
+      // 传给中间件的 store 阉割版的 store
+      const middlewareAPI = {
+        getState: store.getState,
+        dispatch: store.dispatch,
+      }
+
+      const chain = middlewares.map(middleware => middleware(middlewareAPI))
+
+      const dispatch = compose(...chain)(store.dispatch)
+
+      return {
+        ...store,
+        dispatch,
+      }
+    }
+  }
+}
+
 function createStore(reducer, preloadedState, enhancer) {
   // 约束 reducer 参数类型
   if (typeof reducer !== 'function') throw new Error('reducer 必须是一个函数')
@@ -65,5 +99,6 @@ function createStore(reducer, preloadedState, enhancer) {
 }
 
 module.exports = {
-  createStore
+  createStore,
+  applyMiddleware
 }
