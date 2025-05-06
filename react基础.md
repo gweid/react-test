@@ -40,6 +40,16 @@ serviceWorker.unregister(); // pwa 相关
 
 
 
+#### 1-3、react 的演进过程
+
+- 0.3.0 ~ 0.14.0（2013.5.29 - 2015.10.7）：基础功能打磨
+- React 15（2016.4.7）：基本功能成熟
+- React16（2017.9.26）：Fiber 架构引入，16.8 Hooks 的引入
+- React17（2020.10.20）：事件委托机制发生变化，New JSX Transform
+- React18（2022.3.29）：Consurrent、Suspence、Transitions
+
+
+
 ### 2、jsx 语法
 
 jsx 是 js 语法的扩展，表面上像 HTML，本质上还是通过 babel 转换为 js 去执行
