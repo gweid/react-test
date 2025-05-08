@@ -2452,11 +2452,11 @@ export default class EventsCom extends Component {
 
 react16.3 之前和之后的生命周期有所区别。
 
+查看网站：https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
+
 
 
 #### 8-1、react16.3 之前的生命周期
-
-查看网站：https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
 
 
