@@ -2627,6 +2627,8 @@ static getDerivedStateFromProps(nextProps, preState)
 
 > static getDerivedStateFromProps(nextProps, preState) 在组件初始化和更新时的 render 方法之前调用，父组件传入的 newProps 和当前组件的 prevState 进行比较，判断是否需要更新 state，返回值为对象用作更新 state，如果不需要则返回 null。不管什么原因，都会在每次 render 之前触发这个方法。与 componentWillReceiveProps 形成对比，componentWillReceiveProps 仅仅在父组件重新渲染时触发，而在调用 setState 时不触发
 
+> 当组件的 ​​state 依赖 props​​，且需要在 props 变化时同步更新 state 时使用。
+
 ```js
 class App extends Component {
   constructor(props) {
