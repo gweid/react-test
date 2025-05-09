@@ -1,5 +1,9 @@
 # react 的一些面试点
 
+面试题汇总：
+
+- https://www.yuque.com/cuggz/interview/pgw8v4
+
 
 
 ### react 的理解和特点
