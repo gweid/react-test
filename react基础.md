@@ -4589,6 +4589,39 @@ const DemoUseLayoutEffect = () => {
 
 
 
+**使用场景**
+
+- **DOM 测量**（如获取元素尺寸、位置）
+- **同步调整 UI**（避免闪烁）
+- **强制同步更新**（如动画、滚动位置）
+
+比如：
+
+```jsx
+function Tooltip() {
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const tooltipRef = useRef();
+
+  useLayoutEffect(() => {
+    const { width, height } = tooltipRef.current.getBoundingClientRect();
+    setPosition({ top: height + 10, left: width / 2 });
+  }, []);
+
+  return (
+    <div ref={tooltipRef} style={{ position: "absolute", ...position }}>
+      Tooltip
+    </div>
+  );
+}
+```
+
+- 如果使用 `useEffect`，用户会先看到 `Tooltip` 在错误位置，然后闪烁调整。
+- `useLayoutEffect` 在绘制前计算位置，避免闪烁。
+
+
+
+
+
 #### 13-4、useContext
 
 在之前，要在组件中使用共享的 Context，主要是：
