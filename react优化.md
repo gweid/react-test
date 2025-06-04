@@ -2,6 +2,14 @@
 
 
 
+常见的一些优化手段：
+
+- 复用组件：遵循 DIFF 的同层级、type相同、key 相同的可复用原则
+- 避免不必要的渲染：shouldComponentUpdate、PureComponent、memo
+- 缓存/较少运算：useMemo、useCallback
+
+
+
 ## 渲染控制
 
 从调度更新任务到调和 fiber，再到浏览器渲染真实 DOM，每一个环节都是渲染的一部分，至于对于每个环节的性能优化，React 在底层已经处理了大部分优化细节，包括设立任务优先级、异步调度、diff算法、时间分片都是 React 为了提高性能，提升用户体验采取的手段。开发者只需要告诉 React 哪些组件需要更新，哪些组件不需要更新。React 提供了 PureComponent，shouldComponentUpdated，memo 等优化手段。
