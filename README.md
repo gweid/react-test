@@ -1,6 +1,6 @@
 # React
 
-react 学习笔记。
+react 及 react 相关生态学习笔记
 
 - [react基础](./react基础.md)
 
