@@ -130,6 +130,12 @@ class MyComponent extends React.Component {
 
 
 
+#### react bailout 策略
+
+可以参考：[react性能优化｜bailout策略](https://juejin.cn/post/7214053344808976443)
+
+
+
 ### 附录：React 100 道面试题
 
 1. 简述React有什么特点？
