@@ -83,6 +83,51 @@ useState 初始化其实可以传入值，也可以传入函数。当传入函�
 
 ### super() 和 super(props) 有什么区别
 
+supper()
+
+```js
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(); // 未传递 props
+    console.log(this.props); // undefined ❌
+    console.log(props);      // 可用 ✅
+  }
+
+  render() {
+    console.log(this.props); // 可用 ✅
+    return <div>{this.props.name}</div>;
+  }
+}
+```
+
+
+
+super(props)
+
+```js
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props); // 传递 props
+    console.log(this.props); // 可用 ✅
+  }
+
+  render() {
+    console.log(this.props); // 可用 ✅
+    return <div>{this.props.name}</div>;
+  }
+}
+```
+
+为什么在 render 时候，可以使用 this.props?
+
+因为 react 源码中会在挂载阶段自动设置 this.props
+
+
+
+### props、context 和 第三方状态管理库的使用场景
+
+简单的父子通讯可以使用 props，跨层级的组件通讯可以使用 context，但是使用 context 需要找到共同的父组件进行 Provider 包裹，如果两个需要通讯的组件的共同父组件相距太远，此时就不适合使用 context 了，可以使用第三方状态管理库
+
 
 
 ### 附录：React 100 道面试题
