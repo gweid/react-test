@@ -136,6 +136,23 @@ class MyComponent extends React.Component {
 
 
 
+#### 为什么 hook 不能在循环条件语句中使用
+
+这个规则是由 React 的 ​​Hook 调用机制​​ 决定的：
+
+React 内部使用 ​​链表​ 来存储 Hook 的调用顺序，会按顺序记录这些 Hook，​​每次渲染时，React 都依赖这个顺序来正确匹配 Hook 的状态
+
+Hook 在条件语句中调用，​​渲染时 Hook 的顺序可能不一致​​，导致 React 无法正确匹配状态
+
+
+
+为什么 React 不自动处理条件 Hook？
+- ​性能问题​​：动态调整 Hook 顺序会增加运行时开销
+- ​可预测性​​：显式规则让开发者更容易理解代码行为
+- ​调试友好​​：固定顺序让 React DevTools 能准确追踪 Hook
+
+
+
 ### 附录：React 100 道面试题
 
 1. 简述React有什么特点？
